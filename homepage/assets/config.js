@@ -12,4 +12,5 @@
 window.SB_CONFIG = {
   url: "",
   anonKey: "",
+  kakao: false,   // 카카오 로그인 설정(SETUP.md 10번)을 마친 뒤 true로 바꾸세요
 };

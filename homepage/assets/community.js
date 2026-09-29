@@ -22,6 +22,20 @@
   const q = sel => document.querySelector(sel);
   const msg = (el, text, ok) => { el.innerHTML = text ? `<p class="form-msg ${ok ? "ok" : "err"}">${h(text)}</p>` : ""; };
   let ME = null;
+  const KAKAO = !!(window.SB_CONFIG && window.SB_CONFIG.kakao);
+  /* 카카오 디자인 가이드: 노란 바탕(#FEE500), 검정 85% 글자, 말풍선 기호 */
+  const kakaoBtn = `<button type="button" class="btn" data-kakao style="background:#FEE500;color:rgba(0,0,0,.85);width:100%">
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="#000" d="M12 3C6.5 3 2 6.6 2 11c0 2.8 1.9 5.3 4.7 6.7l-1 3.6c-.1.3.3.6.6.4l4.2-2.8c.5.1 1 .1 1.5.1 5.5 0 10-3.6 10-8S17.5 3 12 3z"/></svg>
+    카카오로 시작하기</button>`;
+  async function kakaoLogin(errEl) {
+    const c = await SB.client();
+    const { error } = await c.auth.signInWithOAuth({ provider: "kakao", options: { redirectTo: redirectBase() } });
+    if (error) msg(errEl, SB.errText(error));
+  }
+  /* 소셜 로그인으로 들어온 사람은 가입 화면의 동의를 거치지 않았으므로 여기서 받음 */
+  const needsConsent = () => ME && ME.profile && !ME.profile.privacy_agreed_at;
+  const consentGate = () => `<div class="notice-box"><b>개인정보 수집·이용 동의가 필요합니다.</b><br>글쓰기·가입 신청 전에 한 번만 동의해 주세요.
+    <div style="margin-top:14px"><a class="btn btn-brand" href="#/my/profile">동의하러 가기</a></div></div>`;
 
   const notReady = `<div class="notice-box"><b>회원 기능은 준비 중입니다.</b><br>로그인·게시판은 데이터베이스 연결 후 열립니다.<br><span style="font-size:13px">(관리자: homepage/SETUP.md 참고)</span></div>`;
   const needLogin = next => `<div class="notice-box"><b>로그인이 필요합니다.</b><br>회원가입은 1분이면 끝납니다.
@@ -117,7 +131,7 @@
           <p class="ops">${ME && (ME.user.id === x.author_id || off) ? `<button data-act="del-cmt" data-id="${x.id}">삭제</button>` : ""}
             ${off ? `<button data-act="hide-cmt" data-id="${x.id}" data-h="${x.is_hidden}">${x.is_hidden ? "숨김 해제" : "숨김"}</button>` : ""}
             ${ME && ME.user.id !== x.author_id ? `<button data-act="report" data-type="comment" data-id="${x.id}">신고</button>` : ""}</p></div>`).join("")}
-        ${ME ? `<form class="cmt-form" data-cmt><textarea name="body" maxlength="2000" required placeholder="댓글을 남겨 주세요. 서로 존중하는 말로 이야기해요."></textarea>
+        ${ME && needsConsent() ? consentGate() : ME ? `<form class="cmt-form" data-cmt><textarea name="body" maxlength="2000" required placeholder="댓글을 남겨 주세요. 서로 존중하는 말로 이야기해요."></textarea>
           <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span data-cmsg></span><button class="btn btn-dark" style="height:44px">댓글 등록</button></div></form>`
           : `<p class="notice-box" style="margin-top:16px">댓글은 <a href="#/auth/login?next=${encodeURIComponent(location.hash)}" style="color:var(--brand);font-weight:700">로그인</a> 후 남길 수 있습니다.</p>`}
       </section>`;
@@ -149,6 +163,7 @@
   async function postWrite(host, board, id) {
     if (!SB.configured) { host.innerHTML = notReady; return; }
     if (!ME) { host.innerHTML = needLogin(location.hash); return; }
+    if (needsConsent()) { host.innerHTML = consentGate(); return; }
     if (!BOARDS[board]) board = "free";
     const B = BOARDS[board];
     if (B.officerOnly && !SB.isOfficer(ME.profile)) { host.innerHTML = `<div class="notice-box">${B.label}는 임원만 작성할 수 있습니다.</div>`; return; }
@@ -187,8 +202,10 @@
       <div class="row"><label for="lPw">비밀번호</label><input type="password" id="lPw" name="pw" autocomplete="current-password" required></div>
       <div data-lmsg></div>
       <button class="btn btn-brand">로그인</button>
+      ${KAKAO ? `<p class="hint" style="text-align:center">또는</p>${kakaoBtn}` : ""}
       <p class="auth-links"><a href="#/auth/signup">회원가입</a><a href="#/auth/reset">비밀번호 찾기</a></p></form>`;
     const f = host.querySelector("[data-login]");
+    host.querySelector("[data-kakao]")?.addEventListener("click", () => kakaoLogin(f.querySelector("[data-lmsg]")));
     f.onsubmit = async e => {
       e.preventDefault();
       const c = await SB.client();
@@ -205,6 +222,7 @@
     if (!SB.configured) { host.innerHTML = notReady; return; }
     if (ME) { location.hash = "#/my/profile"; return; }
     host.innerHTML = `<form class="form" data-signup>
+      ${KAKAO ? `${kakaoBtn}<p class="hint" style="text-align:center">카카오로 시작하면 첫 로그인 뒤에 동의 절차를 거칩니다. 또는 이메일로 가입:</p>` : ""}
       <p class="consent">홈페이지 회원은 게시판·자원봉사·협력 문의에 참여할 수 있습니다. <b>정회원</b>은 가입 후 마이페이지에서 가입신청서를 내고, 운영진 승인을 받으면 됩니다.</p>
       <div class="row"><label for="sEmail">이메일<em>*</em></label><input type="email" id="sEmail" name="email" autocomplete="email" required></div>
       <div class="grid2">
@@ -234,6 +252,7 @@
       <button class="btn btn-brand">가입하기</button>
       <p class="auth-links"><a href="#/auth/login">이미 회원이신가요? 로그인</a></p></form>`;
     const f = host.querySelector("[data-signup]");
+    host.querySelector("[data-kakao]")?.addEventListener("click", () => kakaoLogin(f.querySelector("[data-smsg]")));
     f.type.onchange = () => { host.querySelector("[data-org]").hidden = !["팀·단체", "기관"].includes(f.type.value); };
     f.onsubmit = async e => {
       e.preventDefault();
@@ -283,12 +302,37 @@
   function myCard() {
     const p = ME.profile || {};
     return `<div class="my-card"><span class="av">${h((p.display_name || "?").slice(0, 1))}</span>
-      <div><h4>${h(p.display_name || "")}</h4><p>${h(ME.user.email)} · ${SB.ROLE_LABEL[p.role] || "가입 회원"}${p.org_name ? ` · ${h(p.org_name)}` : ""}</p></div>
+      <div><h4>${h(p.display_name || "")}</h4><p>${h(ME.user.email || "카카오 계정")} · ${SB.ROLE_LABEL[p.role] || "가입 회원"}${p.org_name ? ` · ${h(p.org_name)}` : ""}</p></div>
       <div class="acts">${SB.isOfficer(p) ? `<a class="btn-s" href="workspace.html">업무공간</a>` : ""}<button class="btn-s" data-logout>로그아웃</button></div></div>`;
   }
   async function myProfile(host) {
     if (!SB.configured) { host.innerHTML = notReady; return; }
     if (!ME) { host.innerHTML = needLogin("#/my/profile"); return; }
+    if (needsConsent()) {
+      host.innerHTML = myCard() + `<form class="form" data-agree style="max-width:620px">
+        <p class="consent">카카오 등 외부 계정으로 가입하셨습니다. 홈페이지를 이용하려면 아래에 동의해 주세요.</p>
+        <div class="row"><label for="gName">이름 또는 활동명<em>*</em></label><input type="text" id="gName" name="name" maxlength="40" required value="${h(ME.profile.display_name || "")}"></div>
+        <div class="consent">
+          <table><tr><th>항목</th><th>목적</th><th>보유 기간</th></tr>
+            <tr><td>외부 계정 식별자, 이메일(제공 시), 이름·활동명</td><td>로그인, 본인 확인, 게시판 이용</td><td>탈퇴 시까지</td></tr></table>
+          동의를 거부할 수 있으나, 거부하면 홈페이지 회원 기능을 이용할 수 없습니다. <a href="#/disclosure/privacy" style="text-decoration:underline">개인정보처리방침</a>
+          <label><input type="checkbox" name="agree" required> 개인정보 수집·이용에 동의합니다.</label>
+          <label><input type="checkbox" name="age14" required> 만 14세 이상입니다.</label>
+          <label><input type="checkbox" name="rules" required> 게시판 운영 원칙(광고·비방·개인정보 노출 금지)을 지키겠습니다.</label>
+        </div>
+        <div data-gmsg></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-brand">동의하고 시작하기</button><button type="button" class="btn btn-white" data-logout>동의하지 않고 로그아웃</button></div>
+      </form>`;
+      const g = host.querySelector("[data-agree]");
+      g.onsubmit = async e => {
+        e.preventDefault();
+        const c = await SB.client();
+        const { error } = await c.from("profiles").update({ display_name: g.name.value.trim(), privacy_agreed_at: new Date().toISOString() }).eq("id", ME.user.id);
+        if (error) return msg(g.querySelector("[data-gmsg]"), SB.errText(error));
+        await refreshMe(); myProfile(host);
+      };
+      return;
+    }
     const p = ME.profile || {};
     host.innerHTML = myCard() + `
       ${p.role === "user" ? `<p class="consent" style="margin-bottom:24px">지금은 <b>가입 회원</b>입니다. 정회원이 되면 공동체 프로젝트와 총회에 참여할 수 있습니다. <a href="#/my/apply" style="color:var(--brand);font-weight:700">정회원 가입 신청 ›</a></p>` : ""}
@@ -328,6 +372,7 @@
   async function myApply(host) {
     if (!SB.configured) { host.innerHTML = notReady; return; }
     if (!ME) { host.innerHTML = needLogin("#/my/apply"); return; }
+    if (needsConsent()) { host.innerHTML = consentGate(); return; }
     const c = await SB.client();
     const { data: apps } = await c.from("applications").select("id,status,created_at,review_note").eq("user_id", ME.user.id).order("created_at", { ascending: false });
     const last = apps?.[0];
