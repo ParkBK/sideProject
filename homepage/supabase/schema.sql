@@ -2,6 +2,8 @@
 -- 시흥 청년문화예술공동체 홈페이지 데이터베이스 (Supabase / PostgreSQL)
 --
 -- 사용법: Supabase 대시보드 → SQL Editor에 이 파일 전체를 붙여넣고 Run
+-- ※ "RLS를 켜겠느냐"는 창이 뜨면 스크립트를 그대로 실행하는 쪽을 고르세요.
+--   이 스크립트는 모든 테이블의 RLS를 각 테이블 바로 아래에서 직접 켭니다.
 -- 다시 실행해도 안전하도록 작성했습니다 (if not exists / or replace).
 --
 -- 권한 체계 (profiles.role)
@@ -29,6 +31,7 @@ create table if not exists public.profiles (
   privacy_agreed_at timestamptz,
   created_at     timestamptz not null default now()
 );
+alter table public.profiles enable row level security;
 
 -- 권한 확인 함수 (RLS 안에서 재귀를 피하려고 security definer 사용)
 create or replace function public.my_role() returns text
@@ -87,7 +90,6 @@ drop trigger if exists guard_profile_privileges on public.profiles;
 create trigger guard_profile_privileges before update on public.profiles
   for each row execute function public.guard_profile_privileges();
 
-alter table public.profiles enable row level security;
 drop policy if exists "profiles: 본인 조회" on public.profiles;
 create policy "profiles: 본인 조회" on public.profiles for select using (id = auth.uid() or public.is_officer());
 drop policy if exists "profiles: 본인 수정" on public.profiles;
@@ -181,6 +183,7 @@ create table if not exists public.posts (
   updated_at timestamptz not null default now()
 );
 create index if not exists posts_board_created on public.posts(board, created_at desc);
+alter table public.posts enable row level security;
 
 create table if not exists public.comments (
   id         bigint generated always as identity primary key,
@@ -191,6 +194,7 @@ create table if not exists public.comments (
   created_at timestamptz not null default now()
 );
 create index if not exists comments_post on public.comments(post_id, created_at);
+alter table public.comments enable row level security;
 
 create table if not exists public.reports (
   id          bigint generated always as identity primary key,
@@ -201,6 +205,7 @@ create table if not exists public.reports (
   resolved    boolean not null default false,
   created_at  timestamptz not null default now()
 );
+alter table public.reports enable row level security;
 
 -- 작성자가 is_hidden(숨김)을 스스로 풀지 못하게 막음
 create or replace function public.guard_hidden() returns trigger
@@ -217,7 +222,6 @@ create trigger guard_hidden before update on public.posts for each row execute f
 drop trigger if exists guard_hidden on public.comments;
 create trigger guard_hidden before update on public.comments for each row execute function public.guard_hidden();
 
-alter table public.posts enable row level security;
 drop policy if exists "posts: 읽기" on public.posts;
 create policy "posts: 읽기" on public.posts for select using (
   public.is_officer()
@@ -235,7 +239,6 @@ create policy "posts: 수정" on public.posts for update using (author_id = auth
 drop policy if exists "posts: 삭제" on public.posts;
 create policy "posts: 삭제" on public.posts for delete using (author_id = auth.uid() or public.is_officer());
 
-alter table public.comments enable row level security;
 drop policy if exists "comments: 읽기" on public.comments;
 create policy "comments: 읽기" on public.comments for select using (
   exists (select 1 from public.posts p where p.id = post_id)   -- 글을 볼 수 있는 사람만 (posts RLS 적용)
@@ -251,7 +254,6 @@ create policy "comments: 수정" on public.comments for update using (author_id 
 drop policy if exists "comments: 삭제" on public.comments;
 create policy "comments: 삭제" on public.comments for delete using (author_id = auth.uid() or public.is_officer());
 
-alter table public.reports enable row level security;
 drop policy if exists "reports: 신고" on public.reports;
 create policy "reports: 신고" on public.reports for insert with check (auth.uid() is not null and reporter = auth.uid() and not resolved);
 drop policy if exists "reports: 임원 조회" on public.reports;
@@ -319,6 +321,7 @@ create table if not exists public.events (
   created_at  timestamptz not null default now(),
   check (end_date is null or end_date >= start_date)
 );
+alter table public.events enable row level security;
 create table if not exists public.tasks (
   id          bigint generated always as identity primary key,
   title       text not null,
@@ -331,7 +334,6 @@ create table if not exists public.tasks (
   created_by  uuid references auth.users(id) default auth.uid(),
   created_at  timestamptz not null default now()
 );
-alter table public.events enable row level security;
 alter table public.tasks enable row level security;
 drop policy if exists "events: 임원" on public.events;
 create policy "events: 임원" on public.events for all using (public.is_officer()) with check (public.is_officer());

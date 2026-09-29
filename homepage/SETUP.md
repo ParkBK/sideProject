@@ -22,6 +22,10 @@
 2. `homepage/supabase/schema.sql` 파일 내용 전체를 붙여넣고 **Run**을 누릅니다.
 3. "Success"가 나오면 끝입니다. 다시 실행해도 안전합니다.
 
+> **RLS를 켜겠느냐는 창이 뜨면** "쿼리를 그대로 실행"하는 쪽을 고르세요. 이 스크립트는 모든 테이블의 RLS를 각 테이블 바로 아래에서 직접 켭니다. Supabase가 자동으로 문장을 끼워 넣으면 함수 부분이 깨질 수 있습니다.
+>
+> `unterminated dollar-quoted string` 오류가 나왔다면 스크립트가 실행 전에 멈춘 것이라 아무것도 만들어지지 않았습니다. 최신 schema.sql로 다시 실행하면 됩니다.
+
 ## 3. 로그인 설정
 
 **Authentication → URL Configuration**
