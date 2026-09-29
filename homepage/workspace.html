@@ -242,13 +242,13 @@
         <div class="kpi"><p>2주 안 마감</p><b>${soon.length}</b></div>
         <div class="kpi ${ap.count ? "warn" : ""}"><p>가입 신청 대기</p><b>${ap.count || 0}</b></div>
         <div class="kpi ${rp.count ? "warn" : ""}"><p>미처리 신고</p><b>${rp.count || 0}</b></div>
-        <div class="kpi good"><p>채운 마을 (공개 활동)</p><b>${dongs.size} / 20</b></div>
+        <div class="kpi good"><p>문화가 닿은 마을</p><b>${dongs.size} / 20</b></div>
       </div>
       <div class="grid g2">
         <div class="panel"><h3>해야 할 일 <span class="hint">마감 지난 일과 가까운 순서 · <a href="#tasks" style="text-decoration:underline">전체 ${open.length}건</a></span></h3>${taskList([...over, ...open.filter(x => !over.includes(x))].slice(0, 8))}${!open.length ? `<p class="empty">등록된 할 일이 없습니다.<br><button class="btn" style="margin-top:10px" data-starter>운영 기본 체크리스트 불러오기</button></p>` : ""}</div>
         <div class="panel"><h3>다가오는 일정</h3>${(ev.data || []).length ? `<ul class="tasks">${ev.data.map(e => `<li><span class="chip">${fmt(e.start_date)}</span><div class="t"><b>${h(e.title)}</b><div class="meta">${h(e.category || "")}${e.memo ? " · " + h(e.memo) : ""}</div></div></li>`).join("")}</ul>` : `<p class="empty">등록된 일정이 없습니다.</p>`}</div>
       </div>
-      ${acts.filter(a => !a.dong).length ? `<div class="panel"><h3>⚠ 동이 비어 있는 활동 ${acts.filter(a => !a.dong).length}건</h3><p class="hint">활동 기록에 동을 넣어야 홈페이지 마을 지도가 채워집니다. <button class="btn s w" data-goacts>활동 기록으로</button></p></div>` : ""}`;
+      ${acts.filter(a => !a.dong).length ? `<div class="panel"><h3>⚠ 동이 비어 있는 활동 ${acts.filter(a => !a.dong).length}건</h3><p class="hint">활동 기록에 동을 넣어야 홈페이지 마을 지도에 반영됩니다. <button class="btn s w" data-goacts>활동 기록으로</button></p></div>` : ""}`;
     bindTaskList(el, () => dash(el));
     el.querySelector("[data-starter]")?.addEventListener("click", async () => { await addStarter(); dash(el); });
     el.querySelector("[data-goacts]")?.addEventListener("click", () => go("acts"));

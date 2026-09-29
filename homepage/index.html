@@ -59,9 +59,24 @@
   @media(max-width:767px){.wrap{padding:0 16px}}
 
   /* 스크롤 등장 애니메이션 */
-  .js .rv{opacity:0;transform:translateY(28px);transition:opacity .8s var(--ease),transform .8s var(--ease);transition-delay:var(--d,0s)}
+  /* 장면 전환: 스크롤을 내리면 섹션이 떠오르고, 다시 올리면 아래 섹션이 사라짐 */
+  .js .rv{opacity:0;transform:translateY(64px) scale(.97);transition:opacity .9s var(--ease),transform 1s var(--ease);transition-delay:var(--d,0s)}
   .js .rv.in{opacity:1;transform:none}
-  @media(prefers-reduced-motion:reduce){.js .rv{opacity:1;transform:none;transition:none}*{scroll-behavior:auto!important}}
+  .js .tit-wrap.rv,.js .duo>.rv:first-child{transform:translateX(-56px)}
+  .js .duo>.rv:last-child{transform:translateX(56px)}
+  .js .tit-wrap.rv.in,.js .duo>.rv.in{transform:none}
+  .js .map-head.rv{transform:translateY(40px) scale(.94)}
+  .js .map-head.rv.in{transform:none}
+  /* 카드는 하나씩 차례로 */
+  .js .rv-kids>*{opacity:0;transform:translateY(40px);transition:opacity .7s var(--ease),transform .8s var(--ease)}
+  .js .rv-kids.in>*{opacity:1;transform:none}
+  .js .rv-kids.in>*:nth-child(2){transition-delay:.08s}.js .rv-kids.in>*:nth-child(3){transition-delay:.16s}.js .rv-kids.in>*:nth-child(4){transition-delay:.24s}
+  .js .rv-kids.in>*:nth-child(5){transition-delay:.32s}.js .rv-kids.in>*:nth-child(6){transition-delay:.4s}.js .rv-kids.in>*:nth-child(7){transition-delay:.48s}.js .rv-kids.in>*:nth-child(8){transition-delay:.56s}
+  /* "움직임 줄이기" 설정: 이동 없이 서서히 나타나기만 */
+  @media(prefers-reduced-motion:reduce){
+    .js .rv,.js .tit-wrap.rv,.js .duo>.rv,.js .map-head.rv,.js .rv-kids>*{transform:none!important;transition:opacity .6s ease}
+    *{scroll-behavior:auto!important}
+  }
 
   #skip-nav a{position:absolute;left:-999px;top:0;z-index:300;background:var(--ink);color:#fff;padding:10px 16px}
   #skip-nav a:focus{left:0}
@@ -186,6 +201,7 @@
   .v-viewport{overflow:hidden}
   .v-track{display:flex;gap:var(--gap);transition:transform .7s var(--ease);will-change:transform}
   .v-track.jump,.v-track.jump .slide{transition:none!important}
+  @media(prefers-reduced-motion:reduce){.v-track{transition-duration:.35s}.slide.is-cur .s-txt>*{animation:none}}
   :root{--sw:min(1200px,calc(100vw - 120px));--gap:32px}
   @media(max-width:767px){:root{--sw:calc(100vw - 32px);--gap:12px}}
   .slide{flex:0 0 var(--sw);height:440px;border-radius:24px;overflow:hidden;position:relative;display:flex;align-items:center;opacity:.35;transition:opacity .7s var(--ease)}
@@ -519,7 +535,7 @@
   .cmt .ops button:hover{color:var(--ink)}
   .cmt-form{margin-top:16px;display:grid;gap:8px}
   .form{display:grid;gap:18px}
-  .form .row{display:grid;gap:6px}
+  .form .row{display:grid;gap:6px;align-content:start}
   .form label,.form .lb{font-size:14.5px;font-weight:700}
   .form label em,.form .lb em{font-style:normal;color:#c62828;margin-left:2px}
   .form input[type=text],.form input[type=email],.form input[type=password],.form input[type=tel],.form input[type=date],.form input[type=url],.form select,.form textarea,.cmt-form textarea{width:100%;font:inherit;font-size:15.5px;padding:12px 14px;border:1px solid #cfd3d8;border-radius:8px;background:#fff;color:var(--ink);transition:border-color .2s,box-shadow .2s}
@@ -828,7 +844,7 @@
   </section>
 
   <div class="wrap m-link">
-    <ul>
+    <ul class="rv-kids">
       <li><a href="#/join/partner"><span class="ic" data-icon="hand"></span>협력 문의<span class="go" data-icon="right"></span></a></li>
       <li><a href="#/join/member"><span class="ic" data-icon="people"></span>회원 참여<span class="go" data-icon="right"></span></a></li>
       <li><a href="#/programs/list"><span class="ic" data-icon="star"></span>주요활동<span class="go" data-icon="right"></span></a></li>
@@ -840,8 +856,8 @@
   <section class="m-sec"><div class="wrap">
     <div class="map-head rv">
       <p class="en">SIHEUNG VILLAGE MAP</p>
-      <h3><em>시흥</em>을 채워갑니다</h3>
-      <p>이름처럼, 시흥 20개 마을을 청년의 문화로 하나씩 채워가고 있습니다.<br>활동이 쌓일수록 마을이 진하게 채워집니다.</p>
+      <h3><em>청년 문화</em>가 닿은 마을</h3>
+      <p>시흥 20개 마을 곳곳에 청년의 문화가 닿고 있습니다.<br>활동이 쌓일수록 마을의 색이 진해지고, 아직 닿지 않은 마을은 우리가 다음에 찾아갈 곳입니다.</p>
     </div>
     <div data-map></div>
   </div></section>
@@ -852,7 +868,7 @@
       <a class="btn-all-view" href="#/programs/list">전체보기 <span aria-hidden="true">+</span></a>
     </div>
     <div class="pills rv" role="tablist" aria-label="사업 분류" id="progTabs"></div>
-    <div class="card-grid rv" id="homePrograms"></div>
+    <div class="card-grid rv-kids" id="homePrograms"></div>
   </div></section>
 
   <section class="m-sec"><div class="wrap duo">
@@ -878,7 +894,7 @@
         <h4>함께 만든 시간</h4>
         <p>우리는 활동을 숫자로 부풀리지 않습니다.<br>홈페이지에 기록된 활동만 자동으로 집계해 보여드립니다.</p>
       </div>
-      <div class="stats" id="stats"></div>
+      <div class="stats rv-kids" id="stats"></div>
     </div>
   </div></section>
 
@@ -887,7 +903,7 @@
       <div><h3 class="heading">함께 만든 현장</h3><p>시흥 곳곳에서 청년들이 만든 문화 현장입니다.</p></div>
       <a class="btn-all-view" href="#/news/activities">전체보기 <span aria-hidden="true">+</span></a>
     </div>
-    <div class="card-grid rv" id="homeNews"></div>
+    <div class="card-grid rv-kids" id="homeNews"></div>
   </div></section>
 
   <section class="since">
@@ -963,7 +979,7 @@
 <!-- ════════ 마을지도 ════════ -->
 <div data-page="map" hidden>
   <div data-sub="all">
-    <div class="map-head" style="margin-bottom:40px"><h3 style="font-size:30px"><em>시흥</em>을 채워갑니다</h3><p>활동이 기록될 때마다 그 마을이 채워집니다. 비어 있는 마을은 우리가 다음에 만날 곳입니다.<br>동을 누르면 그 마을에서의 활동을 볼 수 있습니다.</p></div>
+    <div class="map-head" style="margin-bottom:40px"><h3 style="font-size:30px"><em>청년 문화</em>가 닿은 마을</h3><p>활동이 기록될 때마다 그 마을의 색이 진해집니다. 아직 닿지 않은 마을은 우리가 다음에 찾아갈 곳입니다.<br>동을 누르면 그 마을에서의 활동을 볼 수 있습니다.</p></div>
     <div data-map></div>
   </div>
 </div>
@@ -1407,15 +1423,21 @@ const visibleSubs = m => m.subs.filter(([s]) => subVisible(m.id, s));
 /* ── 스크롤 등장 + 숫자 카운트 ── */
 const io = "IntersectionObserver" in window ? new IntersectionObserver(entries => {
   entries.forEach(e => {
-    if (!e.isIntersecting) return;
-    e.target.classList.add("in");
-    e.target.querySelectorAll("[data-count]").forEach(countUp);
-    e.target.querySelectorAll(".bar span[data-w]").forEach(b => b.style.width = b.dataset.w);
-    io.unobserve(e.target);
+    const el = e.target;
+    if (e.isIntersecting) {
+      el.classList.add("in");
+      if (!el.dataset.seen) {            /* 숫자 세기·막대는 처음 한 번만 */
+        el.dataset.seen = "1";
+        el.querySelectorAll("[data-count]").forEach(countUp);
+        el.querySelectorAll(".bar span[data-w]").forEach(b => b.style.width = b.dataset.w);
+      }
+    } else if (e.boundingClientRect.top > 0) {
+      el.classList.remove("in");         /* 화면 아래로 벗어나면(위로 스크롤) 다시 숨김 */
+    }
   });
-}, { threshold: .15, rootMargin: "0px 0px -40px 0px" }) : null;
+}, { threshold: .12, rootMargin: "0px 0px -8% 0px" }) : null;
 function watch(root = document) {
-  root.querySelectorAll(".rv:not(.in), .since .year:not(.in)").forEach(el => io ? io.observe(el) : el.classList.add("in"));
+  root.querySelectorAll(".rv, .rv-kids, .since .year").forEach(el => io ? io.observe(el) : el.classList.add("in"));
 }
 function countUp(el) {
   const to = +el.dataset.count;
@@ -1614,24 +1636,24 @@ function buildMap(host) {
   host.innerHTML = `<div class="vmap rv">
     <div class="vm-map">
       <div class="vm-score">
-        <p class="k">청년의 문화로 채운 마을</p>
+        <p class="k">청년 문화가 닿은 마을</p>
         <p class="v"><b data-filled>0</b><span>/ ${DONGS.length}</span></p>
         <p class="vm-bar"><span data-fillbar></span></p>
         <p class="n">누적 활동 <b data-acts>0</b>건<span data-mem-wrap hidden> · 회원이 있는 마을 <b data-mdongs>0</b>곳</span></p>
       </div>
       <span class="vm-water" aria-hidden="true">SIHEUNG</span>
-      <svg viewBox="0 0 600 600" role="group" aria-label="시흥시 행정동 지도. 활동이 많을수록 진하게 채워집니다">
+      <svg viewBox="0 0 600 600" role="group" aria-label="시흥시 행정동 지도. 활동이 많을수록 색이 진해집니다">
         <g>${DONGS.map(d => `<path class="dong l0" data-dong="${d.name}" d="${d.d}" tabindex="0" role="button" aria-label="${d.name}"></path>`).join("")}</g>
         <g>${DONGS.map(d => `<text class="lbl" data-dong="${d.name}" x="${d.cx}" y="${d.cy + 4}">${d.name}</text>`).join("")}</g>
         <g class="g-pin"></g>
       </svg>
       <p class="vm-tip" hidden></p>
-      <p class="vm-legend"><span><i class="lv0"></i>아직 비어 있음</span><span><i class="lv1"></i>1건</span><span><i class="lv2"></i>2~3건</span><span><i class="lv3"></i>4건 이상</span><span><i class="pin-l"></i>거점</span></p>
+      <p class="vm-legend"><span><i class="lv0"></i>아직 닿지 않음</span><span><i class="lv1"></i>1건</span><span><i class="lv2"></i>2~3건</span><span><i class="lv3"></i>4건 이상</span><span><i class="pin-l"></i>거점</span></p>
     </div>
     <div class="vm-side">
       <div class="vm-tabs" role="tablist" aria-label="권역">${["전체", ...AREA_DEF.map(a => a[0])].map(t => `<button type="button" role="tab" data-tab="${t}">${t}</button>`).join("")}</div>
       <div class="vm-body" aria-live="polite"></div>
-      <p class="vm-note">색은 홈페이지에 기록된 활동 수에 따라 자동으로 채워집니다. 권역은 편의상 나눈 것으로 시흥시의 공식 구분이 아닙니다.<br>행정동 경계(2026년 7월 기준, 단순화): 통계청 통계지리정보서비스(<a href="https://sgis.kostat.go.kr" target="_blank" rel="noopener" style="text-decoration:underline">SGIS</a>)에서 공공누리 제1유형으로 개방한 행정동 경계를 가공한 것이며(가공: <a href="https://github.com/vuski/admdongkor" target="_blank" rel="noopener" style="text-decoration:underline">vuski/admdongkor</a>), <a href="https://creativecommons.org/licenses/by/4.0/deed.ko" target="_blank" rel="noopener" style="text-decoration:underline">CC BY 4.0</a>으로 배포됩니다.</p>
+      <p class="vm-note">색은 홈페이지에 기록된 활동 수에 따라 자동으로 진해집니다. 권역은 편의상 나눈 것으로 시흥시의 공식 구분이 아닙니다.<br>행정동 경계(2026년 7월 기준, 단순화): 통계청 통계지리정보서비스(<a href="https://sgis.kostat.go.kr" target="_blank" rel="noopener" style="text-decoration:underline">SGIS</a>)에서 공공누리 제1유형으로 개방한 행정동 경계를 가공한 것이며(가공: <a href="https://github.com/vuski/admdongkor" target="_blank" rel="noopener" style="text-decoration:underline">vuski/admdongkor</a>), <a href="https://creativecommons.org/licenses/by/4.0/deed.ko" target="_blank" rel="noopener" style="text-decoration:underline">CC BY 4.0</a>으로 배포됩니다.</p>
     </div>
   </div>`;
   const mapBox = host.querySelector(".vm-map"), body = host.querySelector(".vm-body"), tip = host.querySelector(".vm-tip");
@@ -1686,7 +1708,7 @@ function buildMap(host) {
     const pageBtns = Array.from({ length: pages }, (_, i) => `<button type="button" data-pg="${i + 1}" ${i + 1 === st.page ? 'aria-current="page"' : ""}>${i + 1}</button>`).join("");
     return `<ul class="vm-list">${rows.map(d => {
       const [a, c] = AREA_OF[d], list = inDong(d), last = list[0], pl = placesIn(d)[0], m = members(d);
-      const info = last ? esc(last.title) : pl ? esc(pl.name) : `<span class="none">아직 비어 있는 마을 · 첫 프로젝트를 기다립니다</span>`;
+      const info = last ? esc(last.title) : pl ? esc(pl.name) : `<span class="none">아직 닿지 않은 마을 · 첫 프로젝트를 기다립니다</span>`;
       return `<li class="vm-row"><div class="r1"><span class="badge b-${c}">${a}</span><strong>${d}</strong><span class="lvdot lv${level(d)}" title="채움 단계"></span>
         <button type="button" class="vm-go" data-dong="${d}">마을 보기 ›</button></div>
         <div class="r2"><span>${svg("pin", 2)}${info}</span><span class="cnt">활동 <b>${list.length}</b>건${m ? ` · 회원 <b>${m}</b>명` : ""}</span></div></li>`;
@@ -1707,8 +1729,8 @@ function buildMap(host) {
         ${list.map(x => `<li><span class="dt">${esc(x.date_label || "")}</span><h5>${esc(x.title)}</h5>${x.activity_type ? `<span class="chip">${esc(x.activity_type)}</span>` : ""}</li>`).join("")}
       </ul>`}
       <div class="vm-cta">${empty
-        ? `<h5>${d}은(는) 아직 비어 있는 마을입니다</h5><p>이 마을의 첫 문화 프로젝트를 함께 만들 공간, 축제, 학교, 동아리, 상점가를 찾습니다.</p>`
-        : `<h5>${d}에서 다음 프로젝트를 함께 만들어요</h5><p>공연·전시·교육·축제 무엇이든 좋습니다. 이 마을을 더 진하게 채울 파트너를 찾습니다.</p>`}
+        ? `<h5>${d}에는 아직 청년 문화가 닿지 않았습니다</h5><p>이 마을의 첫 문화 프로젝트를 함께 만들 공간, 축제, 학교, 동아리, 상점가를 찾습니다.</p>`
+        : `<h5>${d}에서 다음 프로젝트를 함께 만들어요</h5><p>공연·전시·교육·축제 무엇이든 좋습니다. 이 마을의 색을 더 진하게 만들 파트너를 찾습니다.</p>`}
         <a class="btn btn-brand" href="#/join/partner">협력 문의</a></div>`;
   }
   function render() { decorate(); body.innerHTML = st.sel ? detailView() : listView(); }
@@ -1729,7 +1751,7 @@ function buildMap(host) {
   });
   const showTip = (el, x, y) => {
     const d = el.dataset.dong, n = inDong(d).length;
-    tip.textContent = `${d} · ${n ? `활동 ${n}건` : "아직 비어 있음"}`;
+    tip.textContent = `${d} · ${n ? `활동 ${n}건` : "아직 닿지 않음"}`;
     tip.style.left = x + "px"; tip.style.top = y + "px"; tip.hidden = false;
   };
   mapBox.addEventListener("mousemove", e => {
@@ -1780,13 +1802,21 @@ function initSlider() {
     if (e.target !== track) return;
     if (idx >= 2 * n) { idx -= n; place(false); } else if (idx < n) { idx += n; place(false); }
   });
-  const go = d => { idx += d; place(!reduceMotion); if (reduceMotion) track.dispatchEvent(new Event("transitionend")); };
+  const go = d => { idx += d; place(true); };
   const setIcon = playing => { $("#vStop").innerHTML = svg(playing ? "pause" : "play", 3); $("#vStop").setAttribute("aria-label", playing ? "자동 넘김 정지" : "자동 넘김 재생"); };
-  const play = () => { clearInterval(timer); timer = setInterval(() => go(1), 5000); setIcon(true); };
+  let userPaused = false, holdCount = 0;
+  const tick = () => { if (!holdCount && !document.hidden) go(1); };
+  const play = () => { clearInterval(timer); timer = setInterval(tick, 5000); setIcon(true); };
   const stop = () => { clearInterval(timer); timer = null; setIcon(false); };
   $("#vPrev").onclick = () => { go(-1); if (timer) play(); };
   $("#vNext").onclick = () => { go(1); if (timer) play(); };
-  $("#vStop").onclick = () => timer ? stop() : play();
+  $("#vStop").onclick = () => { userPaused = !!timer; timer ? stop() : play(); };
+  /* 마우스를 올려 두거나 키보드로 안을 보고 있으면 잠시 멈춤 */
+  const sec = vp.closest(".visual");
+  sec.addEventListener("mouseenter", () => holdCount++);
+  sec.addEventListener("mouseleave", () => holdCount = Math.max(0, holdCount - 1));
+  sec.addEventListener("focusin", () => holdCount++);
+  sec.addEventListener("focusout", () => holdCount = Math.max(0, holdCount - 1));
 
   /* 터치 스와이프 */
   let sx = null;
@@ -1801,7 +1831,7 @@ function initSlider() {
 
   addEventListener("resize", () => place(false));
   place(false);
-  reduceMotion ? stop() : play();
+  play();
 }
 
 /* ── 라우터: #/페이지/하위메뉴 ── */
