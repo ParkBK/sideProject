@@ -161,6 +161,7 @@
 <script src="assets/config.js"></script>
 <script src="assets/sb.js"></script>
 <script src="assets/site-data.js"></script>
+<script src="assets/appdoc.js"></script>
 <script>
 (function () {
   const $ = s => document.querySelector(s);
@@ -365,11 +366,11 @@
   }
 
   /* ── 활동 기록 (홈페이지 활동 소식·마을 지도에 반영) ── */
-  async function acts(el) {
+  async function acts(el, editId = null) {
     const { data } = await c.from("activities").select("*").order("activity_date", { ascending: false, nullsFirst: false });
     const list = data || [];
     el.innerHTML = `<h2>활동 기록</h2><p class="lead"><b>공개</b>로 저장한 활동은 홈페이지 활동 소식, 숫자 집계, 마을 지도에 바로 반영됩니다. 활동이 끝나면 1주일 안에 기록하세요.</p>
-      <div class="panel"><h3>활동 추가</h3>
+      <div class="panel" data-actpanel><h3 data-acth>활동 추가</h3>
         <form class="form" data-f>
           <div class="f2"><label>활동명<input name="title" required maxlength="120"></label>
             <label>날짜<input type="date" name="activity_date"></label>
@@ -387,7 +388,7 @@
             <label class="ck"><input type="checkbox" name="has_minor"> 미성년자 포함</label>
             <label class="ck"><input type="checkbox" name="guardian_consent"> 법정대리인 동의 받음</label>
             <label class="ck"><input type="checkbox" name="is_public" checked> 홈페이지에 공개</label></div>
-          <div class="row"><button class="btn">저장</button><span data-m></span></div>
+          <div class="row"><button class="btn" data-actsave>저장</button><button type="button" class="btn w" data-actcancel hidden>수정 취소</button><span data-m></span></div>
           <p class="hint">사진이 있으면 초상권 동의가, 미성년자가 있으면 법정대리인 동의가 있어야 공개됩니다. 데이터베이스가 직접 막습니다.</p>
         </form></div>
       <div class="panel"><h3>기록된 활동 ${list.length}건</h3><div class="tbl-wrap"><table>
@@ -395,9 +396,19 @@
         ${list.map(a => `<tr><td>${fmt(a.activity_date)}</td><td><b>${h(a.title)}</b><br><span class="hint">${h(a.activity_type || "")}${a.place ? " · " + h(a.place) : ""}${a.host_org ? " · " + h(a.host_org) : ""}</span></td>
           <td>${a.dong ? h(a.dong) : `<span class="chip r">동 없음</span>`}</td><td class="num">${a.beneficiaries ?? ""}</td>
           <td><button class="btn s ${a.is_public ? "" : "w"}" data-pub="${a.id}" data-v="${a.is_public}">${a.is_public ? "공개" : "비공개"}</button></td>
-          <td><button class="btn s danger" data-del="${a.id}">삭제</button></td></tr>`).join("") || `<tr><td colspan="6" class="empty">아직 기록이 없습니다.</td></tr>`}
+          <td style="white-space:nowrap"><button class="btn s w" data-edit="${a.id}">수정</button> <button class="btn s danger" data-del="${a.id}">삭제</button></td></tr>`).join("") || `<tr><td colspan="6" class="empty">아직 기록이 없습니다.</td></tr>`}
       </table></div></div>`;
     const f = el.querySelector("[data-f]");
+    const ed = editId ? list.find(a => String(a.id) === String(editId)) : null;
+    if (ed) {
+      ["title", "activity_date", "activity_type", "dong", "place", "host_org", "beneficiaries", "members_joined", "description"].forEach(k => { f[k].value = ed[k] ?? ""; });
+      ["paid", "portrait_consent", "has_minor", "guardian_consent", "is_public"].forEach(k => { f[k].checked = !!ed[k]; });
+      el.querySelector("[data-acth]").innerHTML = `활동 수정 <span class="chip y">${h(ed.title)}</span>`;
+      el.querySelector("[data-actsave]").textContent = "수정 저장";
+      const cancel = el.querySelector("[data-actcancel]"); cancel.hidden = false; cancel.onclick = () => acts(el);
+      el.querySelector("[data-actpanel]").scrollIntoView({ block: "start" });
+    }
+    el.querySelectorAll("[data-edit]").forEach(b => b.onclick = () => acts(el, b.dataset.edit));
     f.onsubmit = async e => {
       e.preventDefault();
       const d = f.activity_date.value;
@@ -408,7 +419,12 @@
         description: f.description.value.trim() || null, image_url: f.image_url.value.trim() || null, paid: f.paid.checked,
         portrait_consent: f.portrait_consent.checked, has_minor: f.has_minor.checked, guardian_consent: f.guardian_consent.checked, is_public: f.is_public.checked,
       };
-      const { error } = await c.from("activities").insert(row);
+      if (ed) {
+        delete row.image_url;                                   /* 사진은 홈페이지 활동 상세에서 관리 */
+        if (!d) row.date_label = ed.date_label;                 /* 날짜 없이 적은 표기(예: 2026.07~) 유지 */
+        else if (ed.activity_date === d && ed.date_label) row.date_label = ed.date_label;
+      }
+      const { error } = ed ? await c.from("activities").update(row).eq("id", ed.id) : await c.from("activities").insert(row);
       if (error) return msg(el.querySelector("[data-m]"), /publish_consent/.test(error.message) ? "사진 초상권 동의 또는 미성년자 법정대리인 동의가 없어 공개할 수 없습니다. 동의를 확인하거나 비공개로 저장하세요." : SB.errText(error));
       acts(el);
     };
@@ -570,13 +586,15 @@
             ${A("장비", a.equipment)}${A("가능 시간", a.available_times)}${A("차량", a.has_vehicle == null ? "" : a.has_vehicle ? "보유" : "미보유")}${A("소득 구분", a.income_type)}
             ${A("희망 프로젝트", a.wish_project)}${A("포트폴리오", a.portfolio_url)}
             <dt>동의</dt><dd>필수 ✓ · 사진 홍보 ${a.consent_photo ? "✓" : "✗"} · 주관기관 제공 ${a.consent_provide ? "✓" : "✗"}</dd></dl>
-          <div class="row"><button class="btn" data-ok="${a.id}">승인</button><button class="btn danger" data-no="${a.id}">반려</button></div></details>`).join("") || `<p class="empty">대기 중인 신청이 없습니다.</p>`}</div>
+          <div class="row"><button class="btn" data-ok="${a.id}">승인</button><button class="btn danger" data-no="${a.id}">반려</button><button class="btn w" data-doc="${a.id}">신청서 완성본 보기</button></div></details>`).join("") || `<p class="empty">대기 중인 신청이 없습니다.</p>`}</div>
       <div class="panel"><h3>회원 ${ppl.length}명</h3><div class="tbl-wrap"><table>
-        <tr><th>이름</th><th>유형</th><th>소속</th><th>동</th><th>가입일</th><th>권한</th><th>회계</th></tr>
-        ${ppl.map(p => `<tr><td><b>${h(p.display_name)}</b></td><td>${h(p.member_type)}</td><td>${h(p.org_name || "")}</td><td>${h(p.dong || "")}</td><td>${fmt(p.created_at)}</td>
+        <tr><th>활동명</th><th>이름</th><th>유형</th><th>소속</th><th>동</th><th>가입일</th><th>신청서</th><th>권한</th><th>회계</th></tr>
+        ${ppl.map(p => `<tr><td><b>${h(p.display_name)}</b></td><td>${h(p.real_name || "")}</td><td>${h(p.member_type)}</td><td>${h(p.org_name || "")}</td><td>${h(p.dong || "")}</td><td>${fmt(p.created_at)}</td>
+          <td>${(() => { const a = apps.find(x => x.user_id === p.id && x.status !== "rejected") || apps.find(x => x.user_id === p.id); return a ? `<button class="btn s w" data-doc="${a.id}">보기</button>` : ""; })()}</td>
           <td>${isAdmin && p.id !== ME.user.id ? `<select data-role="${p.id}">${Object.entries(SB.ROLE_LABEL).map(([k, v]) => `<option value="${k}" ${k === p.role ? "selected" : ""}>${v}</option>`).join("")}</select>` : `<span class="chip ${p.role === "user" ? "k" : ""}">${SB.ROLE_LABEL[p.role]}</span>`}</td>
           <td>${isAdmin && p.id !== ME.user.id ? `<input type="checkbox" data-acc="${p.id}" ${p.can_accounting ? "checked" : ""} aria-label="회계 담당">` : p.can_accounting ? "✓" : ""}</td></tr>`).join("")}
       </table></div><p class="hint" style="margin-top:8px">탈퇴 요청이 오면 Supabase 대시보드 → Authentication → Users 에서 계정을 삭제하세요. 프로필·신청서·글은 함께 삭제됩니다.</p></div>`;
+    el.querySelectorAll("[data-doc]").forEach(b => b.onclick = () => { const a = apps.find(x => String(x.id) === b.dataset.doc); if (a) APPDOC.open(a, { email: a.email }); });
     el.querySelectorAll("[data-ok]").forEach(b => b.onclick = async () => { const { error } = await c.from("applications").update({ status: "approved" }).eq("id", b.dataset.ok); if (error) return alert(SB.errText(error)); buildSide(); members(el); });
     el.querySelectorAll("[data-no]").forEach(b => b.onclick = async () => { const note = prompt("반려 사유 (신청인에게 보입니다)"); if (note === null) return; const { error } = await c.from("applications").update({ status: "rejected", review_note: note }).eq("id", b.dataset.no); if (error) return alert(SB.errText(error)); buildSide(); members(el); });
     el.querySelectorAll("[data-role]").forEach(s => s.onchange = async () => { const { error } = await c.from("profiles").update({ role: s.value }).eq("id", s.dataset.role); if (error) alert(SB.errText(error)); members(el); });
@@ -606,20 +624,30 @@
   }
 
   /* ── 회계 장부 ── */
-  let ledYear = new Date().getFullYear(), ledMonth = "";
+  let ledYear = new Date().getFullYear(), ledMonth = "", ledKind = "", ledCat = "", ledProj = "";
   async function ledger(el) {
     const from = `${ledYear}-${ledMonth || "01"}-01`;
     const to = ledMonth ? ymd(new Date(ledYear, +ledMonth, 0)) : `${ledYear}-12-31`;
     const { data, error } = await c.from("ledger").select("*").gte("tx_date", from).lte("tx_date", to).order("tx_date", { ascending: false }).order("id", { ascending: false });
     if (error) { el.innerHTML = `<h2>회계 장부</h2><p class="msg err">${h(SB.errText(error))}</p>`; return; }
-    const rows = data || [];
+    const all = data || [];
+    /* 구분·항목·사업으로 걸러 보기 (예: 회비 수금 내역만) */
+    const rows = all.filter(r => (!ledKind || r.kind === ledKind) && (!ledCat || r.category === ledCat) && (!ledProj || (r.project || "") === ledProj));
+    const filtered = !!(ledKind || ledCat || ledProj);
+    const catOpts = ledKind ? LEDGER_CATS[ledKind] : [...LEDGER_CATS["수입"], ...LEDGER_CATS["지출"]];
+    const projs = [...new Set(all.map(r => r.project).filter(Boolean))];
     const sum = k => rows.filter(r => r.kind === k).reduce((s, r) => s + +r.amount, 0);
     const inc = sum("수입"), exp = sum("지출"), wh = rows.reduce((s, r) => s + +r.withholding, 0);
     const noRcpt = rows.filter(r => r.kind === "지출" && !r.receipt_path).length;
     el.innerHTML = `<h2>회계 장부</h2><p class="lead">관리자가 지정한 회계 담당자만 볼 수 있습니다. 모든 지출에는 영수증을 첨부하세요. 세금 판단은 세무사 확인을 권장합니다.</p>
       <div class="row" style="margin-bottom:12px"><select data-y style="width:auto">${[0, 1, 2].map(i => new Date().getFullYear() - i).map(y => `<option ${y === ledYear ? "selected" : ""}>${y}</option>`).join("")}</select>
         <select data-mo style="width:auto"><option value="">연간</option>${Array.from({ length: 12 }, (_, i) => pad(i + 1)).map(m => `<option value="${m}" ${m === ledMonth ? "selected" : ""}>${+m}월</option>`).join("")}</select>
-        <button class="btn w" data-csv>엑셀(CSV) 내려받기</button></div>
+        <select data-kind style="width:auto"><option value="">구분 전체</option>${["수입", "지출"].map(k => `<option ${k === ledKind ? "selected" : ""}>${k}</option>`).join("")}</select>
+        <select data-cat style="width:auto"><option value="">항목 전체</option>${catOpts.map(k => `<option ${k === ledCat ? "selected" : ""}>${k}</option>`).join("")}</select>
+        ${projs.length ? `<select data-proj style="width:auto"><option value="">사업 전체</option>${projs.map(k => `<option ${k === ledProj ? "selected" : ""}>${h(k)}</option>`).join("")}</select>` : ""}
+        <button class="btn s w" data-dues>회비 수금 내역만</button>${filtered ? `<button class="btn s w" data-clear>걸러 보기 해제</button>` : ""}
+        <button class="btn w" data-csv>${filtered ? "걸러 본 내역" : "전체"} 엑셀(CSV) 내려받기</button></div>
+      ${filtered ? `<p class="msg ok" style="margin-bottom:12px">걸러 보는 중: ${[ledKind, ledCat, ledProj].filter(Boolean).map(h).join(" · ")} — ${rows.length}건, 합계 ${won(rows.reduce((s, r) => s + +r.amount, 0))}</p>` : ""}
       <div class="kpis"><div class="kpi good"><p>수입</p><b>${won(inc)}</b></div><div class="kpi"><p>지출</p><b>${won(exp)}</b></div>
         <div class="kpi"><p>차액</p><b>${won(inc - exp)}</b></div><div class="kpi"><p>원천징수 합계</p><b>${won(wh)}</b></div>
         <div class="kpi ${noRcpt ? "warn" : ""}"><p>영수증 없는 지출</p><b>${noRcpt}건</b></div></div>
@@ -657,13 +685,21 @@
     el.querySelectorAll("[data-wh]").forEach(b => b.onclick = () => { f.withholding.value = Math.floor((+f.amount.value || 0) * +b.dataset.wh / 10) * 10; });
     el.querySelector("[data-y]").onchange = e => { ledYear = +e.target.value; ledger(el); };
     el.querySelector("[data-mo]").onchange = e => { ledMonth = e.target.value; ledger(el); };
+    el.querySelector("[data-kind]").onchange = e => { ledKind = e.target.value; if (ledKind && !LEDGER_CATS[ledKind].includes(ledCat)) ledCat = ""; ledger(el); };
+    el.querySelector("[data-cat]").onchange = e => { ledCat = e.target.value; ledger(el); };
+    const pj = el.querySelector("[data-proj]"); if (pj) pj.onchange = e => { ledProj = e.target.value; ledger(el); };
+    el.querySelector("[data-dues]").onclick = () => { ledKind = "수입"; ledCat = "회비"; ledProj = ""; ledger(el); };
+    const cl = el.querySelector("[data-clear]"); if (cl) cl.onclick = () => { ledKind = ledCat = ledProj = ""; ledger(el); };
     el.querySelector("[data-csv]").onclick = () => {
       const head = ["날짜", "구분", "항목", "사업", "거래처", "결제수단", "금액", "원천징수", "특수관계", "의결기록", "적요", "증빙"];
       const q = v => `"${String(v ?? "").replaceAll('"', '""')}"`;
-      const csv = [head, ...rows.slice().reverse().map(r => [r.tx_date, r.kind, r.category, r.project, r.counterparty, r.method, r.amount, r.withholding, r.related_party ? "Y" : "", r.approval_note, r.memo, r.receipt_path ? "있음" : "없음"])].map(r => r.map(q).join(",")).join("\r\n");
+      const csv = [head, ...rows.slice().reverse().map(r => [r.tx_date, r.kind, r.category, r.project, r.counterparty, r.method, r.amount, r.withholding, r.related_party ? "Y" : "", r.approval_note, r.memo, r.receipt_path ? "있음" : "없음"]), ...(filtered ? [[], ["합계", "", "", "", "", `${rows.length}건`, rows.reduce((t, r) => t + +r.amount, 0), rows.reduce((t, r) => t + +r.withholding, 0)]] : [])].map(r => r.map(q).join(",")).join("\r\n");
       const a = document.createElement("a");
       a.href = URL.createObjectURL(new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8" }));
-      a.download = `장부_${ledYear}${ledMonth ? "_" + ledMonth : ""}.csv`; a.click();
+      const tag = [ledKind, ledCat, ledProj].filter(Boolean).join("_").replace(/[\\/:*?"<>|\s]+/g, "");
+      a.download = `장부_${ledYear}${ledMonth ? "_" + ledMonth : ""}${tag ? "_" + tag : ""}.csv`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 10000);
     };
     el.querySelectorAll("[data-rc]").forEach(b => b.onclick = async () => {
       const { data: s, error } = await c.storage.from("receipts").createSignedUrl(b.dataset.rc, 120);

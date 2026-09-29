@@ -9,6 +9,7 @@
     collab:    { label: "협업 제안",  desc: "함께 만들고 싶은 프로젝트를 제안하고 함께할 사람을 찾습니다." },
     volunteer: { label: "자원봉사",   desc: "행사 스태프·자원봉사 모집과 참여 신청을 나눕니다." },
     qna:       { label: "묻고 답하기", desc: "궁금한 점을 묻고 답합니다." },
+    local:     { label: "지역 행사·모집", desc: "시흥의 지역 행사, 공연·전시 소식, 참여자·스태프 모집을 알립니다. 회원 누구나 올릴 수 있으며, 문화와 관계없는 광고는 숨김 처리됩니다." },
     inquiry:   { label: "협력 문의",  desc: "작성자와 운영진만 볼 수 있는 비공개 문의입니다.", private: true },
   };
   const BOARD_HOME = { notice: "#/news/notice", inquiry: "#/join/partner" };
@@ -230,10 +231,11 @@
         <div class="row"><label for="sPw2">비밀번호 확인<em>*</em></label><input type="password" id="sPw2" name="pw2" minlength="8" autocomplete="new-password" required></div>
       </div>
       <div class="grid2">
-        <div class="row"><label for="sName">이름 또는 활동명<em>*</em></label><input type="text" id="sName" name="name" maxlength="40" required></div>
-        <div class="row"><label for="sType">회원 유형<em>*</em></label><select id="sType" name="type">
-          <option>개인</option><option>팀·단체</option><option>자원봉사</option><option>기관</option></select></div>
+        <div class="row"><label for="sReal">이름<em>*</em></label><input type="text" id="sReal" name="real" maxlength="40" required autocomplete="name"><p class="hint">본인 확인과 가입신청서에만 쓰이며 다른 회원에게 공개되지 않습니다.</p></div>
+        <div class="row"><label for="sName">활동명<em>*</em></label><input type="text" id="sName" name="name" maxlength="40" required placeholder="예명 · 팀명 · 없으면 본인 이름"><p class="hint">게시판과 홈페이지에 보이는 이름입니다. 예명이나 팀명을 적고, 없으면 본인 이름을 적으세요.</p></div>
       </div>
+      <div class="row"><label for="sType">회원 유형<em>*</em></label><select id="sType" name="type">
+        <option>개인</option><option>팀·단체</option><option>자원봉사</option><option>기관</option></select></div>
       <div class="row" data-org hidden><label for="sOrg">소속 팀·단체·기관명</label><input type="text" id="sOrg" name="org" maxlength="60"></div>
       <div class="row"><label for="sDong">활동하거나 사는 동 (선택)</label><select id="sDong" name="dong"><option value="">선택 안 함</option>
         ${DONG_NAMES.map(d => `<option>${d}</option>`).join("")}<option value="">시흥 외 지역</option></select>
@@ -241,7 +243,7 @@
       <div class="consent">
         <b>개인정보 수집·이용 동의 (필수)</b>
         <table><tr><th>항목</th><th>목적</th><th>보유 기간</th></tr>
-          <tr><td>이메일, 비밀번호(암호화), 이름·활동명, 회원 유형</td><td>로그인, 본인 확인, 게시판 이용</td><td>탈퇴 시까지</td></tr>
+          <tr><td>이메일, 비밀번호(암호화), 이름, 활동명, 회원 유형</td><td>로그인, 본인 확인, 게시판 이용</td><td>탈퇴 시까지</td></tr>
           <tr><td>소속, 동 (선택 입력)</td><td>네트워크 안내, 동별 회원 수 집계</td><td>탈퇴 시까지</td></tr></table>
         동의를 거부할 수 있으나, 거부하면 회원가입을 할 수 없습니다. 자세한 내용은 <a href="#/disclosure/privacy" style="text-decoration:underline">개인정보처리방침</a>을 확인하세요.
         <label><input type="checkbox" name="agree" required> 개인정보 수집·이용에 동의합니다.</label>
@@ -263,7 +265,7 @@
       const { data, error } = await c.auth.signUp({
         email: f.email.value.trim(), password: f.pw.value,
         options: { emailRedirectTo: redirectBase(), data: {
-          display_name: f.name.value.trim(), member_type: f.type.value,
+          real_name: f.real.value.trim(), display_name: f.name.value.trim(), member_type: f.type.value,
           org_name: f.org.value.trim(), dong: f.dong.value, privacy_agreed: "true" } },
       });
       f.querySelector("button").disabled = false;
@@ -311,10 +313,13 @@
     if (needsConsent()) {
       host.innerHTML = myCard() + `<form class="form" data-agree style="max-width:620px">
         <p class="consent">카카오 등 외부 계정으로 가입하셨습니다. 홈페이지를 이용하려면 아래에 동의해 주세요.</p>
-        <div class="row"><label for="gName">이름 또는 활동명<em>*</em></label><input type="text" id="gName" name="name" maxlength="40" required value="${h(ME.profile.display_name || "")}"></div>
+        <div class="grid2">
+          <div class="row"><label for="gReal">이름<em>*</em></label><input type="text" id="gReal" name="real" maxlength="40" required value="${h(ME.profile.real_name || "")}"><p class="hint">본인 확인과 가입신청서에만 쓰이며 다른 회원에게 공개되지 않습니다.</p></div>
+          <div class="row"><label for="gName">활동명<em>*</em></label><input type="text" id="gName" name="name" maxlength="40" required value="${h(ME.profile.display_name || "")}" placeholder="예명 · 팀명 · 없으면 본인 이름"><p class="hint">게시판과 홈페이지에 보이는 이름입니다. 예명이나 팀명을 적고, 없으면 본인 이름을 적으세요.</p></div>
+        </div>
         <div class="consent">
           <table><tr><th>항목</th><th>목적</th><th>보유 기간</th></tr>
-            <tr><td>외부 계정 식별자, 이메일(제공 시), 이름·활동명</td><td>로그인, 본인 확인, 게시판 이용</td><td>탈퇴 시까지</td></tr></table>
+            <tr><td>외부 계정 식별자, 이메일(제공 시), 이름, 활동명</td><td>로그인, 본인 확인, 게시판 이용</td><td>탈퇴 시까지</td></tr></table>
           동의를 거부할 수 있으나, 거부하면 홈페이지 회원 기능을 이용할 수 없습니다. <a href="#/disclosure/privacy" style="text-decoration:underline">개인정보처리방침</a>
           <label><input type="checkbox" name="agree" required> 개인정보 수집·이용에 동의합니다.</label>
           <label><input type="checkbox" name="age14" required> 만 14세 이상입니다.</label>
@@ -327,7 +332,7 @@
       g.onsubmit = async e => {
         e.preventDefault();
         const c = await SB.client();
-        const { error } = await c.from("profiles").update({ display_name: g.name.value.trim(), privacy_agreed_at: new Date().toISOString() }).eq("id", ME.user.id);
+        const { error } = await c.from("profiles").update({ real_name: g.real.value.trim(), display_name: g.name.value.trim(), privacy_agreed_at: new Date().toISOString() }).eq("id", ME.user.id);
         if (error) return msg(g.querySelector("[data-gmsg]"), SB.errText(error));
         await refreshMe(); myProfile(host);
       };
@@ -338,10 +343,13 @@
       ${p.role === "user" ? `<p class="consent" style="margin-bottom:24px">지금은 <b>가입 회원</b>입니다. 정회원이 되면 공동체 프로젝트와 총회에 참여할 수 있습니다. <a href="#/my/apply" style="color:var(--brand);font-weight:700">정회원 가입 신청 ›</a></p>` : ""}
       <form class="form" data-prof style="max-width:620px">
         <div class="grid2">
-          <div class="row"><label for="pName">이름 또는 활동명</label><input type="text" id="pName" name="name" maxlength="40" required value="${h(p.display_name)}"></div>
-          <div class="row"><label for="pType">회원 유형</label><select id="pType" name="type">${["개인", "팀·단체", "자원봉사", "기관"].map(t => `<option ${t === p.member_type ? "selected" : ""}>${t}</option>`).join("")}</select></div>
+          <div class="row"><label for="pReal">이름<em>*</em></label><input type="text" id="pReal" name="real" maxlength="40" required value="${h(p.real_name || "")}"><p class="hint">본인 확인과 가입신청서에만 쓰이며 다른 회원에게 공개되지 않습니다.</p></div>
+          <div class="row"><label for="pName">활동명<em>*</em></label><input type="text" id="pName" name="name" maxlength="40" required value="${h(p.display_name)}"><p class="hint">게시판과 홈페이지에 보이는 이름입니다. 예명이나 팀명을 적고, 없으면 본인 이름을 적으세요.</p></div>
         </div>
-        <div class="row"><label for="pOrg">소속 팀·단체·기관명</label><input type="text" id="pOrg" name="org" maxlength="60" value="${h(p.org_name || "")}"></div>
+        <div class="grid2">
+          <div class="row"><label for="pType">회원 유형</label><select id="pType" name="type">${["개인", "팀·단체", "자원봉사", "기관"].map(t => `<option ${t === p.member_type ? "selected" : ""}>${t}</option>`).join("")}</select></div>
+          <div class="row"><label for="pOrg">소속 팀·단체·기관명</label><input type="text" id="pOrg" name="org" maxlength="60" value="${h(p.org_name || "")}"></div>
+        </div>
         <div class="row"><label for="pDong">활동하거나 사는 동</label><select id="pDong" name="dong"><option value="">선택 안 함</option>${DONG_NAMES.map(d => `<option ${d === p.dong ? "selected" : ""}>${d}</option>`).join("")}</select></div>
         <div data-pmsg></div>
         <div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn btn-brand">저장</button>
@@ -352,7 +360,7 @@
     f.onsubmit = async e => {
       e.preventDefault();
       const c = await SB.client();
-      const { error } = await c.from("profiles").update({ display_name: f.name.value.trim(), member_type: f.type.value, org_name: f.org.value.trim() || null, dong: f.dong.value || null }).eq("id", ME.user.id);
+      const { error } = await c.from("profiles").update({ real_name: f.real.value.trim(), display_name: f.name.value.trim(), member_type: f.type.value, org_name: f.org.value.trim() || null, dong: f.dong.value || null }).eq("id", ME.user.id);
       if (error) return msg(f.querySelector("[data-pmsg]"), SB.errText(error));
       await refreshMe(); msg(f.querySelector("[data-pmsg]"), "저장했습니다.", true);
     };
@@ -374,13 +382,21 @@
     if (!ME) { host.innerHTML = needLogin("#/my/apply"); return; }
     if (needsConsent()) { host.innerHTML = consentGate(); return; }
     const c = await SB.client();
-    const { data: apps } = await c.from("applications").select("id,status,created_at,review_note").eq("user_id", ME.user.id).order("created_at", { ascending: false });
+    const { data: apps } = await c.from("applications").select("*").eq("user_id", ME.user.id).order("created_at", { ascending: false });
     const last = apps?.[0];
     const role = ME.profile?.role;
-    if (role && role !== "user") { host.innerHTML = myCard() + `<div class="notice-box">이미 <b>${SB.ROLE_LABEL[role]}</b>입니다. 함께해 주셔서 고맙습니다.</div>`; return; }
+    const docBtn = a => a && window.APPDOC ? `<button class="btn btn-brand" data-doc>제출한 가입신청서 보기 · PDF 저장</button>` : "";
+    const bindDoc = a => { const b = host.querySelector("[data-doc]"); if (b) b.onclick = () => APPDOC.open(a, { email: a.email || ME.user.email }); };
+    if (role && role !== "user") {
+      const ok = apps?.find(a => a.status === "approved");
+      host.innerHTML = myCard() + `<div class="notice-box">이미 <b>${SB.ROLE_LABEL[role]}</b>입니다. 함께해 주셔서 고맙습니다.${ok ? `<div style="margin-top:14px">${docBtn(ok)}</div>` : ""}</div>`;
+      bindDoc(ok); return;
+    }
     if (last && last.status === "pending") {
       host.innerHTML = myCard() + `<div class="notice-box"><b>가입신청서를 검토하고 있습니다.</b><br>${fmt(last.created_at)} 접수 · 운영진이 확인한 뒤 결과를 알려 드립니다.
-        <div style="margin-top:14px"><button class="btn-s danger" data-cancel>신청 취소</button></div></div>`;
+        <div style="margin-top:16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">${docBtn(last)}<button class="btn btn-white" data-cancel>신청 취소</button></div>
+        <p class="hint" style="margin-top:12px">작성한 내용이 가입신청서 서식에 자동으로 채워집니다. 인쇄하거나 PDF로 저장해 보관할 수 있습니다.</p></div>`;
+      bindDoc(last);
       host.querySelector("[data-cancel]").onclick = async () => { if (!confirm("신청을 취소할까요?")) return; await c.from("applications").delete().eq("id", last.id); myApply(host); };
       return;
     }
@@ -393,8 +409,8 @@
           <div class="row"><span class="lb">신청 구분<em>*</em></span>${RADIOS("atype", ["개인", "팀·단체"], true)}
             <p class="hint">팀·단체는 대표자 본인 정보만 적습니다. 구성원 개인정보는 본인 동의를 받아 따로 제출합니다.</p></div>
           <div class="grid2">
-            <div class="row"><label for="aName">성명<em>*</em></label><input type="text" id="aName" name="real_name" maxlength="40" required></div>
-            <div class="row"><label for="aStage">예명·활동명 (팀은 팀명)</label><input type="text" id="aStage" name="stage_name" maxlength="60"></div>
+            <div class="row"><label for="aName">성명<em>*</em></label><input type="text" id="aName" name="real_name" maxlength="40" required value="${h(ME.profile?.real_name || "")}"></div>
+            <div class="row"><label for="aStage">예명·활동명 (팀은 팀명)</label><input type="text" id="aStage" name="stage_name" maxlength="60" value="${h(ME.profile?.display_name && ME.profile.display_name !== ME.profile.real_name ? ME.profile.display_name : "")}"></div>
             <div class="row"><label for="aBirth">생년월일<em>*</em></label><input type="date" id="aBirth" name="birth_date" required></div>
             <div class="row"><label for="aPhone">연락처<em>*</em></label><input type="tel" id="aPhone" name="phone" maxlength="20" required placeholder="010-0000-0000"></div>
           </div>
@@ -453,7 +469,7 @@
       e.preventDefault();
       const age = f.dataset.ageval === undefined ? NaN : +f.dataset.ageval;
       const row = {
-        applicant_type: val1(f, "atype") || "개인", real_name: f.real_name.value.trim(), stage_name: f.stage_name.value.trim() || null,
+        email: ME.user.email || null, applicant_type: val1(f, "atype") || "개인", real_name: f.real_name.value.trim(), stage_name: f.stage_name.value.trim() || null,
         birth_date: f.birth_date.value || null, phone: f.phone.value.trim(), age_ok: isNaN(age) ? null : age >= 19 && age <= 39,
         region_status: val1(f, "region"), main_field: f.main_field.value || null, sub_fields: vals(f, "sub_fields"), role_codes: vals(f, "role_codes"),
         career: f.career.value.trim() || null, certificates: vals(f, "certificates"), artist_cert: val1(f, "artist_cert"),
@@ -466,6 +482,7 @@
       const { error } = await c.from("applications").insert(row);
       f.querySelector("button.btn-brand").disabled = false;
       if (error) return msg(f.querySelector("[data-amsg]"), SB.errText(error));
+      if (!ME.profile?.real_name) { await c.from("profiles").update({ real_name: row.real_name }).eq("id", ME.user.id); await refreshMe(); }
       myApply(host);
       scrollTo(0, 0);
     };

@@ -32,6 +32,8 @@ create table if not exists public.profiles (
   created_at     timestamptz not null default now()
 );
 alter table public.profiles enable row level security;
+-- 실명: 본인과 임원만 볼 수 있음 (게시판에는 display_name=활동명만 표시)
+alter table public.profiles add column if not exists real_name text check (char_length(real_name) <= 40);
 
 -- 권한 확인 함수 (RLS 안에서 재귀를 피하려고 security definer 사용)
 create or replace function public.my_role() returns text
@@ -60,9 +62,10 @@ $$;
 create or replace function public.handle_new_user() returns trigger
 language plpgsql security definer set search_path = public as $$
 begin
-  insert into public.profiles (id, display_name, member_type, org_name, dong, privacy_agreed_at)
+  insert into public.profiles (id, real_name, display_name, member_type, org_name, dong, privacy_agreed_at)
   values (
     new.id,
+    left(nullif(new.raw_user_meta_data->>'real_name',''), 40),
     left(coalesce(
       nullif(new.raw_user_meta_data->>'display_name',''),
       nullif(new.raw_user_meta_data->>'full_name',''),
@@ -143,6 +146,7 @@ create table if not exists public.applications (
   reviewed_at     timestamptz,
   created_at      timestamptz not null default now()
 );
+alter table public.applications add column if not exists email text;   -- 신청 당시 계정 이메일 (신청서 완성본 표시용)
 create unique index if not exists applications_one_pending
   on public.applications(user_id) where status = 'pending';
 
@@ -181,7 +185,7 @@ create trigger on_application_reviewed before update on public.applications
 --        notice(공지, 임원만 작성) inquiry(협력 문의, 작성자와 임원만 열람)
 create table if not exists public.posts (
   id         bigint generated always as identity primary key,
-  board      text not null check (board in ('free','collab','volunteer','qna','notice','inquiry')),
+  board      text not null,
   title      text not null check (char_length(title) between 1 and 120),
   body       text not null check (char_length(body) between 1 and 10000),
   author_id  uuid not null references auth.users(id) on delete cascade default auth.uid(),
@@ -189,6 +193,9 @@ create table if not exists public.posts (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+alter table public.posts drop constraint if exists posts_board_check;
+alter table public.posts add constraint posts_board_check
+  check (board in ('free','collab','volunteer','qna','local','notice','inquiry'));
 create index if not exists posts_board_created on public.posts(board, created_at desc);
 alter table public.posts enable row level security;
 
@@ -317,7 +324,8 @@ create or replace view public.public_activities as
   from public.activities where is_public;
 grant select on public.public_activities to anon, authenticated;
 
--- 첫 설치 때만: 홈페이지에 있던 기존 활동 기록을 데이터베이스로 옮김 (활동이 하나라도 있으면 건너뜀)
+-- 홈페이지에 처음부터 있던 활동 기록을 데이터베이스로 옮김 (같은 제목이 이미 있으면 건너뜀)
+-- ※ 이 4건을 일부러 지웠다면, 이 스크립트를 다시 실행할 때 되살아납니다. 그때는 비공개로 두세요.
 insert into public.activities (activity_date, date_label, activity_type, title, dong, is_public)
 select v.d::date, v.l, v.t, v.ti, v.dg, true
 from (values
@@ -326,7 +334,7 @@ from (values
   ('2026-09-01', '2026.09',    '공공미술', '시흥갯골축제 벽화 봉사', '장곡동'),
   (null,         null,         '교육',     '청소년 진로체험 부스 운영', null)
 ) as v(d, l, t, ti, dg)
-where not exists (select 1 from public.activities);
+where not exists (select 1 from public.activities a where a.title = v.ti);
 
 -- 활동 사진 파일: 공개 버킷(누구나 볼 수 있음), 올리기·지우기는 임원만
 -- ※ 공개 버킷이라 비공개 활동의 사진도 주소를 알면 열립니다. 동의받지 않은 사진은 올리지 마세요.
@@ -357,6 +365,13 @@ language sql stable security definer set search_path = public as $$
   group by dong
 $$;
 grant execute on function public.dong_member_counts() to anon, authenticated;
+
+-- 홈 화면 "함께하는 회원": 정회원 이상 수 (숫자만)
+create or replace function public.member_count() returns bigint
+language sql stable security definer set search_path = public as $$
+  select count(*) from public.profiles where role in ('member','officer','admin')
+$$;
+grant execute on function public.member_count() to anon, authenticated;
 
 -- ── 4-1. 홈페이지 관리 (업무공간 → 홈페이지 관리에서 고치는 내용) ──
 -- 누구나 읽고(홈페이지에 표시), 임원만 고침. 값이 없으면 홈페이지의 기본값(assets/site-data.js)을 씀
