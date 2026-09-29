@@ -7,535 +7,1179 @@
   ─────────────────────────────────────────────────────────────
   시흥 청년문화예술공동체 홈페이지 (단일 HTML 파일)
 
-  [정보 수정] 아래 <script> 맨 위 SITE 객체만 고치면 됩니다.
-             빈 값("")인 항목은 화면에 나타나지 않습니다.
+  [정보 수정] 맨 아래 <script>의 "여기만 수정하세요" 영역만 고치면 됩니다.
+             빈 값("")이나 빈 목록은 화면과 메뉴에서 자동으로 숨겨집니다.
 
-  [사진 교체 규칙] 이 HTML 파일 옆에 images/ 폴더를 만들고 아래 이름으로 저장
-    images/og-image.jpg                       공유 미리보기 (1200×630)
-    images/activity-YYYY-MM-주제.jpg           활동 사진 (정사각형 800×800 권장)
-      예) images/activity-2026-07-founding.jpg
-          images/activity-2026-07-performance.jpg
-          images/activity-2026-09-gaetgol-mural.jpg
-          images/activity-XXXX-XX-career-booth.jpg
-    images/member-role.jpg                    운영진 사진 (예: member-rep.jpg, 400×400)
+  [사진] 이 파일 옆 images/ 폴더에 아래 이름으로 넣으면 자동으로 표시됩니다.
+    images/visual-1.jpg, visual-2.jpg, visual-3.jpg   메인 슬라이드 (1920×800, 가로형)
+    images/program-performance.jpg                     사업: 공연 기획·섭외 (1200×900)
+    images/program-publicart.jpg                       사업: 공공미술·벽화
+    images/program-career.jpg                          사업: 청소년 진로체험
+    images/program-education.jpg                       사업: AI·Unity 창작 교육
+    images/activity-YYYY-MM-주제.jpg                   활동 사진 → ACTIVITIES의 image_url에 경로 입력
+    images/og-image.jpg                                공유 미리보기 (1200×630)
+    ※ 사람이 나오는 사진은 초상권 동의, 미성년자는 법정대리인 동의를 받은 것만 쓰세요.
 
-  [정관] 이 파일 옆 docs/articles.pdf  (대표 직인은 가린 사본을 올리세요)
+  [정관] 이 파일 옆 docs/articles.pdf  (대표 직인은 가린 사본)
   ─────────────────────────────────────────────────────────────
 -->
-<title>시흥 청년문화예술공동체 | 시흥의 청년 문화 프로젝트</title>
+<title>시흥 청년문화예술공동체</title>
 <meta name="description" content="문화예술, 기획, 디자인, 개발, 교육 분야의 청년들이 함께 시흥의 문화 프로젝트를 만드는 비영리 공동체입니다.">
+<meta name="keywords" content="시흥, 청년, 문화예술, 비영리단체, 공공미술, 진로체험, 지역축제">
+<meta name="robots" content="index, follow">
 <meta property="og:type" content="website">
 <meta property="og:title" content="시흥 청년문화예술공동체">
 <meta property="og:description" content="분야를 넘나드는 청년들의 협업으로, 지역의 문제를 문화로 풀어냅니다.">
-<!-- og:image 자리: 배포 후 절대 주소로 바꿔 주세요. 예) https://도메인/images/og-image.jpg -->
+<!-- 배포 후 절대 주소로 바꿔 주세요. 예) https://도메인/images/og-image.jpg -->
 <meta property="og:image" content="images/og-image.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#2f5d6b">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232f5d6b'/%3E%3Ctext x='16' y='21' font-size='12' text-anchor='middle' fill='%23f6f7f4' font-family='sans-serif' font-weight='700'%3E%EC%8B%9C%ED%9D%A5%3C/text%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap">
+<meta name="theme-color" content="#1d4e5a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231d4e5a'/%3E%3Ccircle cx='23' cy='9' r='4' fill='%23e4572e'/%3E%3Ctext x='14' y='22' font-size='11' text-anchor='middle' fill='%23fff' font-family='sans-serif' font-weight='700'%3E%EC%8B%9C%ED%9D%A5%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
-  :root {
-    --paper:#f6f7f4; --ink:#1b2a38; --brand:#2f5d6b; --brand-light:#5f94a1; --teal:#eaf1f1;
-    --muted:rgba(27,42,56,.68); --ring:rgba(27,42,56,.1);
-    --r-lg:26px; --r-md:18px; --r-sm:12px;
+  :root{
+    --primary:#1d4e5a; --primary-dark:#123840; --primary-soft:#e8f0f1;
+    --accent:#e4572e; --accent-dark:#c9461f; --accent-soft:#fdeee8;
+    --text:#1a1d20; --sub:#5b636b; --line:#dde1e4; --gray:#f5f6f7;
+    --wrap:1280px;
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  html{scroll-behavior:smooth;scroll-padding-top:72px}
-  body{font-family:"Noto Sans KR",-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:var(--paper);color:var(--ink);line-height:1.65;-webkit-font-smoothing:antialiased}
+  html{scroll-behavior:smooth}
+  body{font-family:Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:#fff;color:var(--text);line-height:1.6;word-break:keep-all;-webkit-font-smoothing:antialiased}
   a{color:inherit;text-decoration:none}
+  ul,ol{list-style:none}
   img{max-width:100%;display:block}
-  :focus-visible{outline:3px solid var(--brand-light);outline-offset:3px;border-radius:6px}
-  .skip{position:absolute;left:-999px;top:8px;background:var(--brand);color:var(--paper);padding:8px 14px;border-radius:8px;z-index:100}
-  .skip:focus{left:8px}
-  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
-  @media(min-width:640px){.wrap{padding:0 32px}}
-  .bg-deco{position:relative;overflow:hidden}
-  .bg-deco::before,.bg-deco::after{content:"";position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none;z-index:0}
-  .bg-deco::before{top:-120px;left:-120px;width:380px;height:380px;background:rgba(47,93,107,.1)}
-  .bg-deco::after{top:260px;right:-140px;width:320px;height:320px;background:rgba(95,148,161,.15)}
-  .glass{background:rgba(255,255,255,.6);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--ring)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  [hidden]{display:none!important}
+  :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .wrap{max-width:var(--wrap);margin:0 auto;padding:0 20px}
+  @media(min-width:768px){.wrap{padding:0 40px}}
 
-  /* 헤더 */
-  header{position:sticky;top:0;z-index:50;background:rgba(246,247,244,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--ring)}
-  .head{display:flex;align-items:center;justify-content:space-between;height:60px}
-  .brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:14px}
-  .mark{width:32px;height:32px;border-radius:10px;background:var(--brand);color:var(--paper);display:grid;place-items:center;font-size:12px}
-  nav ul{list-style:none;display:flex;gap:4px}
-  nav a{display:block;padding:8px 12px;font-size:14px;border-radius:10px;color:var(--muted)}
-  nav a:hover{background:var(--teal);color:var(--brand)}
-  .menu-btn{display:none;background:none;border:1px solid var(--ring);border-radius:10px;width:40px;height:40px;cursor:pointer;color:var(--ink)}
-  @media(max-width:859px){
-    .menu-btn{display:grid;place-items:center}
-    nav{position:absolute;top:60px;left:0;right:0;background:var(--paper);border-bottom:1px solid var(--ring);display:none}
-    nav.open{display:block}
-    nav ul{flex-direction:column;padding:8px 20px 16px}
-    nav a{padding:12px;font-size:15px}
+  /* ── 건너뛰기 링크 ── */
+  #skip-nav a{position:absolute;left:-999px;top:0;z-index:300;background:var(--primary);color:#fff;padding:10px 16px}
+  #skip-nav a:focus{left:0}
+
+  /* ── 상단 유틸 바 (masthead) ── */
+  .masthead{background:var(--gray);border-bottom:1px solid var(--line);font-size:13px;color:var(--sub)}
+  .masthead .wrap{display:flex;justify-content:space-between;align-items:center;height:38px}
+  .masthead ul{display:flex;align-items:center;gap:18px}
+  .masthead a:hover{color:var(--primary)}
+  .zoom{display:flex;align-items:center;gap:2px}
+  .zoom button{width:26px;height:24px;border:1px solid var(--line);background:#fff;font-size:12px;font-weight:700;color:var(--sub)}
+  .zoom button[aria-pressed="true"]{background:var(--primary);border-color:var(--primary);color:#fff}
+  @media(max-width:1023px){.masthead{display:none}}
+
+  /* ── 헤더 ── */
+  header{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid var(--line)}
+  .h-top{display:flex;align-items:center;justify-content:space-between;height:76px}
+  .logo{display:flex;align-items:center;gap:12px}
+  .logo .mark{position:relative;flex:none;width:44px;height:44px;border-radius:8px;background:var(--primary);color:#fff;display:grid;place-items:center;font-weight:800;font-size:14px}
+  .logo .mark::after{content:"";position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+  .logo .t1{display:block;font-size:10.5px;color:var(--sub);letter-spacing:.04em}
+  .logo .t2{display:block;font-size:20px;font-weight:800;letter-spacing:-.03em;line-height:1.2}
+  .h-actions{display:flex;align-items:center;gap:8px}
+  .btn-cta{display:inline-flex;align-items:center;gap:6px;height:42px;padding:0 18px;border-radius:21px;background:var(--accent);color:#fff;font-weight:700;font-size:15px}
+  .btn-cta:hover{background:var(--accent-dark)}
+  .btn-all{display:grid;place-items:center;width:44px;height:44px}
+  .btn-all i{display:block;width:22px;height:2px;background:var(--text);margin:4px 0}
+  @media(max-width:1023px){.h-top{height:62px}.logo .mark{width:38px;height:38px;font-size:12px}.logo .t1{display:none}.logo .t2{font-size:17px}.btn-cta{display:none}}
+
+  /* GNB + 메가메뉴 */
+  #gnb{border-top:1px solid var(--line)}
+  #gnb>.wrap>ul{display:flex;justify-content:center}
+  .dep1{display:block;padding:0 36px;height:58px;line-height:58px;font-size:17px;font-weight:700;letter-spacing:-.02em;position:relative}
+  .dep1::after{content:"";position:absolute;left:36px;right:36px;bottom:0;height:3px;background:var(--primary);transform:scaleX(0);transition:transform .2s}
+  #gnb li:hover .dep1,#gnb li.open .dep1,.dep1.on{color:var(--primary)}
+  #gnb li:hover .dep1::after,#gnb li.open .dep1::after,.dep1.on::after{transform:scaleX(1)}
+  .mega{position:absolute;left:0;right:0;top:100%;background:#fff;border-top:1px solid var(--line);box-shadow:0 18px 30px rgba(0,0,0,.08);display:none}
+  #gnb li:hover .mega,#gnb li.open .mega{display:block}
+  .mega .wrap{display:grid;grid-template-columns:320px 1fr;min-height:220px}
+  .mega-title{background:var(--primary-soft);padding:36px 32px}
+  .mega-title h2{font-size:26px;font-weight:800;letter-spacing:-.03em;color:var(--primary)}
+  .mega-title p{margin-top:8px;font-size:14px;color:var(--sub)}
+  .mega-title .slogan{margin-top:26px;font-size:13px;color:var(--primary)}
+  .mega-title .slogan b{font-weight:800}
+  .mega-list{display:grid;grid-template-columns:repeat(3,1fr);gap:6px 24px;padding:36px 40px;align-content:start}
+  .mega-list a{display:flex;align-items:center;justify-content:space-between;padding:12px 4px;border-bottom:1px solid var(--line);font-size:16px;font-weight:600}
+  .mega-list a::after{content:"›";color:var(--sub)}
+  .mega-list a:hover{color:var(--primary);border-color:var(--primary)}
+  @media(max-width:1023px){#gnb{display:none}}
+
+  /* 전체메뉴 (모바일 + 데스크톱 사이트맵) */
+  #allmenu{position:fixed;inset:0;z-index:200;background:#fff;display:none;flex-direction:column}
+  #allmenu.open{display:flex}
+  .am-head{display:flex;align-items:center;justify-content:space-between;height:62px;padding:0 20px;border-bottom:1px solid var(--line)}
+  .am-close{width:44px;height:44px;font-size:28px;line-height:1}
+  .am-user{padding:20px;background:var(--primary);color:#fff}
+  .am-user p{font-size:17px;font-weight:700}
+  .am-user .btns{display:flex;gap:8px;margin-top:14px}
+  .am-user a{flex:1;text-align:center;padding:11px 0;border-radius:4px;font-weight:700;font-size:15px}
+  .am-user a.a1{background:var(--accent)}
+  .am-user a.a2{background:rgba(255,255,255,.14)}
+  .am-body{flex:1;display:grid;grid-template-columns:120px 1fr;overflow:hidden}
+  .am-dep1{background:var(--gray);overflow-y:auto;border-right:1px solid var(--line)}
+  .am-dep1 a{display:block;padding:18px 16px;font-weight:700;font-size:15px;border-bottom:1px solid var(--line)}
+  .am-dep1 a.on{background:#fff;color:var(--primary);box-shadow:inset 3px 0 0 var(--primary)}
+  .am-subs{overflow-y:auto;padding:4px 20px 60px}
+  .am-subs section{padding:20px 0;border-bottom:1px solid var(--line)}
+  .am-subs h3{font-size:17px;font-weight:800;color:var(--primary);margin-bottom:8px}
+  .am-subs a{display:block;padding:9px 0;font-size:15px;color:#33393f}
+  @media(min-width:1024px){
+    .am-body{grid-template-columns:1fr;overflow-y:auto}
+    .am-dep1{display:none}
+    .am-subs{display:grid;grid-template-columns:repeat(5,1fr);gap:0 32px;max-width:var(--wrap);width:100%;margin:0 auto;padding:40px}
+    .am-subs section{border:0;border-top:3px solid var(--primary)}
+    .am-head,.am-user{max-width:none}
   }
 
-  /* 버튼 */
-  .btn{display:inline-flex;align-items:center;gap:8px;border-radius:var(--r-sm);padding:11px 20px;font-size:14px;font-weight:500;transition:transform .2s;border:1px solid transparent}
-  .btn:hover{transform:translateY(-1px)}
-  .btn-primary{background:var(--brand);color:var(--paper)}
-  .btn-ghost{color:var(--brand);border-color:rgba(47,93,107,.3);background:rgba(255,255,255,.5)}
+  /* ── 공통 ── */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:52px;padding:0 28px;font-size:16px;font-weight:700;border:1px solid transparent;border-radius:4px;transition:background .15s,color .15s}
+  .btn-accent{background:var(--accent);color:#fff}
+  .btn-accent:hover{background:var(--accent-dark)}
+  .btn-line{border-color:rgba(255,255,255,.75);color:#fff}
+  .btn-line:hover{background:#fff;color:var(--primary)}
+  .btn-primary{background:var(--primary);color:#fff}
+  .btn-primary:hover{background:var(--primary-dark)}
+  .btn-outline{border-color:var(--primary);color:var(--primary)}
+  .btn-outline:hover{background:var(--primary);color:#fff}
+  .btn-more{display:inline-flex;align-items:center;gap:6px;height:44px;padding:0 22px;border:1px solid var(--line);border-radius:22px;font-size:15px;font-weight:600;color:var(--sub);background:#fff}
+  .btn-more:hover{border-color:var(--primary);color:var(--primary)}
 
-  /* 히어로 */
-  .hero{padding:40px 0 56px;position:relative;z-index:1}
-  @media(min-width:640px){.hero{padding:72px 0 88px}}
-  .hero-card{border-radius:var(--r-lg);padding:28px}
-  @media(min-width:640px){.hero-card{padding:48px}}
-  .badge{display:inline-flex;align-items:center;gap:8px;background:var(--teal);border-radius:999px;padding:4px 12px;font-size:12px;font-weight:500;color:var(--brand)}
-  .badge::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--brand)}
-  .hero h1{margin-top:20px;font-size:30px;font-weight:700;line-height:1.25;letter-spacing:-.02em}
-  @media(min-width:640px){.hero h1{font-size:46px}}
-  .lead{margin-top:16px;max-width:46ch;font-size:16px;color:var(--muted)}
-  @media(min-width:640px){.lead{font-size:18px}}
-  .cta{margin-top:28px;display:flex;flex-wrap:wrap;gap:12px}
-  .meta{margin-top:32px;padding-top:20px;border-top:1px solid var(--ring);display:flex;flex-wrap:wrap;gap:6px 24px;font-size:13px;color:var(--muted)}
+  /* ── 메인: 비주얼 슬라이드 ── */
+  .visual{position:relative;overflow:hidden;background:var(--primary-dark)}
+  .slides{display:flex;transition:transform .6s ease}
+  .slide{flex:0 0 100%;min-height:540px;display:flex;align-items:center;color:#fff;position:relative}
+  .slide .wrap{width:100%;padding-top:56px;padding-bottom:130px;position:relative;z-index:1}
+  .slide .eyebrow{display:inline-block;font-size:14px;font-weight:700;padding:6px 14px;border:1px solid rgba(255,255,255,.55);border-radius:20px}
+  .slide h2{margin-top:22px;font-size:34px;font-weight:800;line-height:1.3;letter-spacing:-.03em}
+  .slide h2 em{font-style:normal;color:#ffb59c}
+  .slide p{margin-top:16px;max-width:560px;font-size:17px;opacity:.9}
+  .slide .cta{margin-top:32px;display:flex;flex-wrap:wrap;gap:12px}
+  @media(min-width:768px){.slide{min-height:600px}.slide h2{font-size:52px}.slide p{font-size:19px}}
+  .s1{background:linear-gradient(100deg,rgba(18,56,64,.94),rgba(18,56,64,.7) 55%,rgba(18,56,64,.2)),url("images/visual-1.jpg") center/cover,radial-gradient(circle at 82% 34%,rgba(228,87,46,.9) 0 110px,transparent 111px),radial-gradient(circle at 70% 74%,rgba(255,255,255,.1) 0 190px,transparent 191px),var(--primary)}
+  .s2{background:linear-gradient(100deg,rgba(140,45,18,.94),rgba(140,45,18,.72) 55%,rgba(140,45,18,.2)),url("images/visual-2.jpg") center/cover,radial-gradient(circle at 80% 30%,rgba(255,255,255,.14) 0 130px,transparent 131px),radial-gradient(circle at 90% 80%,rgba(29,78,90,.6) 0 150px,transparent 151px),#c9461f}
+  .s3{background:linear-gradient(100deg,rgba(33,43,92,.94),rgba(33,43,92,.72) 55%,rgba(33,43,92,.2)),url("images/visual-3.jpg") center/cover,radial-gradient(circle at 78% 36%,rgba(227,179,65,.85) 0 90px,transparent 91px),radial-gradient(circle at 88% 78%,rgba(255,255,255,.1) 0 170px,transparent 171px),#3b4a8c}
+  .v-ctrl{position:absolute;left:0;right:0;bottom:88px;z-index:2}
+  .v-ctrl .wrap{display:flex;align-items:center;gap:10px;color:#fff}
+  .v-ctrl button{width:36px;height:36px;border:1px solid rgba(255,255,255,.5);border-radius:50%;display:grid;place-items:center;font-size:14px}
+  .v-ctrl button:hover{background:rgba(255,255,255,.15)}
+  .v-count{font-size:14px;font-weight:600;min-width:52px;text-align:center}
+  .v-count b{font-size:16px}
+  .v-bar{width:120px;height:2px;background:rgba(255,255,255,.3);position:relative}
+  .v-bar span{position:absolute;left:0;top:0;bottom:0;background:#fff;transition:width .6s}
 
-  /* 섹션 */
-  section{position:relative;z-index:1;padding-bottom:64px}
-  @media(min-width:640px){section{padding-bottom:96px}}
-  .eyebrow{font-size:12px;font-weight:600;letter-spacing:.08em;color:var(--brand)}
-  .sec-title{margin-top:6px;font-size:24px;font-weight:700;letter-spacing:-.02em}
-  .sec-desc{margin-top:6px;font-size:14px;color:var(--muted)}
-  .grid{margin-top:24px;display:grid;gap:16px;grid-template-columns:1fr}
-  @media(min-width:640px){.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}}
-  @media(min-width:1024px){.g4{grid-template-columns:repeat(4,1fr)}}
-  @media(min-width:640px) and (max-width:1023px){.g4{grid-template-columns:repeat(2,1fr)}}
-  .card{border-radius:var(--r-md);padding:22px}
-  .card h3{font-size:16px;font-weight:600;line-height:1.4}
-  .card p{margin-top:8px;font-size:14px;color:var(--muted)}
-  .icon{width:36px;height:36px;border-radius:10px;background:var(--teal);color:var(--brand);display:grid;place-items:center;margin-bottom:14px}
+  /* ── 메인: 바로가기 ── */
+  .m-link{position:relative;z-index:3;margin-top:-64px}
+  .m-link ul{display:grid;grid-template-columns:repeat(2,1fr);background:#fff;border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.12);overflow:hidden}
+  @media(min-width:768px){.m-link ul{grid-template-columns:repeat(4,1fr)}}
+  .m-link li+li{border-left:1px solid var(--line)}
+  @media(max-width:767px){.m-link li:nth-child(3){border-left:0}.m-link li:nth-child(n+3){border-top:1px solid var(--line)}}
+  .m-link a{display:flex;flex-direction:column;align-items:center;gap:10px;padding:28px 10px;font-weight:700;font-size:17px}
+  .m-link a:hover{background:var(--primary-soft);color:var(--primary)}
+  .m-link .ic{width:56px;height:56px;border-radius:50%;background:var(--primary-soft);color:var(--primary);display:grid;place-items:center}
+  .m-link a:hover .ic{background:var(--primary);color:#fff}
+  .m-link .ic svg{width:28px;height:28px}
 
-  /* 소개 */
-  .mv{display:grid;gap:16px;margin-top:24px}
-  @media(min-width:640px){.mv{grid-template-columns:1fr 1fr}}
-  .mv .label{font-size:12px;font-weight:600;color:var(--brand)}
-  .mv .card p{margin-top:8px;font-size:17px;color:var(--ink);font-weight:500;line-height:1.55}
-  .value-num{font-size:12px;font-weight:600;color:var(--brand-light)}
+  /* ── 메인: 섹션 공통 ── */
+  .m-sec{padding-top:100px}
+  .tit-wrap{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:32px}
+  .tit-wrap h3{font-size:28px;font-weight:800;letter-spacing:-.03em}
+  .tit-wrap h3 em{font-style:normal;color:var(--primary)}
+  .tit-wrap p{margin-top:6px;color:var(--sub)}
+  @media(min-width:768px){.tit-wrap h3{font-size:36px}}
 
-  /* 준비 중 */
-  .card.wip{background:rgba(255,255,255,.35);border-style:dashed;border-color:rgba(47,93,107,.35)}
-  .chip-wip{display:inline-block;margin-bottom:10px;border-radius:999px;background:#fff4dc;color:#7a5200;border:1px solid #ecd49a;padding:3px 10px;font-size:12px;font-weight:600}
+  /* 숫자로 보는 공동체 */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+  .stat{border:1px solid var(--line);border-radius:12px;padding:28px 24px}
+  .stat .k{font-size:15px;font-weight:600;color:var(--sub)}
+  .stat .v{margin-top:8px;font-size:34px;font-weight:800;letter-spacing:-.03em;color:var(--primary)}
+  .stat .v small{font-size:17px;font-weight:700;margin-left:2px;color:var(--text)}
+  .stat .n{margin-top:4px;font-size:13px;color:var(--sub)}
 
-  /* 타임라인 */
-  .timeline{margin-top:28px;list-style:none;position:relative;display:flex;flex-direction:column;gap:14px}
-  .t-item{border-radius:var(--r-md);padding:16px;display:grid;gap:16px;grid-template-columns:1fr;align-items:center}
-  @media(min-width:640px){.t-item{grid-template-columns:160px 1fr;padding:20px}}
-  .photo{aspect-ratio:1/1;border-radius:var(--r-sm);background:repeating-linear-gradient(45deg,var(--teal),var(--teal) 10px,#e1eaea 10px,#e1eaea 20px);display:grid;place-items:center;font-size:12px;color:var(--muted);text-align:center;padding:8px;overflow:hidden}
-  @media(max-width:639px){.photo{aspect-ratio:16/9}}
-  .photo img{width:100%;height:100%;object-fit:cover}
-  .t-date{display:inline-block;font-size:13px;font-weight:600;color:var(--brand);background:var(--teal);border-radius:999px;padding:2px 10px}
-  .t-item h3{margin-top:8px;font-size:16px;font-weight:600}
-  .t-item p{margin-top:4px;font-size:14px;color:var(--muted)}
-  .t-status{margin-top:12px;font-size:12px;color:var(--muted)}
-  .t-item.no-photo{grid-template-columns:1fr}
-  .t-type{display:inline-block;margin-left:6px;font-size:12px;color:var(--muted)}
+  /* 썸네일 */
+  .thumb{position:relative;aspect-ratio:4/3;overflow:hidden;display:grid;place-items:center;color:#fff;border-radius:12px}
+  .thumb svg{width:40px;height:40px;opacity:.9}
+  @media(max-width:639px){.prog h4,.news h4{font-size:15px}.prog p{font-size:13px}}
+  .thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .c-perf{background:linear-gradient(135deg,#1d4e5a,#2f7282)}
+  .c-art{background:linear-gradient(135deg,#e4572e,#f08a5d)}
+  .c-edu{background:linear-gradient(135deg,#c98a12,#e3b341)}
+  .c-dev{background:linear-gradient(135deg,#3b4a8c,#5c6fc0)}
+  .c-etc{background:linear-gradient(135deg,#59636b,#7d8891)}
 
-  /* 인사말 */
-  .greeting{margin-top:36px;border-radius:var(--r-md);padding:24px}
-  @media(min-width:640px){.greeting{padding:32px}}
-  .greeting p{font-size:15px;white-space:pre-line}
-  .greeting .sign{margin-top:16px;font-weight:600;text-align:right}
+  /* 사업 탭 + 카드 */
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+  .tabs button{height:40px;padding:0 18px;border:1px solid var(--line);border-radius:20px;font-size:15px;font-weight:600;color:var(--sub)}
+  .tabs button[aria-selected="true"]{background:var(--primary);border-color:var(--primary);color:#fff}
+  .prog-grid{display:grid;gap:24px 16px;grid-template-columns:repeat(2,1fr)}
+  @media(min-width:1024px){.prog-grid{grid-template-columns:repeat(4,1fr)}}
+  .prog{display:block}
+  .prog .thumb{transition:transform .25s}
+  .prog:hover .thumb{transform:translateY(-4px)}
+  .prog .cate{margin-top:16px;font-size:13px;font-weight:700;color:var(--accent)}
+  .prog h4{margin-top:4px;font-size:18px;font-weight:700;letter-spacing:-.02em;line-height:1.4}
+  .prog p{margin-top:6px;font-size:14px;color:var(--sub)}
+  .tag-wip{display:inline-block;font-size:12px;font-weight:700;color:#8a5a00;background:#fff3d6;padding:2px 8px;border-radius:2px;margin-left:6px;vertical-align:middle}
 
-  /* FAQ */
-  .faq{margin-top:24px;display:flex;flex-direction:column;gap:10px}
-  .faq details{border-radius:var(--r-md);padding:0}
-  .faq summary{cursor:pointer;list-style:none;padding:18px 22px;font-weight:600;font-size:15px;display:flex;justify-content:space-between;gap:12px}
+  /* NEWS + 참여 모집 */
+  .duo{display:grid;gap:48px}
+  @media(min-width:1024px){.duo{grid-template-columns:1.2fr 1fr;gap:56px}}
+  .duo h3{font-size:26px;font-weight:800;letter-spacing:-.03em;margin-bottom:18px}
+  .news-tabs{display:flex;gap:4px;border-bottom:2px solid var(--text)}
+  .news-tabs button{padding:10px 18px;font-size:16px;font-weight:700;color:var(--sub)}
+  .news-tabs button[aria-selected="true"]{color:var(--text);box-shadow:inset 0 -3px 0 var(--accent)}
+  .news-list li{border-bottom:1px solid var(--line)}
+  .news-list a,.news-list div.row{display:flex;flex-direction:column;gap:6px;padding:18px 4px}
+  .news-list a:hover h5{color:var(--primary);text-decoration:underline;text-underline-offset:3px}
+  .news-list .cate{display:flex;gap:6px}
+  .news-list .cate span{font-size:12px;font-weight:700;padding:2px 8px;border-radius:2px}
+  .news-list .ty1{background:var(--primary-soft);color:var(--primary)}
+  .news-list .ty2{background:var(--accent-soft);color:var(--accent-dark)}
+  .news-list .tit{display:flex;justify-content:space-between;gap:16px}
+  .news-list h5{font-size:16px;font-weight:600}
+  .news-list .date{flex:none;font-size:14px;color:var(--sub)}
+  .news-list .empty{padding:36px 4px;color:var(--sub);text-align:center}
+
+  .recruit>li{border:1px solid var(--line);border-radius:12px;padding:24px;background:#fff}
+  .recruit>li+li{margin-top:14px}
+  .recruit .org{font-size:13px;font-weight:700;color:var(--accent)}
+  .recruit h5{margin-top:4px;font-size:18px;font-weight:700;letter-spacing:-.02em}
+  .recruit .lst{margin-top:12px;font-size:14px;color:var(--sub)}
+  .recruit .lst strong{color:var(--text);font-weight:600;margin-right:6px}
+  .recruit .foot{margin-top:16px;display:flex;justify-content:space-between;align-items:center}
+  .recruit .dday{font-size:14px;font-weight:800;color:var(--primary);background:var(--primary-soft);padding:4px 12px;border-radius:14px}
+  .recruit .go{font-size:14px;font-weight:700;color:var(--primary)}
+
+  /* 활동 갤러리 */
+  .news-grid{display:grid;gap:24px 16px;grid-template-columns:repeat(2,1fr)}
+  @media(min-width:1024px){.news-grid{grid-template-columns:repeat(4,1fr)}}
+  .news .thumb{aspect-ratio:1/1}
+  .news .meta{margin-top:14px;display:flex;gap:8px;align-items:center;font-size:13px;color:var(--sub)}
+  .news .type{font-weight:700;color:var(--accent)}
+  .news h4{margin-top:6px;font-size:17px;font-weight:700;line-height:1.45;letter-spacing:-.02em}
+  .news p{margin-top:6px;font-size:14px;color:var(--sub)}
+  .center{text-align:center;margin-top:36px}
+
+  /* SINCE 밴드 */
+  .since{margin-top:110px;background:var(--primary-dark);color:#fff;overflow:hidden;position:relative}
+  .since::before{content:"";position:absolute;right:-80px;top:-80px;width:320px;height:320px;border-radius:50%;background:rgba(228,87,46,.4)}
+  .since .wrap{position:relative;padding-top:72px;padding-bottom:72px}
+  .since .year{display:flex;align-items:center;gap:20px;font-size:15px;font-weight:600;letter-spacing:.08em;opacity:.9}
+  .since .year strong{font-size:40px;font-weight:800;letter-spacing:-.02em;margin:0 6px}
+  .since .year .mid{flex:1;max-width:280px;height:1px;background:rgba(255,255,255,.4)}
+  .since h5{margin-top:28px;font-size:24px;font-weight:700;line-height:1.5;letter-spacing:-.02em}
+  .since p{margin-top:14px;font-size:17px;opacity:.85}
+  .since p strong{color:#ffb59c}
+  @media(min-width:768px){.since h5{font-size:30px}.since .year strong{font-size:56px}}
+
+  /* ── 서브 페이지 ── */
+  .subvisual{background:var(--primary);color:#fff;padding:56px 0 52px;
+    background-image:radial-gradient(circle at 88% 40%,rgba(228,87,46,.55) 0 70px,transparent 71px),radial-gradient(circle at 78% 110%,rgba(255,255,255,.08) 0 140px,transparent 141px)}
+  .subvisual .en{font-size:13px;font-weight:700;letter-spacing:.14em;opacity:.7}
+  .subvisual h2{margin-top:6px;font-size:32px;font-weight:800;letter-spacing:-.03em}
+  @media(min-width:768px){.subvisual{padding:76px 0 68px}.subvisual h2{font-size:42px}}
+  .crumb{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;font-size:14px;opacity:.85}
+  .crumb span+span::before{content:"›";margin-right:8px;opacity:.6}
+  .lnb{border-bottom:1px solid var(--line);background:#fff}
+  .lnb ul{display:flex;overflow-x:auto;scrollbar-width:none}
+  .lnb ul::-webkit-scrollbar{display:none}
+  .lnb a{display:block;padding:18px 22px;font-size:16px;font-weight:600;color:var(--sub);white-space:nowrap;border-bottom:3px solid transparent}
+  .lnb a:hover{color:var(--primary)}
+  .lnb a.on{color:var(--primary);border-bottom-color:var(--primary)}
+  .sub-body{padding-top:64px;padding-bottom:110px}
+  .s-title{font-size:28px;font-weight:800;letter-spacing:-.03em;padding-bottom:18px;border-bottom:2px solid var(--text);margin-bottom:36px}
+  .s-h{font-size:19px;font-weight:700;margin:44px 0 16px;padding-left:12px;border-left:4px solid var(--accent);line-height:1.3}
+  .s-h:first-child{margin-top:0}
+  .s-p{font-size:16px;color:#33393f}
+  .s-note{color:var(--sub)}
+
+  .greet{display:grid;gap:32px}
+  @media(min-width:900px){.greet{grid-template-columns:320px 1fr;gap:56px}}
+  .greet .lead{font-size:24px;font-weight:800;line-height:1.45;letter-spacing:-.03em;color:var(--primary)}
+  .greet .txt{font-size:16px;white-space:pre-line;color:#33393f}
+  .greet .sign{margin-top:28px;text-align:right;font-size:16px}
+  .greet .sign b{font-size:20px;margin-left:8px}
+
+  .mv-box{display:grid;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  @media(min-width:768px){.mv-box{grid-template-columns:1fr 1fr}}
+  .mv-box>div{padding:36px 32px}
+  .mv-box>div+div{border-top:1px solid var(--line)}
+  @media(min-width:768px){.mv-box>div+div{border-top:0;border-left:1px solid var(--line)}}
+  .mv-box .k{font-size:14px;font-weight:800;letter-spacing:.12em;color:var(--accent)}
+  .mv-box .v{margin-top:10px;font-size:21px;font-weight:700;line-height:1.5;letter-spacing:-.02em}
+  .values{display:grid;gap:16px;grid-template-columns:1fr}
+  @media(min-width:768px){.values{grid-template-columns:repeat(3,1fr)}}
+  .values li{background:var(--gray);padding:30px 26px;border-top:3px solid var(--primary)}
+  .values .n{font-size:14px;font-weight:800;color:var(--accent)}
+  .values h4{margin-top:6px;font-size:20px;font-weight:800}
+  .values p{margin-top:6px;font-size:15px;color:var(--sub)}
+
+  .history{border-top:2px solid var(--text)}
+  .history .yr{display:grid;grid-template-columns:1fr;border-bottom:1px solid var(--line);padding:28px 0}
+  @media(min-width:768px){.history .yr{grid-template-columns:200px 1fr}}
+  .history .y{font-size:30px;font-weight:800;color:var(--primary);letter-spacing:-.03em}
+  .history li{display:flex;gap:18px;padding:6px 0;font-size:16px}
+  .history li b{flex:none;width:52px;color:var(--accent)}
+
+  .team{display:grid;gap:20px;grid-template-columns:1fr}
+  @media(min-width:640px){.team{grid-template-columns:repeat(3,1fr)}}
+  .team li{border:1px solid var(--line);border-radius:12px;padding:32px 24px;text-align:center}
+  .team .ph{width:112px;height:112px;margin:0 auto 18px;border-radius:50%;background:var(--primary-soft);overflow:hidden;display:grid;place-items:center;color:var(--primary)}
+  .team .ph svg{width:48px;height:48px}
+  .team .ph img{width:100%;height:100%;object-fit:cover}
+  .team .role{font-size:14px;font-weight:700;color:var(--accent)}
+  .team h4{margin-top:4px;font-size:20px;font-weight:800}
+  .team p{margin-top:8px;font-size:14px;color:var(--sub)}
+
+  .tbl{border-top:2px solid var(--text)}
+  .tbl .r{display:grid;grid-template-columns:1fr;border-bottom:1px solid var(--line)}
+  @media(min-width:768px){.tbl .r{grid-template-columns:200px 1fr}}
+  .tbl dt{background:var(--gray);padding:16px 20px;font-weight:700;font-size:15px}
+  .tbl dd{padding:16px 20px;font-size:15px}
+  .tbl ol{padding-left:20px;list-style:decimal}
+  .tbl ol li{padding:2px 0}
+  .dl{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--primary);text-decoration:underline;text-underline-offset:4px}
+
+  .p-row{display:grid;gap:24px;padding:36px 0;border-bottom:1px solid var(--line)}
+  .p-row:first-child{padding-top:0}
+  @media(min-width:900px){.p-row{grid-template-columns:420px 1fr;gap:48px;align-items:center}}
+  .p-row h4{font-size:22px;font-weight:800;letter-spacing:-.02em}
+  .p-row .desc{margin-top:10px;font-size:16px;color:#33393f}
+  .p-row dl{margin-top:18px;display:grid;grid-template-columns:72px 1fr;gap:6px 12px;font-size:15px}
+  .p-row dt{font-weight:700;color:var(--primary)}
+
+  .board{border-top:2px solid var(--text);width:100%;border-collapse:collapse;font-size:15px}
+  .board th,.board td{padding:16px 12px;border-bottom:1px solid var(--line);text-align:center}
+  .board th{background:var(--gray);font-weight:700}
+  .board td.t{text-align:left}
+  @media(max-width:639px){.board .no,.board .hide-m{display:none}}
+
+  .join-box{display:grid;gap:24px}
+  @media(min-width:900px){.join-box{grid-template-columns:1fr 360px;gap:48px}}
+  .aside{background:var(--gray);padding:32px 28px;border-top:3px solid var(--accent);align-self:start}
+  .aside h4{font-size:18px;font-weight:800}
+  .aside p{margin-top:8px;font-size:15px;color:var(--sub)}
+  .aside .btn{margin-top:20px;width:100%}
+  .aside .nomail{margin-top:20px;font-size:14px;color:var(--sub)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+  .chips li{font-size:15px;padding:8px 14px;border:1px solid var(--line);border-radius:18px;background:#fff}
+  .steps{counter-reset:s;display:grid;gap:12px}
+  .steps li{counter-increment:s;display:flex;gap:14px;align-items:flex-start;padding:18px 20px;border:1px solid var(--line);border-radius:8px}
+  .steps li::before{content:counter(s);flex:none;width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;display:grid;place-items:center;font-size:14px;font-weight:700}
+  .faq{border-top:2px solid var(--text)}
+  .faq details{border-bottom:1px solid var(--line)}
+  .faq summary{cursor:pointer;list-style:none;padding:22px 8px;font-size:17px;font-weight:700;display:flex;gap:14px;align-items:flex-start}
   .faq summary::-webkit-details-marker{display:none}
-  .faq summary::after{content:"+";color:var(--brand);font-weight:700}
+  .faq summary::before{content:"Q";color:var(--accent);font-weight:800}
+  .faq summary::after{content:"+";margin-left:auto;color:var(--sub);font-weight:400;font-size:22px;line-height:1}
   .faq details[open] summary::after{content:"−"}
-  .faq .a{padding:0 22px 18px;font-size:14px;color:var(--muted)}
+  .faq .a{display:flex;gap:14px;padding:18px 8px 24px;background:var(--gray);font-size:15px;color:#33393f}
+  .faq .a::before{content:"A";color:var(--primary);font-weight:800}
+  .map-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+  .policy h4{font-size:17px;font-weight:700;margin:28px 0 8px}
+  .policy p,.policy li{font-size:15px;color:#33393f}
+  .policy ul{list-style:disc;padding-left:20px}
 
-  /* 목적 사업 */
-  .purpose{margin:0;padding-left:18px;font-size:14px;columns:2;column-gap:24px}
-  @media(max-width:639px){.purpose{columns:1}}
+  /* ── 퀵메뉴 (데스크톱) ── */
+  .quick{position:fixed;right:20px;top:50%;transform:translateY(-50%);z-index:90;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.1);overflow:hidden;width:92px}
+  .quick .tit{background:var(--primary);color:#fff;font-size:12px;font-weight:800;text-align:center;padding:10px 0;line-height:1.3;letter-spacing:.06em}
+  .quick a{display:block;padding:12px 6px;font-size:13px;font-weight:600;text-align:center;border-top:1px solid var(--line)}
+  .quick a:hover{background:var(--primary-soft);color:var(--primary)}
+  @media(max-width:1399px){.quick{display:none}}
+  .btn-top{position:fixed;right:20px;bottom:24px;z-index:90;width:48px;height:48px;border-radius:50%;background:var(--text);color:#fff;display:grid;place-items:center;opacity:0;pointer-events:none;transition:opacity .2s}
+  .btn-top.show{opacity:1;pointer-events:auto}
 
-  /* 조직 */
-  .person .avatar{width:64px;height:64px;border-radius:50%;background:var(--teal);margin-bottom:14px;overflow:hidden}
-  .person .role{font-size:12px;font-weight:600;color:var(--brand)}
-  .person h3{margin-top:4px}
-
-  /* 투명성 */
-  .info{margin-top:24px;border-radius:var(--r-md);overflow:hidden}
-  .info dl{display:grid;grid-template-columns:1fr}
-  .info .row{display:grid;grid-template-columns:1fr;gap:4px;padding:16px 22px;border-bottom:1px solid var(--ring)}
-  .info .row:last-child{border-bottom:0}
-  @media(min-width:640px){.info .row{grid-template-columns:160px 1fr;gap:16px}}
-  .info dt{font-size:13px;font-weight:600;color:var(--brand)}
-  .info dd{font-size:15px}
-  .info a.dl{display:inline-flex;align-items:center;gap:6px;color:var(--brand);font-weight:500;text-decoration:underline;text-underline-offset:3px}
-
-  /* 함께하기 */
-  .join h3{font-size:18px}
-  .join .who{margin-top:6px;font-size:14px;color:var(--muted)}
-  .tags{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;list-style:none}
-  .tags li{font-size:13px;padding:4px 12px;border-radius:999px;background:var(--teal);color:var(--brand)}
-  .steps{margin:16px 0 0 18px;font-size:14px;color:var(--muted)}
-  .join .btn{margin-top:22px}
-  .no-mail{margin-top:22px;font-size:13px;color:var(--muted)}
-
-  /* 푸터 */
-  footer{border-top:1px solid var(--ring);padding:40px 0 48px;font-size:13px;color:var(--muted);position:relative;z-index:1}
-  footer .fname{font-size:15px;font-weight:600;color:var(--ink)}
-  footer dl{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px 20px}
-  footer dt{display:inline;font-weight:500}
-  footer dd{display:inline;margin-left:4px}
-  footer a{text-decoration:underline;text-underline-offset:3px}
-  footer .note{margin-top:18px;font-size:12px}
-  .hidden{display:none!important}
+  /* ── 푸터 ── */
+  footer{margin-top:0;background:#1c2528;color:#aab3b8;font-size:14px}
+  .foot-quick{background:#243034}
+  .foot-quick .wrap{display:grid;grid-template-columns:repeat(2,1fr)}
+  @media(min-width:768px){.foot-quick .wrap{grid-template-columns:repeat(3,1fr)}}
+  .fq{position:relative;border-right:1px solid rgba(255,255,255,.08)}
+  .fq:first-child{border-left:1px solid rgba(255,255,255,.08)}
+  .fq>button{width:100%;display:flex;justify-content:space-between;align-items:center;padding:16px 18px;color:#dfe5e8;font-weight:600;font-size:14px}
+  .fq>button::after{content:"+";font-size:18px}
+  .fq.open>button::after{content:"−"}
+  .fq ul{display:none;position:absolute;left:0;right:0;bottom:100%;background:#fff;color:var(--text);border:1px solid var(--line);box-shadow:0 -8px 20px rgba(0,0,0,.15);max-height:260px;overflow-y:auto}
+  .fq.open ul{display:block}
+  .fq ul a{display:block;padding:10px 16px;font-size:14px}
+  .fq ul a:hover{background:var(--primary-soft);color:var(--primary)}
+  .f-body .wrap{padding-top:40px;padding-bottom:48px}
+  .f-logo{display:flex;align-items:center;gap:10px;color:#fff;font-size:18px;font-weight:800}
+  .f-logo .mark{width:34px;height:34px;border-radius:6px;background:rgba(255,255,255,.1);display:grid;place-items:center;font-size:11px}
+  .f-info{margin-top:18px;display:flex;flex-wrap:wrap;gap:6px 22px}
+  .f-info dt{display:inline;color:#dfe5e8;font-weight:600}
+  .f-info dd{display:inline;margin-left:6px}
+  .f-links{margin-top:20px;display:flex;flex-wrap:wrap;gap:6px 18px}
+  .f-links a{color:#dfe5e8}
+  .f-links a.b{font-weight:800;color:#fff}
+  .f-links a:hover{text-decoration:underline}
+  .f-note{margin-top:16px;font-size:13px}
 </style>
 </head>
 <body>
-<a class="skip" href="#main">본문 바로가기</a>
+<div id="skip-nav">
+  <a href="#container">본문 바로가기</a>
+  <a href="#gnb">주 메뉴 바로가기</a>
+</div>
 
-<header>
-  <div class="wrap head">
-    <a class="brand" href="#top" aria-label="시흥 청년문화예술공동체 처음으로">
+<!-- 상단 유틸 바 -->
+<div class="masthead"><div class="wrap">
+  <p>경기도 시흥시 · 비영리 청년 문화예술 공동체</p>
+  <ul>
+    <li class="zoom" role="group" aria-label="화면 크기">
+      <button type="button" data-zoom="0.9" aria-pressed="false" aria-label="화면 작게">가-</button>
+      <button type="button" data-zoom="1" aria-pressed="true" aria-label="화면 보통">가</button>
+      <button type="button" data-zoom="1.1" aria-pressed="false" aria-label="화면 크게">가+</button>
+    </li>
+    <li><a href="#/disclosure/articles">정관</a></li>
+    <li><a href="#/about/location">오시는 길</a></li>
+    <li id="mhInsta" hidden><a target="_blank" rel="noopener" title="새창열림">인스타그램</a></li>
+  </ul>
+</div></div>
+
+<header id="header">
+  <div class="wrap h-top">
+    <h1><a class="logo" href="#/" title="메인으로 이동">
       <span class="mark" aria-hidden="true">시흥</span>
-      <span data-f="name"></span>
-    </a>
-    <button class="menu-btn" id="menuBtn" aria-controls="nav" aria-expanded="false" aria-label="메뉴 열기">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-    </button>
-    <nav id="nav" aria-label="주요 메뉴">
-      <ul>
-        <li><a href="#about">소개</a></li>
-        <li><a href="#programs">사업</a></li>
-        <li><a href="#activities">활동 기록</a></li>
-        <li id="navTeam" class="hidden"><a href="#team">조직</a></li>
-        <li><a href="#transparency">투명성</a></li>
-        <li><a href="#join">함께하기</a></li>
-        <li><a href="#faq">FAQ</a></li>
-      </ul>
-    </nav>
+      <span><span class="t1">SIHEUNG YOUTH CULTURE &amp; ARTS</span><span class="t2" data-f="name"></span></span>
+    </a></h1>
+    <div class="h-actions">
+      <a class="btn-cta" href="#/join/partner">협력 문의</a>
+      <button type="button" class="btn-all" id="allBtn" aria-controls="allmenu" aria-expanded="false" aria-label="전체메뉴 열기"><span aria-hidden="true"><i></i><i></i><i></i></span></button>
+    </div>
   </div>
+  <nav id="gnb" aria-label="주 메뉴"><div class="wrap"><ul id="gnbList"></ul></div></nav>
 </header>
 
-<main id="main" class="bg-deco">
-  <!-- 1. 첫 화면 -->
-  <div class="hero" id="top">
+<!-- 전체메뉴 -->
+<nav id="allmenu" aria-label="전체메뉴">
+  <div class="am-head">
+    <a class="logo" href="#/"><span class="mark" aria-hidden="true">시흥</span><span><span class="t2" data-f="name"></span></span></a>
+    <button type="button" class="am-close" id="amClose" aria-label="전체메뉴 닫기">×</button>
+  </div>
+  <div class="am-user">
+    <p>시흥 청년들과 함께하세요.</p>
+    <div class="btns"><a class="a1" href="#/join/partner">협력 문의</a><a class="a2" href="#/join/member">회원 참여</a></div>
+  </div>
+  <div class="am-body">
+    <div class="am-dep1" id="amDep1"></div>
+    <div class="am-subs" id="amSubs"></div>
+  </div>
+</nav>
+
+<main id="container">
+
+<!-- ════════ 메인 ════════ -->
+<div data-page="home">
+  <section class="visual" aria-roledescription="carousel" aria-label="주요 안내">
+    <div class="slides" id="slides">
+      <div class="slide s1" role="group" aria-roledescription="slide" aria-label="1 / 3">
+        <div class="wrap">
+          <span class="eyebrow">시흥 청년문화예술공동체</span>
+          <h2>청년의 협업으로,<br>지역의 문제를 <em>문화</em>로 풉니다</h2>
+          <p data-f="tagline"></p>
+          <div class="cta"><a class="btn btn-accent" href="#/about/vision">단체 소개</a><a class="btn btn-line" href="#/programs/list">주요사업</a></div>
+        </div>
+      </div>
+      <div class="slide s2" role="group" aria-roledescription="slide" aria-label="2 / 3">
+        <div class="wrap">
+          <span class="eyebrow">협력 제안</span>
+          <h2>축제·학교·기관의 무대에<br>청년의 <em>문화</em>를 더합니다</h2>
+          <p>공연 기획·섭외, 청소년 진로체험 부스, 공공미술, 교육 프로그램을 함께 운영할 곳을 찾습니다.</p>
+          <div class="cta"><a class="btn btn-primary" href="#/join/partner">협력 제안하기</a></div>
+        </div>
+      </div>
+      <div class="slide s3" role="group" aria-roledescription="slide" aria-label="3 / 3">
+        <div class="wrap">
+          <span class="eyebrow">회원 참여</span>
+          <h2>분야가 달라도 괜찮습니다<br>시흥에서 <em>함께 만들</em> 청년</h2>
+          <p>문화예술 · 기획 · 디자인 · 개발 · 교육 · 영상. 서로 다른 분야의 청년이 모여 하나의 프로젝트를 만듭니다.</p>
+          <div class="cta"><a class="btn btn-accent" href="#/join/member">참여 안내</a></div>
+        </div>
+      </div>
+    </div>
+    <div class="v-ctrl"><div class="wrap">
+      <button type="button" id="vPrev" aria-label="이전 슬라이드">‹</button>
+      <span class="v-count" aria-live="polite"><b id="vCur">1</b> / <span id="vTot">3</span></span>
+      <span class="v-bar" aria-hidden="true"><span id="vBar"></span></span>
+      <button type="button" id="vNext" aria-label="다음 슬라이드">›</button>
+      <button type="button" id="vStop" aria-label="자동 넘김 정지">❚❚</button>
+    </div></div>
+  </section>
+
+  <div class="wrap m-link">
+    <ul>
+      <li><a href="#/join/partner"><span class="ic" data-icon="hand"></span>협력 문의</a></li>
+      <li><a href="#/join/member"><span class="ic" data-icon="people"></span>회원 참여</a></li>
+      <li><a href="#/programs/list"><span class="ic" data-icon="star"></span>주요사업</a></li>
+      <li><a href="#/disclosure/articles"><span class="ic" data-icon="doc"></span>정보공개</a></li>
+    </ul>
+  </div>
+
+  <section class="m-sec"><div class="wrap">
+    <div class="tit-wrap"><div><h3>숫자로 보는 <em>공동체</em></h3><p>기록된 활동을 기준으로 자동 집계합니다.</p></div></div>
+    <div class="stats" id="stats"></div>
+  </div></section>
+
+  <section class="m-sec"><div class="wrap">
+    <div class="tit-wrap">
+      <div><h3>주요사업</h3><p>기관·학교·축제 주최 측과 함께 운영할 수 있는 프로그램입니다.</p></div>
+    </div>
+    <div class="tabs" role="tablist" aria-label="사업 분류" id="progTabs"></div>
+    <div class="prog-grid" id="homePrograms"></div>
+    <p class="center"><a class="btn-more" href="#/programs/list">사업 안내 전체보기 +</a></p>
+  </div></section>
+
+  <section class="m-sec"><div class="wrap duo">
+    <div>
+      <h3>공동체 NEWS</h3>
+      <div class="news-tabs" role="tablist" id="newsTabs"></div>
+      <ul class="news-list" id="newsList"></ul>
+    </div>
+    <div>
+      <h3>참여 모집</h3>
+      <ul class="recruit" id="recruit"></ul>
+    </div>
+  </div></section>
+
+  <section class="m-sec"><div class="wrap">
+    <div class="tit-wrap">
+      <div><h3>함께 만든 <em>현장</em></h3><p>시흥 곳곳에서 청년들이 만든 문화 현장입니다.</p></div>
+    </div>
+    <div class="news-grid" id="homeNews"></div>
+    <p class="center"><a class="btn-more" href="#/news/activities">활동 소식 전체보기 +</a></p>
+  </div></section>
+
+  <section class="since">
     <div class="wrap">
-      <div class="hero-card glass">
-        <span class="badge">경기도 시흥시 · 비영리 청년 공동체</span>
-        <h1 data-f="name"></h1>
-        <p class="lead" data-f="tagline"></p>
-        <div class="cta">
-          <a class="btn btn-primary" href="#join-partner">협력 문의</a>
-          <a class="btn btn-ghost" href="#join-member">함께하기</a>
-        </div>
-        <div class="meta">
-          <span>설립 <span data-f="founded"></span></span>
-          <span>활동 지역 경기도 시흥시</span>
-        </div>
+      <div class="year"><span>SINCE <strong id="sinceYear"></strong></span><span class="mid" aria-hidden="true"></span><span><strong id="nowYear"></strong> NOW</span></div>
+      <h5>2026년 7월, 시흥의 청년들이 모여<br>문화로 지역을 바꾸는 일을 시작했습니다.</h5>
+      <p><strong>협업</strong>으로, <strong>현장</strong>에서, <strong>공익</strong>을 위해.<br>시민이 있는 곳에서 청년의 문화를 만들겠습니다.</p>
+    </div>
+  </section>
+</div>
+
+<!-- ════════ 단체소개 ════════ -->
+<div data-page="about" hidden>
+  <div data-sub="greeting">
+    <h3 class="s-title">인사말</h3>
+    <div class="greet">
+      <p class="lead">분야를 넘나드는 청년들의 협업으로,<br>지역의 문제를 문화로 풀어냅니다.</p>
+      <div><p class="txt" data-f="greeting"></p><p class="sign"><span data-f="name"></span> 대표<b data-f="rep"></b></p></div>
+    </div>
+  </div>
+  <div data-sub="vision">
+    <h3 class="s-title">미션 · 비전</h3>
+    <div class="mv-box">
+      <div><p class="k">MISSION</p><p class="v" data-f="mission"></p></div>
+      <div><p class="k">VISION</p><p class="v" data-f="vision"></p></div>
+    </div>
+    <h4 class="s-h">핵심 가치</h4>
+    <ul class="values">
+      <li><p class="n">01</p><h4>협업</h4><p>분야가 다른 청년이 함께 만듭니다.</p></li>
+      <li><p class="n">02</p><h4>현장</h4><p>축제, 거리, 학교 등 시민이 있는 곳에서 활동합니다.</p></li>
+      <li><p class="n">03</p><h4>공익</h4><p>수익은 나누지 않고 목적 사업에만 씁니다.</p></li>
+    </ul>
+    <h4 class="s-h">설립 목적</h4>
+    <p class="s-p">본 단체는 문화를 기반으로 지역사회 활성화에 기여함을 목적으로 합니다. 문화·예술, 기획, 디자인, 개발, 교육, 영상제작 등 다양한 분야에 종사하는 청년들의 협업을 통해 문화 프로젝트를 기획·운영하고, 교육과 콘텐츠 개발, 지역 네트워크 구축, 공익적 문화활동을 수행함으로써 지역사회의 지속가능한 문화적 발전과 지역사회 문제의 문화적 해결을 지향합니다. <span class="s-note">(정관 제2조)</span></p>
+  </div>
+  <div data-sub="history">
+    <h3 class="s-title">연혁</h3>
+    <div class="history" id="history"></div>
+  </div>
+  <div data-sub="team">
+    <h3 class="s-title">조직</h3>
+    <ul class="team" id="team"></ul>
+  </div>
+  <div data-sub="location">
+    <h3 class="s-title">오시는 길</h3>
+    <dl class="tbl">
+      <div class="r"><dt>주소</dt><dd data-f="address"></dd></div>
+      <div class="r" data-row="email"><dt>이메일</dt><dd data-f="email"></dd></div>
+    </dl>
+    <div class="map-links">
+      <a class="btn btn-primary" id="naverMap" target="_blank" rel="noopener" title="새창열림">네이버 지도</a>
+      <a class="btn btn-outline" id="kakaoMap" target="_blank" rel="noopener" title="새창열림">카카오맵</a>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ 주요사업 ════════ -->
+<div data-page="programs" hidden>
+  <div data-sub="list">
+    <h3 class="s-title">사업 안내</h3>
+    <div id="programList"></div>
+  </div>
+</div>
+
+<!-- ════════ 참여·협력 ════════ -->
+<div data-page="join" hidden>
+  <div data-sub="partner">
+    <h3 class="s-title">협력 제안</h3>
+    <div class="join-box">
+      <div>
+        <h4 class="s-h">이런 협력이 가능합니다</h4>
+        <ul class="chips"><li>축제·행사 공연 기획·섭외</li><li>청소년 진로체험 부스</li><li>공공미술·벽화</li><li>교육 프로그램</li></ul>
+        <h4 class="s-h">진행 절차</h4>
+        <ol class="steps">
+          <li>이메일로 행사 일정, 장소, 대상, 원하는 협력 형태를 보내 주세요.</li>
+          <li>운영진이 검토한 뒤 가능 여부와 진행 방식을 회신드립니다.</li>
+          <li>세부 내용과 비용을 협의해 확정합니다.</li>
+        </ol>
+      </div>
+      <div class="aside">
+        <h4>협력 문의</h4>
+        <p>기관·학교·축제 주최 측의 제안을 기다립니다.</p>
+        <a class="btn btn-accent" data-mail="partner" hidden>협력 제안 메일 보내기</a>
+        <p class="nomail" data-nomail>문의 이메일은 준비 중입니다.</p>
       </div>
     </div>
   </div>
-
-  <!-- 2. 소개 -->
-  <section id="about" aria-labelledby="about-t">
-    <div class="wrap">
-      <p class="eyebrow">ABOUT</p>
-      <h2 class="sec-title" id="about-t">소개</h2>
-      <div class="mv">
-        <div class="card glass"><span class="label">미션</span><p data-f="mission"></p></div>
-        <div class="card glass"><span class="label">비전</span><p data-f="vision"></p></div>
+  <div data-sub="member">
+    <h3 class="s-title">회원 참여</h3>
+    <div class="join-box">
+      <div>
+        <h4 class="s-h">참여 대상</h4>
+        <p class="s-p">단체의 목적에 찬동하고 아래 분야에서 활동하거나 관심 있는 시흥의 청년이면 누구나 함께할 수 있습니다. <span class="s-note">(정관 제5조)</span></p>
+        <ul class="chips" style="margin-top:14px"><li>문화예술</li><li>기획</li><li>디자인</li><li>개발</li><li>교육</li><li>영상</li></ul>
+        <h4 class="s-h">가입 절차</h4>
+        <ol class="steps">
+          <li>이메일로 이름, 활동 분야, 간단한 소개를 보내 주세요.</li>
+          <li>운영진이 확인한 뒤 만남 일정을 안내드립니다.</li>
+          <li>정관에 따른 절차를 거쳐 회원으로 함께합니다.</li>
+        </ol>
       </div>
-      <h3 style="margin-top:36px;font-size:16px;font-weight:600">핵심 가치</h3>
-      <div class="grid g3">
-        <div class="card glass"><span class="value-num">01</span><h3>협업</h3><p>분야가 다른 청년이 함께 만듭니다.</p></div>
-        <div class="card glass"><span class="value-num">02</span><h3>현장</h3><p>축제, 거리, 학교 등 시민이 있는 곳에서 활동합니다.</p></div>
-        <div class="card glass"><span class="value-num">03</span><h3>공익</h3><p>수익은 나누지 않고 목적 사업에만 씁니다.</p></div>
-      </div>
-      <!-- 인사말 — SITE.greeting을 채우면 표시됩니다 -->
-      <div class="greeting glass hidden" id="greeting">
-        <h3 style="font-size:16px;font-weight:600;margin-bottom:12px">대표 인사말</h3>
-        <p data-f="greeting"></p>
-        <p class="sign"><span data-f="name"></span> 대표 <span data-f="rep"></span></p>
+      <div class="aside">
+        <h4>참여 문의</h4>
+        <p>분야가 달라도 괜찮습니다. 함께 만들 사람을 찾습니다.</p>
+        <a class="btn btn-primary" data-mail="member" hidden>참여 문의 메일 보내기</a>
+        <p class="nomail" data-nomail>문의 이메일은 준비 중입니다.</p>
       </div>
     </div>
-  </section>
-
-  <!-- 3. 사업 -->
-  <section id="programs" aria-labelledby="prog-t">
-    <div class="wrap">
-      <p class="eyebrow">PROGRAMS</p>
-      <h2 class="sec-title" id="prog-t">사업</h2>
-      <p class="sec-desc">기관·학교·축제 주최 측과 함께 운영할 수 있는 프로그램입니다.</p>
-      <div class="grid g4">
-        <div class="card glass">
-          <div class="icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
-          <h3>지역 축제·행사 기획·운영 및 청년 예술인 공연</h3>
-          <p>행사 성격에 맞는 청년 예술인 공연을 기획·섭외하고 현장 운영을 돕습니다.</p>
-        </div>
-        <div class="card glass">
-          <div class="icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 3l3 3-9 9H9v-3z"/><path d="M3 21h18"/></svg></div>
-          <h3>공공미술·벽화 등 지역 참여 활동</h3>
-          <p>주민과 함께하는 벽화·공공미술 활동을 진행합니다.</p>
-        </div>
-        <div class="card glass">
-          <div class="icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="3"/><path d="M6 12h4M8 10v4M15 11h.01M18 13h.01"/></svg></div>
-          <h3>청소년 진로체험</h3>
-          <p>AI·게임 제작·디지털 창작을 직접 해보는 체험 부스와 수업을 운영합니다.</p>
-        </div>
-        <div class="card wip" aria-label="준비 중인 사업: 청년 AI·Unity 창작 교육">
-          <span class="chip-wip">준비 중</span>
-          <h3>청년 AI·Unity 창작 교육</h3>
-          <p>청년 대상 AI·Unity 창작 교육 과정을 준비하고 있습니다. 아직 운영 전입니다.</p>
-        </div>
-      </div>
+  </div>
+  <div data-sub="faq">
+    <h3 class="s-title">자주 묻는 질문</h3>
+    <div class="faq">
+      <details><summary>협력 비용은 어떻게 되나요?</summary>
+        <p class="a">행사 규모, 인원, 기간, 필요한 장비에 따라 달라집니다. 일정과 내용을 보내 주시면 견적을 안내드립니다.</p></details>
+      <details><summary>후원하면 기부금 영수증을 받을 수 있나요?</summary>
+        <p class="a">아니요. 현재 비영리 임의단체로, 기부금 영수증을 발행할 수 있는 단체가 아닙니다. 그래서 공개 후원 모집은 하지 않고 있습니다.</p></details>
+      <details><summary>누가 회원이 될 수 있나요?</summary>
+        <p class="a">단체의 목적에 찬동하고 문화·예술, 기획, 디자인, 개발, 교육, 영상제작 등의 분야에서 활동하거나 관심 있는 분이면 소정의 절차를 거쳐 회원이 될 수 있습니다. (정관 제5조)</p></details>
+      <details><summary>단체의 수익은 어디에 쓰이나요?</summary>
+        <p class="a">수익은 회원에게 나누지 않고 정관에 정한 목적 사업에만 씁니다. 결산은 매 회계연도 종료 후 정기총회 승인을 거쳐 정보공개 메뉴에 공개합니다. (정관 제20조, 제21조)</p></details>
     </div>
-  </section>
+  </div>
+</div>
 
-  <!-- 4. 활동 기록 -->
-  <section id="activities" aria-labelledby="act-t">
-    <div class="wrap">
-      <p class="eyebrow">ACTIVITIES</p>
-      <h2 class="sec-title" id="act-t">활동 기록</h2>
-      <p class="sec-desc">날짜순으로 정리한 활동입니다.</p>
-      <ol class="timeline" id="timeline"></ol>
-      <p class="t-status" id="tStatus" aria-live="polite"></p>
-    </div>
-  </section>
+<!-- ════════ 알림마당 ════════ -->
+<div data-page="news" hidden>
+  <div data-sub="notice">
+    <h3 class="s-title">공지사항</h3>
+    <table class="board">
+      <caption class="sr-only">공지사항 목록</caption>
+      <thead><tr><th class="no" scope="col" style="width:80px">번호</th><th scope="col">제목</th><th class="hide-m" scope="col" style="width:140px">작성일</th></tr></thead>
+      <tbody id="noticeBody"></tbody>
+    </table>
+  </div>
+  <div data-sub="activities">
+    <h3 class="s-title">활동 소식</h3>
+    <div class="news-grid" id="newsAll"></div>
+  </div>
+</div>
 
-  <!-- 5. 조직 — 이름이 하나라도 채워지면 표시됩니다 (SITE.team 수정) -->
-  <section id="team" class="hidden" aria-labelledby="team-t">
-    <div class="wrap">
-      <p class="eyebrow">PEOPLE</p>
-      <h2 class="sec-title" id="team-t">조직</h2>
-      <div class="grid g3" id="teamGrid"></div>
+<!-- ════════ 정보공개 ════════ -->
+<div data-page="disclosure" hidden>
+  <div data-sub="articles">
+    <h3 class="s-title">정관</h3>
+    <dl class="tbl">
+      <div class="r"><dt>정관</dt><dd><a class="dl" href="docs/articles.pdf" download="시흥청년문화예술공동체_정관.pdf">정관 PDF 내려받기 ↓</a></dd></div>
+      <div class="r"><dt>목적 사업<br><span style="font-weight:400;color:var(--sub)">(정관 제4조)</span></dt><dd>
+        <ol>
+          <li>문화·예술 프로그램 운영</li><li>교육 프로그램 운영</li><li>문화콘텐츠 기획 및 제작</li>
+          <li>지역축제 및 행사 기획·운영</li><li>지역문화 활성화 사업</li><li>지역 네트워크 구축</li>
+          <li>세미나 및 포럼 개최</li><li>연구 및 정책 제안</li><li>공익 프로젝트 운영</li>
+        </ol></dd></div>
+      <div class="r"><dt>수익 사용</dt><dd>수익은 회원에게 분배하지 않으며 목적 사업에만 사용합니다. (정관 제20조)</dd></div>
+    </dl>
+  </div>
+  <div data-sub="finance">
+    <h3 class="s-title">결산 공개</h3>
+    <p class="s-p" style="margin-bottom:24px">매 회계연도 종료 후 결산보고서를 작성해 정기총회의 승인을 받고 이곳에 공개합니다. (정관 제21조)</p>
+    <table class="board">
+      <caption class="sr-only">연도별 결산 공개 현황</caption>
+      <thead><tr><th scope="col">회계연도</th><th scope="col">기간</th><th scope="col">공개</th></tr></thead>
+      <tbody><tr><td>2026</td><td>2026.07.02 ~ 2026.12.31</td><td>2027년 4월까지 공개 예정</td></tr></tbody>
+    </table>
+  </div>
+  <div data-sub="info">
+    <h3 class="s-title">기본 정보</h3>
+    <dl class="tbl">
+      <div class="r"><dt>단체명</dt><dd data-f="name"></dd></div>
+      <div class="r"><dt>법적 형태</dt><dd>비영리 임의단체</dd></div>
+      <div class="r" data-row="regNo"><dt>고유번호</dt><dd data-f="regNo"></dd></div>
+      <div class="r"><dt>설립일</dt><dd data-f="founded"></dd></div>
+      <div class="r"><dt>대표자</dt><dd data-f="rep"></dd></div>
+      <div class="r"><dt>소재지</dt><dd data-f="address"></dd></div>
+      <div class="r"><dt>회계연도</dt><dd>매년 1월 1일 ~ 12월 31일</dd></div>
+    </dl>
+  </div>
+  <div data-sub="privacy">
+    <h3 class="s-title">개인정보처리방침</h3>
+    <div class="policy">
+      <p><span data-f="name"></span>(이하 "단체")는 이용자의 개인정보를 소중히 다루며, 「개인정보 보호법」을 준수합니다.</p>
+      <h4>1. 홈페이지에서의 개인정보 수집</h4>
+      <p>이 홈페이지는 회원가입, 입력 양식, 방문 통계 도구를 운영하지 않으며, 홈페이지를 통해 개인정보를 수집하지 않습니다.</p>
+      <h4>2. 이메일 문의 시 처리</h4>
+      <ul>
+        <li>이용자가 이메일로 보낸 이름, 연락처, 문의 내용은 회신과 협력·가입 절차 진행에만 이용합니다.</li>
+        <li>문의 처리가 끝나면 지체 없이 파기합니다. 다만 회원으로 가입한 경우에는 별도의 동의를 받아 회원 관리에 이용합니다.</li>
+        <li>법령에 따른 경우를 제외하고 제3자에게 제공하지 않습니다.</li>
+      </ul>
+      <h4>3. 사진 게시</h4>
+      <p>활동 사진은 촬영 대상자의 동의를 받은 경우에만 게시하며, 게시 중단을 요청하면 지체 없이 삭제합니다.</p>
+      <h4>4. 문의</h4>
+      <p>개인정보 관련 문의와 열람·정정·삭제 요청은 아래 이메일로 받습니다.</p>
+      <p data-row="email" style="margin-top:6px;font-weight:700" data-f="email"></p>
     </div>
-  </section>
+  </div>
+</div>
 
-  <!-- 6. 투명성 -->
-  <section id="transparency" aria-labelledby="tr-t">
-    <div class="wrap">
-      <p class="eyebrow">TRANSPARENCY</p>
-      <h2 class="sec-title" id="tr-t">투명성</h2>
-      <p class="sec-desc">단체 운영의 기본 정보를 공개합니다.</p>
-      <div class="info glass">
-        <dl>
-          <div class="row"><dt>정관</dt><dd><a class="dl" href="docs/articles.pdf" download="시흥청년문화예술공동체_정관.pdf">정관 PDF 내려받기
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 21h16"/></svg></a></dd></div>
-          <div class="row"><dt>법적 형태</dt><dd>비영리 임의단체</dd></div>
-          <div class="row"><dt>목적 사업<br><span style="font-weight:400;color:var(--muted)">(정관 제4조)</span></dt><dd>
-            <ol class="purpose">
-              <li>문화·예술 프로그램 운영</li><li>교육 프로그램 운영</li><li>문화콘텐츠 기획 및 제작</li>
-              <li>지역축제 및 행사 기획·운영</li><li>지역문화 활성화 사업</li><li>지역 네트워크 구축</li>
-              <li>세미나 및 포럼 개최</li><li>연구 및 정책 제안</li><li>공익 프로젝트 운영</li>
-            </ol></dd></div>
-          <div class="row"><dt>수익 사용</dt><dd>수익은 회원에게 분배하지 않으며 목적 사업에만 사용합니다. (정관 제20조)</dd></div>
-          <div class="row" data-row="regNo"><dt>고유번호</dt><dd data-f="regNo"></dd></div>
-          <div class="row"><dt>설립일</dt><dd data-f="founded"></dd></div>
-          <div class="row"><dt>회계연도</dt><dd>매년 1월 1일 ~ 12월 31일</dd></div>
-          <div class="row"><dt>결산 공개</dt><dd>2026 회계연도 결산은 정기총회 승인 후 2027년 4월까지 공개합니다.</dd></div>
-        </dl>
-      </div>
-    </div>
-  </section>
-
-  <!-- 7. 함께하기 -->
-  <section id="join" aria-labelledby="join-t">
-    <div class="wrap">
-      <p class="eyebrow">JOIN</p>
-      <h2 class="sec-title" id="join-t">함께하기</h2>
-      <div class="grid g2">
-        <div class="card glass join" id="join-partner">
-          <h3>협력 제안</h3>
-          <p class="who">기관·학교·축제 주최 측</p>
-          <ul class="tags" aria-label="가능한 협력 형태">
-            <li>공연 기획·섭외</li><li>진로체험 부스</li><li>공공미술</li><li>교육 프로그램</li>
-          </ul>
-          <p style="margin-top:16px;font-size:14px;color:var(--muted)">행사 일정, 장소, 대상, 원하는 협력 형태를 적어 보내 주시면 검토 후 회신드립니다.</p>
-          <a class="btn btn-primary hidden" data-mail="partner">협력 제안 메일 보내기</a>
-          <p class="no-mail" data-nomail>문의 이메일은 준비 중입니다.</p>
-        </div>
-        <div class="card glass join" id="join-member">
-          <h3>회원 참여</h3>
-          <p class="who">시흥에서 함께 활동할 청년</p>
-          <ul class="tags" aria-label="참여 분야">
-            <li>문화예술</li><li>기획</li><li>디자인</li><li>개발</li><li>교육</li><li>영상</li>
-          </ul>
-          <ol class="steps">
-            <li>이메일로 이름, 활동 분야, 간단한 소개를 보내 주세요.</li>
-            <li>운영진이 확인 후 만남 일정을 안내드립니다.</li>
-            <li>정관에 따른 절차를 거쳐 회원으로 함께합니다.</li>
-          </ol>
-          <a class="btn btn-ghost hidden" data-mail="member">참여 문의 메일 보내기</a>
-          <p class="no-mail" data-nomail>문의 이메일은 준비 중입니다.</p>
-        </div>
-      </div>
-      <!-- 오시는 길 -->
-      <div class="info glass" style="margin-top:16px">
-        <dl>
-          <div class="row"><dt>오시는 길</dt><dd><span data-f="address"></span>
-            <a class="dl" id="mapLink" target="_blank" rel="noopener" style="margin-left:8px">지도 보기</a></dd></div>
-        </dl>
-      </div>
-    </div>
-  </section>
-
-  <!-- 8. 자주 묻는 질문 -->
-  <section id="faq" aria-labelledby="faq-t">
-    <div class="wrap">
-      <p class="eyebrow">FAQ</p>
-      <h2 class="sec-title" id="faq-t">자주 묻는 질문</h2>
-      <div class="faq">
-        <details class="glass"><summary>협력 비용은 어떻게 되나요?</summary>
-          <p class="a">행사 규모, 인원, 기간, 필요한 장비에 따라 달라집니다. 일정과 내용을 보내 주시면 견적을 안내드립니다.</p></details>
-        <details class="glass"><summary>후원하면 기부금 영수증을 받을 수 있나요?</summary>
-          <p class="a">아니요. 현재 비영리 임의단체로, 기부금 영수증을 발행할 수 있는 단체가 아닙니다. 그래서 공개 후원 모집은 하지 않고 있습니다.</p></details>
-        <details class="glass"><summary>누가 회원이 될 수 있나요?</summary>
-          <p class="a">단체의 목적에 찬동하고 문화·예술, 기획, 디자인, 개발, 교육, 영상제작 등의 분야에서 활동하거나 관심 있는 분이면 소정의 절차를 거쳐 회원이 될 수 있습니다. (정관 제5조)</p></details>
-        <details class="glass"><summary>단체의 수익은 어디에 쓰이나요?</summary>
-          <p class="a">수익은 회원에게 나누지 않고 정관에 정한 목적 사업에만 씁니다. 결산은 매 회계연도 종료 후 정기총회 승인을 거쳐 이 페이지에 공개합니다.</p></details>
-      </div>
-    </div>
-  </section>
 </main>
 
-<!-- 8. 푸터 -->
+<!-- 퀵메뉴 -->
+<aside class="quick" aria-label="퀵메뉴">
+  <p class="tit">QUICK<br>MENU</p>
+  <a href="#/join/partner">협력 문의</a>
+  <a href="#/join/member">회원 참여</a>
+  <a href="#/news/activities">활동 소식</a>
+  <a href="#/disclosure/articles">정관</a>
+</aside>
+<a href="#container" class="btn-top" id="btnTop" aria-label="상단으로 이동">↑</a>
+
 <footer>
-  <div class="wrap">
-    <p class="fname" data-f="name"></p>
-    <dl>
-      <div data-row="regNo"><dt>고유번호</dt><dd data-f="regNo"></dd></div>
-      <div><dt>대표자</dt><dd data-f="rep"></dd></div>
+  <div class="foot-quick"><div class="wrap">
+    <div class="fq"><button type="button" aria-expanded="false">관련 기관</button>
+      <ul>
+        <li><a href="https://www.siheung.go.kr" target="_blank" rel="noopener" title="새창열림">시흥시청</a></li>
+        <li><a href="https://www.youthcenter.go.kr" target="_blank" rel="noopener" title="새창열림">온통청년</a></li>
+        <li><a href="https://www.ggcf.kr" target="_blank" rel="noopener" title="새창열림">경기문화재단</a></li>
+      </ul></div>
+    <div class="fq"><button type="button" aria-expanded="false">정보공개</button>
+      <ul>
+        <li><a href="#/disclosure/articles">정관</a></li>
+        <li><a href="#/disclosure/finance">결산 공개</a></li>
+        <li><a href="#/disclosure/info">기본 정보</a></li>
+      </ul></div>
+    <div class="fq"><button type="button" aria-expanded="false">참여·협력</button>
+      <ul>
+        <li><a href="#/join/partner">협력 제안</a></li>
+        <li><a href="#/join/member">회원 참여</a></li>
+        <li><a href="#/join/faq">자주 묻는 질문</a></li>
+      </ul></div>
+  </div></div>
+  <div class="f-body"><div class="wrap">
+    <p class="f-logo"><span class="mark" aria-hidden="true">시흥</span><span data-f="name"></span></p>
+    <dl class="f-info">
       <div><dt>소재지</dt><dd data-f="address"></dd></div>
-      <div data-row="email"><dt>이메일</dt><dd><a data-f="email" id="fMail"></a></dd></div>
-      <div data-row="instagram"><dt>인스타그램</dt><dd><a data-f="instagram" id="fInsta" target="_blank" rel="noopener"></a></dd></div>
+      <div><dt>대표자</dt><dd data-f="rep"></dd></div>
+      <div data-row="regNo"><dt>고유번호</dt><dd data-f="regNo"></dd></div>
+      <div data-row="email"><dt>이메일</dt><dd data-f="email"></dd></div>
     </dl>
-    <p class="note"><a href="docs/articles.pdf" download="시흥청년문화예술공동체_정관.pdf">정관</a> · 이 페이지는 방문자의 개인정보를 수집하지 않습니다.</p>
-    <p class="note">본 페이지는 단체 소개용이며, 특정 기관과의 지정·후원 관계를 나타내지 않습니다.</p>
-    <p class="note">© <span id="year"></span> <span data-f="name"></span>. All rights reserved.</p>
-  </div>
+    <p class="f-links">
+      <a class="b" href="#/disclosure/privacy">개인정보처리방침</a>
+      <a href="#/about/location">오시는 길</a>
+      <a href="#/disclosure/articles">정관</a>
+    </p>
+    <p class="f-note">본 단체는 특정 기관의 지정·후원을 받는 단체가 아닙니다.</p>
+    <p class="f-note">© <span id="year"></span> <span data-f="name"></span>. All rights reserved.</p>
+  </div></div>
 </footer>
 
 <script>
 /* ═══════════ 여기만 수정하세요 ═══════════ */
 const SITE = {
   name: "시흥 청년문화예술공동체",
-  tagline: "문화예술, 기획, 디자인, 개발, 교육 분야의 청년들이 함께 시흥의 문화 프로젝트를 만드는 비영리 공동체",
+  tagline: "문화예술, 기획, 디자인, 개발, 교육 분야의 청년들이 함께 시흥의 문화 프로젝트를 만드는 비영리 공동체입니다.",
   mission: "분야를 넘나드는 청년들의 협업으로, 지역의 문제를 문화로 풀어냅니다.",
   vision: "시흥의 청년 창작자가 지역의 문화를 함께 만들어가는 도시",
   founded: "2026년 7월 2일",
+  foundedDate: "2026-07-02",
   rep: "박병근",
   address: "경기도 시흥시 서촌상가 2길 25-1, 405호",
   regNo: "",          // 고유번호 예: "000-00-00000"
-  email: "",          // 예: "hello@example.com" → 문의 버튼 자동 생성
-  instagram: "",      // 예: "@siheung_youth"
-  instagramUrl: "",   // 예: "https://instagram.com/siheung_youth"
+  email: "",          // 입력하면 문의 버튼이 생깁니다
+  instagramUrl: "",   // 예: "https://instagram.com/계정"
 
-  /* 대표 인사말 — 채우면 '소개' 아래에 표시됩니다. 줄바꿈은 \n */
+  /* 대표 인사말 — 비어 있으면 '인사말' 메뉴가 숨겨집니다. 줄바꿈은 \n */
   greeting: "",
 
-  /* 조직 — 이름을 채우면 '조직' 영역이 나타납니다. photo 예: "images/member-rep.jpg" */
+  /* 조직 — 이름이 하나라도 있으면 '조직' 메뉴가 나타납니다. photo 예: "images/member-rep.jpg" */
   team: [
     { role: "대표",   name: "", bio: "", photo: "" },
     { role: "부대표", name: "", bio: "", photo: "" },
     { role: "회계",   name: "", bio: "", photo: "" },
   ],
 
-  /* 활동 기록 불러오기 — 공개용 view: public_activities
-     필요한 열: activity_date(date, 정렬용), date_label(text, 예 "2026.09"), title, activity_type, description, image_url
-     anon(공개) 키만 넣으세요. 비어 있거나 실패하면 아래 기본 기록을 보여 줍니다. */
+  /* 활동 기록 DB(Supabase) — 공개용 view: public_activities (anon 키만) */
   supabaseUrl: "",
   supabaseAnonKey: "",
 };
 
-/* 기본 활동 기록 (날짜순). 사진: images/activity-YYYY-MM-주제.jpg */
-const FALLBACK_ACTIVITIES = [
-  { date_label: "2026.07.02", title: "단체 설립 (창립총회)", activity_type: "", description: "", image_url: "" /* images/activity-2026-07-founding.jpg */ },
-  { date_label: "2026.07~", title: "청년 문화예술인 공연 참여 운영", activity_type: "공연", description: "", image_url: "" /* images/activity-2026-07-performance.jpg */ },
-  { date_label: "2026.09", title: "시흥갯골축제 벽화 봉사", activity_type: "공공미술", description: "", image_url: "" /* images/activity-2026-09-gaetgol-mural.jpg */ },
-  { date_label: "", title: "청소년 진로체험 부스 운영", activity_type: "교육", description: "", image_url: "" /* images/activity-XXXX-XX-career-booth.jpg */ },
+/* 연혁 (단체의 주요 이정표) */
+const HISTORY = [
+  { date: "2026.07.02", text: "시흥 청년문화예술공동체 창립총회 및 설립" },
+];
+
+/* 공지사항 — 비어 있으면 '공지사항' 메뉴와 탭이 숨겨집니다. 새 글은 맨 위에 */
+const NOTICES = [
+  // { date: "2026.10.01", title: "홈페이지를 개설했습니다", url: "" },
+];
+
+/* 참여 모집 — deadline(YYYY-MM-DD)이 있으면 D-day, 없으면 '상시 모집' */
+const RECRUITS = [
+  { org: "회원 모집", title: "함께 활동할 시흥 청년 회원 모집", place: "시흥시 일대", time: "프로젝트별 상이", period: "상시", deadline: "", link: "#/join/member" },
+];
+
+/* 활동 소식 (DB 연결 전 기본값)
+   type: 공연 / 공공미술 / 교육 / 기타,  beneficiaries: 수혜 인원(숫자, 모르면 비워 둠) */
+const ACTIVITIES = [
+  { activity_date: "2026-07-02", date_label: "2026.07.02", activity_type: "기타", title: "단체 설립 (창립총회)", description: "", image_url: "", beneficiaries: "" },
+  { activity_date: "2026-07-01", date_label: "2026.07~", activity_type: "공연", title: "지역 행사 청년 문화예술인 공연 참여 운영", description: "", image_url: "", beneficiaries: "" },
+  { activity_date: "2026-09-01", date_label: "2026.09", activity_type: "공공미술", title: "시흥갯골축제 벽화 봉사", description: "", image_url: "", beneficiaries: "" },
+  { activity_date: "", date_label: "", activity_type: "교육", title: "청소년 진로체험 부스 운영", description: "", image_url: "", beneficiaries: "" },
 ];
 /* ═══════════════════════════════════════ */
 
-const $$ = s => document.querySelectorAll(s);
-const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const PROGRAMS = [
+  { key: "performance", cat: "공연", c: "c-perf", icon: "music", title: "지역 축제·행사 기획·운영 및 청년 예술인 공연",
+    short: "행사 성격에 맞는 청년 예술인 공연을 기획·섭외하고 현장 운영을 돕습니다.",
+    target: "지역 축제·행사 주최 측", how: "공연 기획, 예술인 섭외, 현장 운영 지원" },
+  { key: "publicart", cat: "공공미술", c: "c-art", icon: "brush", title: "공공미술·벽화 등 지역 참여 활동",
+    short: "주민과 함께하는 벽화·공공미술 활동을 진행합니다.",
+    target: "지역 주민, 마을·기관", how: "벽화·공공미술 기획 및 참여형 활동" },
+  { key: "career", cat: "교육", c: "c-edu", icon: "game", title: "청소년 진로체험",
+    short: "AI·게임 제작·디지털 창작을 직접 해보는 체험 부스와 수업을 운영합니다.",
+    target: "청소년, 학교·교육기관", how: "체험 부스, 진로 수업" },
+  { key: "education", cat: "교육", c: "c-dev", icon: "code", title: "청년 AI·Unity 창작 교육", wip: true,
+    short: "청년 대상 AI·Unity 창작 교육 과정을 준비하고 있습니다. 아직 운영 전입니다.",
+    target: "시흥 청년", how: "준비 중" },
+];
 
+const MENU = [
+  { id: "about", label: "단체소개", en: "ABOUT US", desc: "시흥 청년문화예술공동체를 소개합니다.", subs: [["greeting","인사말"],["vision","미션·비전"],["history","연혁"],["team","조직"],["location","오시는 길"]] },
+  { id: "programs", label: "주요사업", en: "PROGRAMS", desc: "지역과 함께 운영하는 문화 프로그램입니다.", subs: [["list","사업 안내"]] },
+  { id: "join", label: "참여·협력", en: "JOIN US", desc: "기관·학교·축제, 그리고 청년과 함께합니다.", subs: [["partner","협력 제안"],["member","회원 참여"],["faq","자주 묻는 질문"]] },
+  { id: "news", label: "알림마당", en: "NEWS", desc: "공동체의 소식과 활동 기록입니다.", subs: [["notice","공지사항"],["activities","활동 소식"]] },
+  { id: "disclosure", label: "정보공개", en: "DISCLOSURE", desc: "단체 운영의 기본 정보를 투명하게 공개합니다.", subs: [["articles","정관"],["finance","결산 공개"],["info","기본 정보"],["privacy","개인정보처리방침"]] },
+];
+
+const ICONS = {
+  music:'<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+  brush:'<path d="M18 3l3 3-9 9H9v-3z"/><path d="M3 21c3 0 5-1 6-4"/>',
+  game:'<rect x="2" y="6" width="20" height="12" rx="3"/><path d="M6 12h4M8 10v4M15 11h.01M18 13h.01"/>',
+  code:'<path d="M8 6l-6 6 6 6M16 6l6 6-6 6"/>',
+  people:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14c2.4 0 4 1.5 4.6 4"/>',
+  star:'<path d="M12 3l2.8 5.8 6.2.9-4.5 4.4 1 6.2L12 17.4 6.5 20.3l1-6.2L3 9.7l6.2-.9z"/>',
+  hand:'<path d="M3 12l4-4 4 3 3-3 7 6-5 5-4-3-2 2z"/><path d="M11 11l3 3"/>',
+  doc:'<path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/>',
+  etc:'<circle cx="12" cy="12" r="8"/><path d="M8 12h8"/>',
+};
+const TYPE = { "공연": ["c-perf","music"], "공공미술": ["c-art","brush"], "교육": ["c-edu","game"], "개발": ["c-dev","code"] };
+
+/* ── 유틸 ── */
+const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const svg = k => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[k] || ICONS.etc}</svg>`;
+const thumb = (cls, icon, src, alt) => `<div class="thumb ${cls}">${svg(icon)}${src ? `<img src="${esc(src)}" alt="${esc(alt)}" loading="lazy" onerror="this.remove()">` : ""}</div>`;
+const DAY = 86400000;
+const today = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
+
+function subVisible(page, sub) {
+  if (page === "about" && sub === "greeting") return !!SITE.greeting.trim();
+  if (page === "about" && sub === "team") return SITE.team.some(m => m.name.trim());
+  if (page === "news" && sub === "notice") return NOTICES.length > 0;
+  return true;
+}
+const visibleSubs = m => m.subs.filter(([s]) => subVisible(m.id, s));
+
+/* ── 채우기 ── */
 function fill() {
   $$("[data-f]").forEach(el => { el.textContent = (SITE[el.dataset.f] || "").trim(); });
-  $$("[data-row]").forEach(el => { if (!(SITE[el.dataset.row] || "").trim()) el.classList.add("hidden"); });
-  document.getElementById("year").textContent = new Date().getFullYear();
+  $$("[data-row]").forEach(el => { if (!(SITE[el.dataset.row] || "").trim()) el.hidden = true; });
+  $$("[data-icon]").forEach(el => { el.innerHTML = svg(el.dataset.icon); });
+  $("#year").textContent = $("#nowYear").textContent = new Date().getFullYear();
+  $("#sinceYear").textContent = SITE.foundedDate.slice(0, 4);
 
+  if (SITE.instagramUrl.trim()) { const li = $("#mhInsta"); li.querySelector("a").href = SITE.instagramUrl.trim(); li.hidden = false; }
   const mail = SITE.email.trim();
   if (mail) {
-    document.getElementById("fMail").href = "mailto:" + mail;
     const subj = { partner: "[협력 제안] ", member: "[회원 참여 문의] " };
-    $$("[data-mail]").forEach(a => {
-      a.href = `mailto:${mail}?subject=${encodeURIComponent(subj[a.dataset.mail] + SITE.name)}`;
-      a.classList.remove("hidden");
-    });
-    $$("[data-nomail]").forEach(p => p.classList.add("hidden"));
+    $$("[data-mail]").forEach(a => { a.href = `mailto:${mail}?subject=${encodeURIComponent(subj[a.dataset.mail] + SITE.name)}`; a.hidden = false; });
+    $$("[data-nomail]").forEach(p => p.hidden = true);
   }
-  if (SITE.instagramUrl.trim()) document.getElementById("fInsta").href = SITE.instagramUrl.trim();
-  if (SITE.greeting.trim()) document.getElementById("greeting").classList.remove("hidden");
-  document.getElementById("mapLink").href = "https://map.naver.com/p/search/" + encodeURIComponent(SITE.address.split(",")[0]);
+  const q = encodeURIComponent(SITE.address.split(",")[0]);
+  $("#naverMap").href = "https://map.naver.com/p/search/" + q;
+  $("#kakaoMap").href = "https://map.kakao.com/?q=" + q;
 
-  const members = SITE.team.filter(m => m.name.trim());
-  if (members.length) {
-    document.getElementById("teamGrid").innerHTML = members.map(m => `
-      <div class="card glass person">
-        <div class="avatar">${m.photo ? `<img src="${esc(m.photo)}" alt="${esc(m.name)} 사진">` : ""}</div>
-        <p class="role">${esc(m.role)}</p><h3>${esc(m.name)}</h3>
-        ${m.bio ? `<p>${esc(m.bio)}</p>` : ""}
-      </div>`).join("");
-    document.getElementById("team").classList.remove("hidden");
-    document.getElementById("navTeam").classList.remove("hidden");
-  }
-}
-
-function renderTimeline(list) {
-  document.getElementById("timeline").innerHTML = list.filter(a => a.title).map(a => `
-    <li class="t-item glass${a.image_url ? "" : " no-photo"}">
-      ${a.image_url ? `<div class="photo"><img src="${esc(a.image_url)}" alt="${esc(a.title)} 활동 사진" loading="lazy"></div>` : ""}
-      <div>
-        ${a.date_label ? `<span class="t-date">${esc(a.date_label)}</span>` : ""}
-        ${a.activity_type ? `<span class="t-type">${esc(a.activity_type)}</span>` : ""}
-        <h3>${esc(a.title)}</h3>
-        ${a.description ? `<p>${esc(a.description)}</p>` : ""}
-      </div>
+  /* GNB 메가메뉴 */
+  $("#gnbList").innerHTML = MENU.map(m => `
+    <li>
+      <a class="dep1" data-menu="${m.id}" href="#/${m.id}/${visibleSubs(m)[0][0]}" aria-haspopup="true">${m.label}</a>
+      <div class="mega"><div class="wrap">
+        <div class="mega-title"><h2>${m.label}</h2><p>${m.desc}</p><p class="slogan"><b>Youth × Culture,</b> 청년의 협업으로 지역을 문화로.</p></div>
+        <ul class="mega-list">${visibleSubs(m).map(([s, l]) => `<li><a href="#/${m.id}/${s}">${l}</a></li>`).join("")}</ul>
+      </div></div>
     </li>`).join("");
+
+  /* 전체메뉴 */
+  $("#amDep1").innerHTML = MENU.map((m, i) => `<a href="#am-${m.id}" class="${i ? "" : "on"}" data-am="${m.id}">${m.label}</a>`).join("");
+  $("#amSubs").innerHTML = MENU.map(m => `
+    <section id="am-${m.id}"><h3>${m.label}</h3>${visibleSubs(m).map(([s, l]) => `<a href="#/${m.id}/${s}">${l}</a>`).join("")}</section>`).join("");
+
+  /* 숫자로 보는 공동체 (기록 기반 자동 집계) */
+  renderStats(ACTIVITIES);
+
+  /* 사업 탭 + 카드 */
+  const cats = ["전체", ...new Set(PROGRAMS.map(p => p.cat))];
+  $("#progTabs").innerHTML = cats.map((c, i) => `<button type="button" role="tab" aria-selected="${i === 0}" data-cat="${c}">${c}</button>`).join("");
+  const drawProg = cat => {
+    $("#homePrograms").innerHTML = PROGRAMS.filter(p => cat === "전체" || p.cat === cat).map(p => `
+      <a class="prog" href="#/programs/list">
+        ${thumb(p.c, p.icon, `images/program-${p.key}.jpg`, p.title)}
+        <p class="cate">${p.cat}${p.wip ? `<span class="tag-wip">준비 중</span>` : ""}</p>
+        <h4>${esc(p.title)}</h4><p>${esc(p.short)}</p>
+      </a>`).join("");
+  };
+  $("#progTabs").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    $$("#progTabs button").forEach(x => x.setAttribute("aria-selected", x === b));
+    drawProg(b.dataset.cat);
+  });
+  drawProg("전체");
+
+  $("#programList").innerHTML = PROGRAMS.map(p => `
+    <div class="p-row">
+      ${thumb(p.c, p.icon, `images/program-${p.key}.jpg`, p.title)}
+      <div><p class="cate" style="font-size:13px;font-weight:700;color:var(--accent)">${p.cat}${p.wip ? `<span class="tag-wip">준비 중</span>` : ""}</p>
+        <h4>${esc(p.title)}</h4><p class="desc">${esc(p.short)}</p>
+        <dl><dt>대상</dt><dd>${esc(p.target)}</dd><dt>내용</dt><dd>${esc(p.how)}</dd></dl></div>
+    </div>`).join("");
+
+  /* 참여 모집 */
+  $("#recruit").innerHTML = RECRUITS.map(r => {
+    let badge = "상시 모집";
+    if (r.deadline) { const d = Math.ceil((new Date(r.deadline) - today()) / DAY); badge = d > 0 ? `D-${d}` : d === 0 ? "오늘 마감" : "마감"; }
+    return `<li><p class="org">${esc(r.org)}</p><h5>${esc(r.title)}</h5>
+      <ul class="lst"><li><strong>장소</strong>${esc(r.place)}</li><li><strong>활동</strong>${esc(r.time)}</li><li><strong>접수</strong>${esc(r.period)}</li></ul>
+      <div class="foot"><span class="dday">${badge}</span><a class="go" href="${esc(r.link)}">자세히 보기 ›</a></div></li>`;
+  }).join("");
+
+  /* 연혁 */
+  const byYear = {};
+  HISTORY.forEach(h => (byYear[h.date.slice(0, 4)] ||= []).push(h));
+  $("#history").innerHTML = Object.keys(byYear).sort().reverse().map(y => `
+    <div class="yr"><p class="y">${y}</p><ul>${byYear[y].map(h => `<li><b>${esc(h.date.slice(5, 7))}월</b><span>${esc(h.text)}</span></li>`).join("")}</ul></div>`).join("");
+
+  /* 조직 */
+  $("#team").innerHTML = SITE.team.filter(m => m.name.trim()).map(m => `
+    <li><div class="ph">${m.photo ? `<img src="${esc(m.photo)}" alt="${esc(m.name)}">` : svg("people")}</div>
+      <p class="role">${esc(m.role)}</p><h4>${esc(m.name)}</h4>${m.bio ? `<p>${esc(m.bio)}</p>` : ""}</li>`).join("");
+
+  /* 공지 게시판 */
+  $("#noticeBody").innerHTML = NOTICES.map((n, i) => `
+    <tr><td class="no">${NOTICES.length - i}</td>
+      <td class="t">${n.url ? `<a href="${esc(n.url)}">${esc(n.title)}</a>` : esc(n.title)}</td>
+      <td class="hide-m">${esc(n.date)}</td></tr>`).join("");
 }
 
+function renderStats(list) {
+  const acts = list.filter(a => a.title);
+  const days = Math.floor((today() - new Date(SITE.foundedDate)) / DAY) + 1;
+  const people = acts.reduce((s, a) => s + (parseInt(a.beneficiaries, 10) || 0), 0);
+  const running = PROGRAMS.filter(p => !p.wip).length;
+  const items = [
+    ["함께한 날", days, "일", `${SITE.foundedDate.replaceAll("-", ".")} 설립`],
+    ["기록된 활동", acts.length, "건", "활동 소식 기준"],
+    ["운영 중인 사업", running, "개 분야", "준비 중인 사업 제외"],
+  ];
+  if (people > 0) items.push(["함께한 시민", people, "명", "기록된 수혜 인원 합계"]);
+  $("#stats").innerHTML = items.map(([k, v, u, n]) => `
+    <div class="stat"><p class="k">${k}</p><p class="v"><span data-count="${v}">${v.toLocaleString()}</span><small>${u}</small></p><p class="n">${n}</p></div>`).join("");
+}
+
+/* ── 활동 소식 ── */
+function newsCard(a) {
+  const [cls, icon] = TYPE[a.activity_type] || ["c-etc", "etc"];
+  return `<article class="news">
+    ${thumb(cls, icon, a.image_url, a.title + " 활동 사진")}
+    <p class="meta">${a.activity_type ? `<span class="type">${esc(a.activity_type)}</span>` : ""}${a.date_label ? `<span>${esc(a.date_label)}</span>` : ""}</p>
+    <h4>${esc(a.title)}</h4>${a.description ? `<p>${esc(a.description)}</p>` : ""}
+  </article>`;
+}
+let NEWS_SRC = [];
+function renderNews(list) {
+  NEWS_SRC = list.filter(a => a.title).sort((a, b) => (b.activity_date || "").localeCompare(a.activity_date || ""));
+  $("#homeNews").innerHTML = NEWS_SRC.slice(0, 4).map(newsCard).join("");
+  $("#newsAll").innerHTML = NEWS_SRC.map(newsCard).join("");
+  renderStats(list);
+  drawNewsTab($("#newsTabs [aria-selected='true']")?.dataset.tab || "act");
+}
+function drawNewsTab(tab) {
+  const rows = tab === "notice"
+    ? NOTICES.slice(0, 5).map(n => ({ c1: "공지사항", title: n.title, date: n.date, href: "#/news/notice" }))
+    : NEWS_SRC.slice(0, 5).map(a => ({ c1: "활동 소식", c2: a.activity_type, title: a.title, date: a.date_label, href: "#/news/activities" }));
+  $("#newsList").innerHTML = rows.length ? rows.map(r => `
+    <li><a href="${r.href}"><p class="cate"><span class="ty2">${r.c1}</span>${r.c2 ? `<span class="ty1">${esc(r.c2)}</span>` : ""}</p>
+      <div class="tit"><h5>${esc(r.title)}</h5><span class="date">${esc(r.date)}</span></div></a></li>`).join("")
+    : `<li class="empty">등록된 글이 없습니다.</li>`;
+}
+function initNewsTabs() {
+  const tabs = [["act", "활동 소식"]];
+  if (NOTICES.length) tabs.push(["notice", "공지사항"]);
+  $("#newsTabs").innerHTML = tabs.map(([k, l], i) => `<button type="button" role="tab" aria-selected="${i === 0}" data-tab="${k}">${l}</button>`).join("");
+  $("#newsTabs").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    $$("#newsTabs button").forEach(x => x.setAttribute("aria-selected", x === b));
+    drawNewsTab(b.dataset.tab);
+  });
+}
 async function loadActivities() {
-  renderTimeline(FALLBACK_ACTIVITIES);
+  renderNews(ACTIVITIES);
   if (!SITE.supabaseUrl || !SITE.supabaseAnonKey) return;
   try {
-    // Supabase 설정이 있을 때만 라이브러리를 불러옵니다
     await new Promise((ok, fail) => {
       const s = document.createElement("script");
       s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
-      s.onload = ok; s.onerror = fail;
-      document.head.appendChild(s);
+      s.onload = ok; s.onerror = fail; document.head.appendChild(s);
     });
     const client = window.supabase.createClient(SITE.supabaseUrl, SITE.supabaseAnonKey, { auth: { persistSession: false } });
     const { data, error } = await client.from("public_activities")
-      .select("activity_date,date_label,title,activity_type,description,image_url")
-      .order("activity_date", { ascending: true, nullsFirst: false });
+      .select("activity_date,date_label,title,activity_type,description,image_url,beneficiaries");
     if (error) throw error;
-    if (data && data.length) renderTimeline(data);
-  } catch (e) {
-    console.warn("활동 기록 불러오기 실패, 기본 기록 표시:", e);
-  }
+    if (data && data.length) renderNews(data);
+  } catch (e) { console.warn("활동 기록 불러오기 실패, 기본 기록 표시:", e); }
 }
 
-/* 모바일 메뉴 */
-const btn = document.getElementById("menuBtn"), nav = document.getElementById("nav");
-function setMenu(open) {
-  nav.classList.toggle("open", open);
-  btn.setAttribute("aria-expanded", open);
-  btn.setAttribute("aria-label", open ? "메뉴 닫기" : "메뉴 열기");
+/* ── 메인 슬라이드 (자동 넘김 + 정지 버튼) ── */
+function initSlider() {
+  const track = $("#slides"), n = track.children.length;
+  let cur = 0, timer = null;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  $("#vTot").textContent = n;
+  const go = i => {
+    cur = (i + n) % n;
+    track.style.transform = `translateX(-${cur * 100}%)`;
+    $("#vCur").textContent = cur + 1;
+    $("#vBar").style.width = `${((cur + 1) / n) * 100}%`;
+    [...track.children].forEach((s, k) => s.setAttribute("aria-hidden", k !== cur));
+    [...track.children].forEach((s, k) => s.querySelectorAll("a").forEach(a => a.tabIndex = k === cur ? 0 : -1));
+  };
+  const play = () => { stop(); timer = setInterval(() => go(cur + 1), 6000); $("#vStop").textContent = "❚❚"; $("#vStop").setAttribute("aria-label", "자동 넘김 정지"); };
+  const stop = () => { clearInterval(timer); timer = null; $("#vStop").textContent = "▶"; $("#vStop").setAttribute("aria-label", "자동 넘김 재생"); };
+  $("#vPrev").onclick = () => { go(cur - 1); if (timer) play(); };
+  $("#vNext").onclick = () => { go(cur + 1); if (timer) play(); };
+  $("#vStop").onclick = () => timer ? stop() : play();
+  go(0);
+  reduce ? stop() : play();
 }
-btn.addEventListener("click", () => setMenu(!nav.classList.contains("open")));
-nav.addEventListener("click", e => { if (e.target.tagName === "A") setMenu(false); });
-document.addEventListener("keydown", e => { if (e.key === "Escape" && nav.classList.contains("open")) { setMenu(false); btn.focus(); } });
+
+/* ── 라우터: #/페이지/하위메뉴 ── */
+function route() {
+  if (location.hash && !location.hash.startsWith("#/")) return;
+  const [, pageId, subId] = location.hash.split("/");
+  const menu = MENU.find(m => m.id === pageId);
+  $$("[data-page]").forEach(el => el.hidden = true);
+  $$(".dep1").forEach(a => a.classList.toggle("on", a.dataset.menu === pageId));
+  $("#subShell")?.remove();
+  $$("#gnb li.open").forEach(li => li.classList.remove("open"));
+
+  if (!menu) {
+    $('[data-page="home"]').hidden = false;
+    document.title = SITE.name;
+  } else {
+    const subs = visibleSubs(menu);
+    const cur = subs.find(([s]) => s === subId) || subs[0];
+    const page = $(`[data-page="${menu.id}"]`);
+    page.querySelectorAll("[data-sub]").forEach(el => el.hidden = el.dataset.sub !== cur[0]);
+    const shell = document.createElement("div");
+    shell.id = "subShell";
+    shell.innerHTML = `
+      <div class="subvisual"><div class="wrap">
+        <p class="en">${menu.en}</p><h2>${menu.label}</h2>
+        <p class="crumb"><span>홈</span><span>${menu.label}</span><span>${cur[1]}</span></p>
+      </div></div>
+      ${subs.length > 1 ? `<nav class="lnb" aria-label="${menu.label} 하위 메뉴"><div class="wrap"><ul>
+        ${subs.map(([s, l]) => `<li><a href="#/${menu.id}/${s}" class="${s === cur[0] ? "on" : ""}" ${s === cur[0] ? 'aria-current="page"' : ""}>${l}</a></li>`).join("")}
+      </ul></div></nav>` : ""}`;
+    page.before(shell);
+    page.classList.add("sub-body", "wrap");
+    page.hidden = false;
+    document.title = `${cur[1]} | ${menu.label} | ${SITE.name}`;
+  }
+  setAll(false);
+  window.scrollTo(0, 0);
+}
+
+/* ── 전체메뉴 ── */
+const allmenu = $("#allmenu"), allBtn = $("#allBtn");
+function setAll(open) {
+  allmenu.classList.toggle("open", open);
+  document.body.style.overflow = open ? "hidden" : "";
+  allBtn.setAttribute("aria-expanded", open);
+  if (open) $("#amClose").focus();
+}
+allBtn.addEventListener("click", () => setAll(true));
+$("#amClose").addEventListener("click", () => { setAll(false); allBtn.focus(); });
+$("#amDep1").addEventListener("click", e => {
+  const a = e.target.closest("a"); if (!a) return;
+  e.preventDefault();
+  $$("#amDep1 a").forEach(x => x.classList.toggle("on", x === a));
+  $("#am-" + a.dataset.am).scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+/* GNB: 키보드·터치로도 메가메뉴 열기 */
+$("#gnbList").addEventListener("focusin", e => {
+  const li = e.target.closest("#gnbList>li");
+  $$("#gnbList>li").forEach(x => x.classList.toggle("open", x === li));
+});
+$("#gnb").addEventListener("mouseleave", () => $$("#gnbList>li.open").forEach(x => x.classList.remove("open")));
+document.addEventListener("focusin", e => { if (!e.target.closest("#gnb")) $$("#gnbList>li.open").forEach(x => x.classList.remove("open")); });
+
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape") return;
+  if (allmenu.classList.contains("open")) { setAll(false); allBtn.focus(); }
+  $$("#gnbList>li.open").forEach(x => x.classList.remove("open"));
+});
+
+/* 푸터 관련 사이트 */
+$$(".fq>button").forEach(b => b.addEventListener("click", () => {
+  const box = b.parentElement, open = !box.classList.contains("open");
+  $$(".fq").forEach(x => { x.classList.remove("open"); x.firstElementChild.setAttribute("aria-expanded", "false"); });
+  box.classList.toggle("open", open); b.setAttribute("aria-expanded", open);
+}));
+
+/* 화면 크기 */
+function setZoom(z) {
+  document.body.style.zoom = z;
+  $$("[data-zoom]").forEach(b => b.setAttribute("aria-pressed", b.dataset.zoom === String(z)));
+  try { localStorage.setItem("zoom", z); } catch (e) {}
+}
+$$("[data-zoom]").forEach(b => b.addEventListener("click", () => setZoom(b.dataset.zoom)));
+try { const z = localStorage.getItem("zoom"); if (z) setZoom(z); } catch (e) {}
+
+/* 상단으로 */
+const btnTop = $("#btnTop");
+addEventListener("scroll", () => btnTop.classList.toggle("show", scrollY > 600), { passive: true });
+btnTop.addEventListener("click", e => { e.preventDefault(); scrollTo({ top: 0, behavior: "smooth" }); });
 
 fill();
+initNewsTabs();
 loadActivities();
+initSlider();
+window.addEventListener("hashchange", route);
+route();
 </script>
 </body>
 </html>
