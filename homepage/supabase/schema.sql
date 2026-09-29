@@ -453,3 +453,7 @@ grant select, insert, update, delete on
   public.profiles, public.applications, public.posts, public.comments, public.reports,
   public.activities, public.events, public.tasks, public.ledger, public.site_settings to authenticated;
 revoke insert, delete on public.profiles from authenticated;  -- 프로필은 가입 트리거로만 생성
+
+-- 설치가 끝나면 Supabase API가 새 테이블을 바로 알아보도록 목록 새로고침
+-- ("Could not find the table ... in the schema cache" 오류 예방)
+notify pgrst, 'reload schema';
