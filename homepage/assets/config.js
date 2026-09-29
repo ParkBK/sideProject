@@ -10,7 +10,7 @@
      나머지 홈페이지는 그대로 동작합니다.
    ───────────────────────────────────────────────────────────── */
 window.SB_CONFIG = {
-  url: "",
-  anonKey: "",
-  kakao: false,   // 카카오 로그인 설정(SETUP.md 10번)을 마친 뒤 true로 바꾸세요
+  url: "https://zjwfnpdahycavsiaebth.supabase.co",
+  anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpqd2ZucGRhaHljYXZzaWFlYnRoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2NjQ5MjEsImV4cCI6MjEwNjI0MDkyMX0.kRQZl3p2EZxKDslMjCZInvkqw_UCeWF69xfxOqwgth8",
+  kakao: true,   // 카카오 로그인 설정(SETUP.md 10번)을 마친 뒤 true로 바꾸세요
 };
