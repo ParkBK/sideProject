@@ -1221,7 +1221,7 @@
         <a href="#/disclosure/articles">정관</a>
       </p>
       <p class="f-note">본 단체는 특정 기관의 지정·후원을 받는 단체가 아니며, 관련 기관 링크는 안내 목적입니다.</p>
-      <p class="f-note">© <span id="year"></span> <span data-f="name"></span>. All rights reserved.</p>
+      <p class="f-note">© <span id="year"></span> <span data-f="name"></span>. 이 홈페이지의 글·사진·디자인의 저작권은 단체에 있으며, 허락 없이 복제·배포할 수 없습니다.</p>
     </div>
   </div></div>
 </footer>
@@ -1630,7 +1630,7 @@ function buildMap(host) {
     <div class="vm-side">
       <div class="vm-tabs" role="tablist" aria-label="권역">${["전체", ...AREA_DEF.map(a => a[0])].map(t => `<button type="button" role="tab" data-tab="${t}">${t}</button>`).join("")}</div>
       <div class="vm-body" aria-live="polite"></div>
-      <p class="vm-note">색은 홈페이지에 기록된 활동 수에 따라 자동으로 채워집니다. 권역은 편의상 나눈 것으로 시흥시의 공식 구분이 아닙니다.<br>행정동 경계: 통계청 SGIS 행정구역 경계 (2026년 7월 기준, 단순화)</p>
+      <p class="vm-note">색은 홈페이지에 기록된 활동 수에 따라 자동으로 채워집니다. 권역은 편의상 나눈 것으로 시흥시의 공식 구분이 아닙니다.<br>행정동 경계(2026년 7월 기준, 단순화): 통계청 통계지리정보서비스(<a href="https://sgis.kostat.go.kr" target="_blank" rel="noopener" style="text-decoration:underline">SGIS</a>)에서 공공누리 제1유형으로 개방한 행정동 경계를 가공한 것이며(가공: <a href="https://github.com/vuski/admdongkor" target="_blank" rel="noopener" style="text-decoration:underline">vuski/admdongkor</a>), <a href="https://creativecommons.org/licenses/by/4.0/deed.ko" target="_blank" rel="noopener" style="text-decoration:underline">CC BY 4.0</a>으로 배포됩니다.</p>
     </div>
   </div>`;
   const mapBox = host.querySelector(".vm-map"), body = host.querySelector(".vm-body"), tip = host.querySelector(".vm-tip");
