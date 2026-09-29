@@ -74,6 +74,8 @@
   .masthead a:hover{color:var(--ink)}
   .masthead .dark{background:#5f646b;color:#fff}
   .masthead .black{background:var(--ink);color:#fff}
+  .masthead button{font-size:12px;color:var(--sub)}
+  .masthead button:hover{color:var(--ink)}
   .masthead .dark a:hover,.masthead .black a:hover{color:var(--point)}
   .zoom{gap:2px}
   .zoom span{margin-right:6px}
@@ -133,9 +135,14 @@
   .am-user{padding:20px 16px;background:var(--soft)}
   .am-user p{font-size:17px;font-weight:700}
   .am-user .btns{display:flex;gap:8px;margin-top:14px}
-  .am-user a{flex:1;text-align:center;padding:12px 0;border-radius:6px;font-weight:700;font-size:15px}
-  .am-user a.a1{background:var(--brand);color:#fff}
-  .am-user a.a2{background:#fff;box-shadow:inset 0 0 0 1px var(--line)}
+  .am-user .btns>*{flex:1;text-align:center;padding:12px 0;border-radius:6px;font-weight:700;font-size:15px}
+  .am-user .a1{background:var(--brand);color:#fff}
+  .am-user .a2{background:#fff;box-shadow:inset 0 0 0 1px var(--line)}
+  .am-quick{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line)}
+  .am-quick a{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 4px;font-size:13.5px;font-weight:700}
+  .am-quick a+a{box-shadow:-1px 0 0 var(--line)}
+  .am-quick svg{width:22px;height:22px;color:var(--brand)}
+  .am-quick a:hover{background:var(--brand-soft)}
   .am-body{flex:1;display:grid;grid-template-columns:118px 1fr;overflow:hidden}
   .am-dep1{background:var(--soft);overflow-y:auto}
   .am-dep1 a{display:block;padding:18px 16px;font-weight:700;font-size:15px;color:var(--sub)}
@@ -147,11 +154,14 @@
   .am-subs a:hover{color:var(--brand)}
   @media(min-width:1024px){
     .am-head{padding:0 max(24px,calc((100vw - var(--wrap))/2))}
-    .am-user{display:none}
+    .am-user{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px max(24px,calc((100vw - var(--wrap))/2))}
+    .am-user .btns{margin-top:0;min-width:360px}
+    .am-quick{max-width:calc(var(--wrap) + 48px);width:100%;margin:0 auto;padding:0 24px;border:0}
+    .am-quick a{flex-direction:row;justify-content:center;font-size:15px;padding:18px 4px}
     .am-body{grid-template-columns:1fr;overflow-y:auto}
     .am-dep1{display:none}
-    .am-subs{display:grid;grid-template-columns:repeat(5,1fr);gap:0 32px;max-width:calc(var(--wrap) + 48px);width:100%;margin:0 auto;padding:48px 24px}
-    .am-subs section{border:0;border-top:2px solid var(--ink)}
+    .am-subs{display:grid;grid-template-columns:repeat(4,1fr);gap:0 32px;max-width:calc(var(--wrap) + 48px);width:100%;margin:0 auto;padding:48px 24px}
+    .am-subs section{border:0;border-top:2px solid var(--ink);margin-bottom:24px}
   }
 
   /* ── 공통 버튼 ── */
@@ -353,6 +363,7 @@
   @media(max-width:767px){.map-head h3{font-size:30px}.map-head p{font-size:14px}}
   .vmap{display:grid;gap:40px}
   @media(min-width:1024px){.vmap{grid-template-columns:1fr 1fr;gap:56px;align-items:start}}
+  .vmap>*{min-width:0}
   .vm-map{position:relative}
   .vm-water{position:absolute;left:-8px;top:0;writing-mode:vertical-rl;font-size:120px;font-weight:900;line-height:1;letter-spacing:.02em;color:#f2f4f7;user-select:none;pointer-events:none}
   @media(max-width:1023px){.vm-water{display:none}}
@@ -376,6 +387,29 @@
   .vm-tip{position:absolute;z-index:3;pointer-events:none;background:var(--ink);color:#fff;font-size:13px;font-weight:600;padding:6px 10px;border-radius:6px;white-space:nowrap;transform:translate(-50%,calc(-100% - 12px))}
   .vm-legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;font-size:13px;color:var(--sub)}
   .vm-legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+  .dong.l0{fill:#eceef1}.dong.l1{fill:#c6d6f4}.dong.l2{fill:#7a9fe3}.dong.l3{fill:var(--brand)}
+  .dong.sel{fill:var(--point)!important}
+  .dong.pop{animation:fillpop .7s var(--ease)}
+  @keyframes fillpop{0%{fill:#fff}35%{fill:var(--point)}}
+  .lbl.on-dark{fill:#fff;stroke:rgba(15,52,128,.6)}
+  .lvdot{width:12px;height:12px;border-radius:50%;flex:none}
+  .lv0{background:#eceef1;box-shadow:inset 0 0 0 1px #d5d8dd}.lv1{background:#c6d6f4}.lv2{background:#7a9fe3}.lv3{background:var(--brand)}
+  .vm-legend i.lv0,.vm-legend i.lv1,.vm-legend i.lv2,.vm-legend i.lv3{border-radius:3px}
+  .vm-score{position:relative;z-index:2;display:grid;grid-template-columns:auto 1fr;align-items:end;gap:4px 24px;padding:18px 22px;border-radius:14px;background:#fff;box-shadow:0 6px 20px rgba(0,0,0,.08);margin-bottom:8px}
+  .vm-score .k{grid-column:1/-1}
+  .vm-score .vm-bar{align-self:center;margin-top:0}
+  .vm-score .n{grid-column:1/-1}
+  .vm-score .k{font-size:13.5px;font-weight:700;color:var(--ink2)}
+  .vm-score .v{margin-top:4px;font-size:15px;color:var(--sub);font-weight:600}
+  .vm-score .v b{font-size:44px;font-weight:800;color:var(--brand);letter-spacing:-.03em;margin-right:4px;line-height:1}
+  .vm-bar{margin-top:10px;height:8px;border-radius:4px;background:#eceef1;overflow:hidden}
+  .vm-bar span{display:block;height:100%;width:0;border-radius:4px;background:linear-gradient(90deg,#7a9fe3,var(--brand));transition:width 1.6s var(--ease) .4s}
+  .vm-score .n{margin-top:10px;font-size:13px;color:var(--sub)}
+  .vm-score .n b{color:var(--ink)}
+
+  .vm-kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+  .vm-kpi li{padding:14px;border-radius:10px;background:var(--soft);font-size:13px;color:var(--sub);text-align:center}
+  .vm-kpi b{display:block;font-size:24px;font-weight:800;color:var(--ink)}
   .lg-n{background:#d9e5f8}.lg-c{background:#fcecbd}.lg-s{background:#d3ede2}
   .vm-legend .pin-l{background:var(--point);border-radius:50%;box-shadow:inset 0 0 0 1.6px var(--ink)}
   .vm-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
@@ -409,6 +443,7 @@
   .vm-dh{display:flex;align-items:center;gap:12px;margin-top:14px;padding-bottom:18px;border-bottom:2px solid var(--ink)}
   .vm-dh h4{font-size:30px;font-weight:800;letter-spacing:-.04em}
   .vm-dh p{margin-left:auto;font-size:15px;color:var(--ink2)}
+  .vm-dh .lvdot{width:16px;height:16px}
   .vm-dh p b{color:var(--brand);font-size:20px}
   .vm-acts li{display:flex;gap:14px;align-items:center;padding:16px 0;border-bottom:1px solid var(--line)}
   .vm-acts .dt{flex:none;width:86px;font-size:13.5px;color:var(--sub)}
@@ -418,6 +453,106 @@
   .vm-cta h5{font-size:18px;font-weight:800;letter-spacing:-.03em}
   .vm-cta p{margin-top:6px;font-size:14.5px;color:var(--ink2)}
   .vm-cta .btn{margin-top:16px;height:46px}
+
+
+  /* ── 활동 분야·협력·가입 흐름 ── */
+  .area-card{display:block;padding:28px 26px;border:1px solid var(--line);border-radius:14px;background:#fff;height:100%;transition:border-color .2s,transform .25s var(--ease),box-shadow .25s}
+  .area-card:hover{border-color:var(--brand);transform:translateY(-4px);box-shadow:0 12px 26px rgba(24,71,164,.08)}
+  .area-card .ic{width:52px;height:52px;border-radius:14px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center}
+  .area-card .ic svg{width:26px;height:26px}
+  .area-card.plan .ic{background:var(--point-soft);color:#8a5a00}
+  .area-card .chips{margin-top:18px}
+  .area-card h4{margin-top:10px;font-size:19px;font-weight:800;letter-spacing:-.03em;line-height:1.4}
+  .area-card p{margin-top:8px;font-size:14.5px;color:var(--sub);line-height:1.65}
+  .chip.now{background:var(--brand);color:#fff}
+  .field-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+  .field-grid li{padding:16px 18px;border-radius:10px;background:var(--soft)}
+  .field-grid b{display:block;font-size:15.5px}
+  .field-grid span{display:block;margin-top:4px;font-size:13px;color:var(--sub);line-height:1.5}
+  .collab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+  .collab-grid li{display:flex;gap:14px;align-items:flex-start;padding:18px;border:1px solid var(--line);border-radius:12px;transition:border-color .2s}
+  .collab-grid li:hover{border-color:var(--brand)}
+  .collab-grid .ic{flex:none;width:40px;height:40px;border-radius:10px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center}
+  .collab-grid .ic svg{width:20px;height:20px}
+  .collab-grid b{display:block;font-size:15.5px}
+  .collab-grid span{display:block;margin-top:3px;font-size:13px;color:var(--sub);line-height:1.5}
+  .flow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;counter-reset:f}
+  .flow li{counter-increment:f;position:relative;text-align:center;padding:20px 8px;border-radius:10px;background:var(--soft)}
+  .flow li::before{content:counter(f);display:grid;place-items:center;width:28px;height:28px;margin:0 auto 8px;border-radius:50%;background:var(--brand);color:#fff;font-size:13px;font-weight:800}
+  .flow b{display:block;font-size:15px}
+  .flow span{display:block;margin-top:4px;font-size:12.5px;color:var(--sub)}
+  @media(max-width:767px){.flow{grid-template-columns:1fr 1fr}}
+
+  /* ── 게시판·폼 ── */
+  .bd-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:18px}
+  .bd-head p{font-size:14.5px;color:var(--sub)}
+  .bd-list{border-top:2px solid var(--ink)}
+  .bd-list li{border-bottom:1px solid var(--line)}
+  .bd-list a{display:grid;grid-template-columns:64px 1fr 120px 100px;align-items:center;gap:12px;padding:16px 8px;transition:background .15s}
+  .bd-list a:hover{background:var(--soft)}
+  .bd-list .no{text-align:center;color:var(--sub);font-size:14px}
+  .bd-list .tt{font-size:16px;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .bd-list .tt em{font-style:normal;color:var(--brand);font-weight:700;margin-left:6px;font-size:14px}
+  .bd-list .au,.bd-list .dt{font-size:14px;color:var(--sub);text-align:center}
+  .bd-list .empty{padding:48px 8px;text-align:center;color:var(--sub)}
+  @media(max-width:767px){.bd-list a{grid-template-columns:1fr auto;gap:4px 12px;padding:14px 4px}.bd-list .no{display:none}.bd-list .tt{grid-column:1/-1;white-space:normal}.bd-list .au,.bd-list .dt{text-align:left;font-size:13px}}
+  .bd-tools{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:20px}
+  .notice-box{padding:28px;border-radius:14px;background:var(--soft);text-align:center;color:var(--ink2);line-height:1.8}
+  .notice-box b{color:var(--ink)}
+  .post{border-top:2px solid var(--ink)}
+  .post-h{padding:22px 4px;border-bottom:1px solid var(--line)}
+  .post-h h3{font-size:24px;font-weight:800;letter-spacing:-.03em;line-height:1.4}
+  .post-h p{margin-top:8px;font-size:14px;color:var(--sub);display:flex;flex-wrap:wrap;gap:4px 14px}
+  .post-b{padding:32px 4px 40px;font-size:16px;line-height:1.85;white-space:pre-wrap;word-break:break-word;border-bottom:1px solid var(--line)}
+  .post-act{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:14px}
+  .btn-s{height:38px;padding:0 16px;border-radius:6px;font-size:14px;font-weight:600;background:#fff;box-shadow:inset 0 0 0 1px var(--line);display:inline-flex;align-items:center}
+  .btn-s:hover{box-shadow:inset 0 0 0 1px var(--ink)}
+  .btn-s.danger{color:#c62828}
+  .cmts{margin-top:36px}
+  .cmts h4{font-size:18px;font-weight:800}
+  .cmts h4 em{font-style:normal;color:var(--brand)}
+  .cmt{padding:16px 4px;border-bottom:1px solid var(--line)}
+  .cmt .who{font-size:14px;font-weight:700}
+  .cmt .who span{font-weight:400;color:var(--sub);margin-left:8px}
+  .cmt .tx{margin-top:6px;font-size:15px;white-space:pre-wrap;word-break:break-word}
+  .cmt .ops{margin-top:6px;display:flex;gap:10px;font-size:13px;color:var(--sub)}
+  .cmt .ops button:hover{color:var(--ink)}
+  .cmt-form{margin-top:16px;display:grid;gap:8px}
+  .form{display:grid;gap:18px}
+  .form .row{display:grid;gap:6px}
+  .form label,.form .lb{font-size:14.5px;font-weight:700}
+  .form label em,.form .lb em{font-style:normal;color:#c62828;margin-left:2px}
+  .form input[type=text],.form input[type=email],.form input[type=password],.form input[type=tel],.form input[type=date],.form input[type=url],.form select,.form textarea,.cmt-form textarea{width:100%;font:inherit;font-size:15.5px;padding:12px 14px;border:1px solid #cfd3d8;border-radius:8px;background:#fff;color:var(--ink);transition:border-color .2s,box-shadow .2s}
+  .form textarea,.cmt-form textarea{min-height:120px;resize:vertical;line-height:1.7}
+  .form input:focus,.form select:focus,.form textarea:focus,.cmt-form textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(24,71,164,.15)}
+  .form .hint{font-size:13px;color:var(--sub)}
+  .form .grid2{display:grid;gap:18px}
+  @media(min-width:640px){.form .grid2{grid-template-columns:1fr 1fr}}
+  .checks{display:flex;flex-wrap:wrap;gap:8px}
+  .checks label{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border:1px solid var(--line);border-radius:20px;font-size:14px;font-weight:500;cursor:pointer;transition:border-color .2s,background .2s}
+  .checks label:has(input:checked){border-color:var(--brand);background:var(--brand-soft);color:var(--brand);font-weight:700}
+  .checks input{accent-color:var(--brand)}
+  .consent{padding:18px;border-radius:10px;background:var(--soft);font-size:14px;line-height:1.7}
+  .consent label{display:flex;gap:8px;align-items:flex-start;font-weight:600;margin-top:8px}
+  .consent input{margin-top:5px;accent-color:var(--brand)}
+  .consent table{width:100%;border-collapse:collapse;margin:6px 0;font-size:13px}
+  .consent th,.consent td{border:1px solid var(--line);padding:6px 8px;text-align:left;background:#fff}
+  .consent th{background:#eef0f2}
+  .form-msg{padding:12px 14px;border-radius:8px;font-size:14.5px}
+  .form-msg.err{background:#fdecec;color:#b3261e}
+  .form-msg.ok{background:#e8f5ec;color:#1b6b3a}
+  .auth-box{max-width:440px;margin:0 auto}
+  .auth-box.wide{max-width:620px}
+  .auth-box .btn{width:100%}
+  .auth-links{display:flex;justify-content:center;gap:16px;margin-top:18px;font-size:14px;color:var(--sub)}
+  .auth-links a:hover{color:var(--ink)}
+  .my-card{display:flex;flex-wrap:wrap;align-items:center;gap:16px;padding:24px;border-radius:14px;background:var(--soft);margin-bottom:28px}
+  .my-card .av{width:56px;height:56px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:22px;font-weight:800}
+  .my-card h4{font-size:20px;font-weight:800}
+  .my-card p{font-size:14px;color:var(--sub)}
+  .my-card .acts{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+  fieldset{border:0;display:grid;gap:18px;padding:24px 0;border-top:1px solid var(--line)}
+  legend{font-size:18px;font-weight:800;padding:0 0 4px;letter-spacing:-.03em}
 
   /* ── 서브 페이지 ── */
   .subvisual{background:var(--soft);padding:64px 0 56px;text-align:center}
@@ -589,7 +724,10 @@
     <button type="button" data-zoom="1" aria-pressed="true" aria-label="보통">가</button>
     <button type="button" data-zoom="1.1" aria-pressed="false" aria-label="크게">가+</button>
   </li>
-  <li><a href="#/about/location">오시는 길</a></li>
+  <li data-auth="out"><a href="#/auth/login">로그인</a></li>
+  <li data-auth="out"><a href="#/auth/signup">회원가입</a></li>
+  <li data-auth="in" hidden><a href="#/my/profile" data-me-name>마이페이지</a></li>
+  <li data-auth="in" hidden><button type="button" data-logout>로그아웃</button></li>
   <li class="dark"><a href="#/disclosure/articles">정보공개</a></li>
   <li class="black" id="mhInsta" hidden><a target="_blank" rel="noopener" title="새창열림">인스타그램</a></li>
 </ul></div></div>
@@ -602,7 +740,10 @@
     </a></h1>
     <div class="h-actions">
       <a class="h-icon" href="#/news/activities"><span data-icon="news"></span>활동 소식</a>
-      <a class="h-icon" href="#/about/location"><span data-icon="pin"></span>오시는 길</a>
+      <a class="h-icon" href="#/map/all"><span data-icon="pin"></span>마을지도</a>
+      <a class="h-icon" href="#/auth/login" data-auth="out"><span data-icon="user"></span>로그인</a>
+      <a class="h-icon" href="#/my/profile" data-auth="in" hidden><span data-icon="user"></span>마이페이지</a>
+      <a class="h-icon" href="workspace.html" data-officer hidden><span data-icon="briefcase"></span>업무공간</a>
       <a class="btn-cta" href="#/join/partner"><span data-icon="hand"></span>협력 문의</a>
       <button type="button" class="btn-all" id="allBtn" aria-controls="allmenu" aria-expanded="false" aria-label="전체메뉴 열기"><span aria-hidden="true"><i></i><i></i><i></i></span></button>
     </div>
@@ -617,8 +758,15 @@
     <button type="button" class="am-close" id="amClose" aria-label="전체메뉴 닫기"><span data-icon="close"></span></button>
   </div>
   <div class="am-user">
-    <p>시흥 청년들과 함께하세요.</p>
-    <div class="btns"><a class="a1" href="#/join/partner">협력 문의</a><a class="a2" href="#/join/member">회원 참여</a></div>
+    <p data-am-greet>시흥 청년들과 함께하세요.</p>
+    <div class="btns" data-auth="out"><a class="a1" href="#/auth/login">로그인</a><a class="a2" href="#/auth/signup">회원가입</a></div>
+    <div class="btns" data-auth="in" hidden><a class="a1" href="#/my/profile">마이페이지</a><a class="a2" href="workspace.html" data-officer hidden>업무공간</a><button type="button" class="a2" data-logout>로그아웃</button></div>
+  </div>
+  <div class="am-quick" aria-label="자주 찾는 메뉴">
+    <a href="#/disclosure/articles"><span data-icon="doc"></span>정보공개</a>
+    <a href="#/map/all"><span data-icon="pin"></span>마을지도</a>
+    <a href="#/join/partner"><span data-icon="hand"></span>협력 문의</a>
+    <a href="#/community/free"><span data-icon="chat"></span>커뮤니티</a>
   </div>
   <div class="am-body">
     <div class="am-dep1" id="amDep1"></div>
@@ -683,7 +831,7 @@
     <ul>
       <li><a href="#/join/partner"><span class="ic" data-icon="hand"></span>협력 문의<span class="go" data-icon="right"></span></a></li>
       <li><a href="#/join/member"><span class="ic" data-icon="people"></span>회원 참여<span class="go" data-icon="right"></span></a></li>
-      <li><a href="#/programs/list"><span class="ic" data-icon="star"></span>주요사업<span class="go" data-icon="right"></span></a></li>
+      <li><a href="#/programs/list"><span class="ic" data-icon="star"></span>주요활동<span class="go" data-icon="right"></span></a></li>
       <li><a href="#/disclosure/articles"><span class="ic" data-icon="doc"></span>정보공개<span class="go" data-icon="right"></span></a></li>
     </ul>
   </div>
@@ -692,15 +840,15 @@
   <section class="m-sec"><div class="wrap">
     <div class="map-head rv">
       <p class="en">SIHEUNG VILLAGE MAP</p>
-      <h3><em>시흥</em> 마을 지도</h3>
-      <p>시흥의 20개 마을 곳곳에서 청년의 문화를 만듭니다.</p>
+      <h3><em>시흥</em>을 채워갑니다</h3>
+      <p>이름처럼, 시흥 20개 마을을 청년의 문화로 하나씩 채워가고 있습니다.<br>활동이 쌓일수록 마을이 진하게 채워집니다.</p>
     </div>
     <div data-map></div>
   </div></section>
 
   <section class="m-sec"><div class="wrap">
     <div class="tit-wrap rv">
-      <div><h3 class="heading">진행 중인 사업</h3><p>기관·학교·축제 주최 측과 함께 운영할 수 있는 프로그램입니다.</p></div>
+      <div><h3 class="heading">우리가 만드는 <em>문화</em></h3><p>지금 하고 있는 일과 앞으로 함께 만들 일입니다. 장르와 형식을 가리지 않습니다.</p></div>
       <a class="btn-all-view" href="#/programs/list">전체보기 <span aria-hidden="true">+</span></a>
     </div>
     <div class="pills rv" role="tablist" aria-label="사업 분류" id="progTabs"></div>
@@ -800,15 +948,22 @@
 <!-- ════════ 주요사업 ════════ -->
 <div data-page="programs" hidden>
   <div data-sub="list">
-    <h3 class="s-title">사업 안내</h3>
+    <h3 class="s-title">주요 활동</h3>
+    <p class="s-p" style="margin:-12px 0 28px">청년이 직접 문화예술을 기획·제작하고 지역사회와 연계하는 <b>제작 중심 공동체</b>입니다. 아래 활동 중 일부는 현재 수행 중이며, 일부는 추진 예정입니다.</p>
     <div id="programList"></div>
+    <h4 class="s-h">함께하는 분야</h4>
+    <p class="s-p" style="margin-bottom:16px">「문화예술진흥법」의 문화예술 범위에 생활문화를 더했습니다. 장르·경력·전공에 제한이 없습니다.</p>
+    <ul class="field-grid" id="fieldGrid"></ul>
+    <h4 class="s-h">참여하는 방식</h4>
+    <p class="s-p" style="margin-bottom:16px">같은 분야라도 창작자·실연자·기획자·교육자에 따라 맡는 역할이 다릅니다.</p>
+    <ul class="tags" id="roleCodes"></ul>
   </div>
 </div>
 
 <!-- ════════ 마을지도 ════════ -->
 <div data-page="map" hidden>
   <div data-sub="all">
-    <p class="s-p" style="text-align:center;margin-bottom:40px">동을 누르면 그 마을에서의 활동을 볼 수 있습니다.</p>
+    <div class="map-head" style="margin-bottom:40px"><h3 style="font-size:30px"><em>시흥</em>을 채워갑니다</h3><p>활동이 기록될 때마다 그 마을이 채워집니다. 비어 있는 마을은 우리가 다음에 만날 곳입니다.<br>동을 누르면 그 마을에서의 활동을 볼 수 있습니다.</p></div>
     <div data-map></div>
   </div>
 </div>
@@ -819,11 +974,12 @@
     <h3 class="s-title">협력 제안</h3>
     <div class="join-box">
       <div>
+        <p class="s-p">지금까지 해 온 활동에 한정되지 않습니다. 음악·공연부터 전시, 교육, 영상, 디자인, 기술 융합까지 회원들이 가진 분야와 기술을 모아 <b>필요한 문화 프로그램을 함께 설계합니다.</b></p>
         <h4 class="s-h">이런 협력이 가능합니다</h4>
-        <ul class="tags"><li>축제·행사 공연 기획·섭외</li><li>청소년 진로체험 부스</li><li>공공미술·벽화</li><li>교육 프로그램</li></ul>
+        <ul class="collab-grid" id="collabGrid"></ul>
         <h4 class="s-h">진행 절차</h4>
         <ol class="steps">
-          <li>이메일로 행사 일정, 장소, 대상, 원하는 협력 형태를 보내 주세요.</li>
+          <li>온라인 문의나 이메일로 행사 일정, 장소, 대상, 예산 범위, 원하는 협력 형태를 보내 주세요.</li>
           <li>운영진이 검토한 뒤 가능 여부와 진행 방식을 회신드립니다.</li>
           <li>세부 내용과 비용을 협의해 확정합니다.</li>
         </ol>
@@ -831,8 +987,10 @@
       <div class="aside">
         <h4>협력 문의</h4>
         <p>기관·학교·축제 주최 측의 제안을 기다립니다.</p>
-        <a class="btn btn-brand" data-mail="partner" hidden>협력 제안 메일 보내기</a>
+        <a class="btn btn-brand" href="#/board/write?b=inquiry" data-need-sb>온라인으로 문의하기</a>
+        <a class="btn btn-white" data-mail="partner" hidden style="margin-top:8px">이메일로 보내기</a>
         <p class="nomail" data-nomail>문의 이메일은 준비 중입니다.</p>
+        <p style="font-size:13px;margin-top:12px">온라인 문의는 작성자와 운영진만 볼 수 있습니다.</p>
       </div>
     </div>
   </div>
@@ -840,20 +998,36 @@
     <h3 class="s-title">회원 참여</h3>
     <div class="join-box">
       <div>
-        <h4 class="s-h">참여 대상</h4>
-        <p class="s-p">단체의 목적에 찬동하고 아래 분야에서 활동하거나 관심 있는 시흥의 청년이면 누구나 함께할 수 있습니다. <span class="s-note">(정관 제5조)</span></p>
-        <ul class="tags" style="margin-top:16px"><li>문화예술</li><li>기획</li><li>디자인</li><li>개발</li><li>교육</li><li>영상</li></ul>
-        <h4 class="s-h">가입 절차</h4>
+        <h4 class="s-h">가입 대상</h4>
+        <p class="s-p">시흥시에서 활동하거나 시흥시의 문화예술 활동에 관심을 가지고 공동 프로젝트에 참여하고자 하는 청년. <b>장르·경력·전공에 제한이 없습니다.</b></p>
+        <p class="s-p s-note" style="margin-top:8px;font-size:14px">연령 기준은 만 19세 이상 39세 이하입니다. 해당하지 않아도 가입할 수 있으나, 청년 대상 지원사업 참여는 제한될 수 있습니다.</p>
+        <h4 class="s-h">가입 후 참여 방식</h4>
+        <dl class="tbl" id="joinWays"></dl>
+        <h4 class="s-h">회원 활동 원칙</h4>
         <ol class="steps">
-          <li>이메일로 이름, 활동 분야, 간단한 소개를 보내 주세요.</li>
-          <li>운영진이 확인한 뒤 만남 일정을 안내드립니다.</li>
-          <li>정관에 따른 절차를 거쳐 회원으로 함께합니다.</li>
+          <li>회원의 자율적인 참여를 존중합니다.</li>
+          <li>특정 개인이나 팀의 이익을 위하여 공동체를 이용하지 않습니다.</li>
+          <li>회원 간의 전문성과 활동 분야를 존중합니다.</li>
+          <li>공동 프로젝트의 의사결정과 역할 분담을 투명하게 합니다.</li>
+          <li>지역사회와 시민에게 열린 문화예술 활동을 지향합니다.</li>
+        </ol>
+        <h4 class="s-h">회원의 의무</h4>
+        <p class="s-p">공동체의 설립 취지와 운영원칙을 존중하며, 본인이 가능한 범위에서 활동에 참여합니다. 회의·프로젝트 참여, 행사 운영 협조, 공동체 명의 활동 시 운영규정 준수, 회원 상호 간 존중, 개인정보와 내부자료 보호가 포함됩니다.</p>
+        <h4 class="s-h">가입 절차</h4>
+        <ol class="flow">
+          <li><b>신청서 제출</b><span>신청인</span></li>
+          <li><b>서류 검토</b><span>운영진</span></li>
+          <li><b>가입 승인</b><span>운영진</span></li>
+          <li><b>결과 통지</b><span>운영진 → 신청인</span></li>
+          <li><b>활동 안내</b><span>운영진 → 신청인</span></li>
         </ol>
       </div>
       <div class="aside">
-        <h4>참여 문의</h4>
-        <p>분야가 달라도 괜찮습니다. 함께 만들 사람을 찾습니다.</p>
-        <a class="btn btn-dark" data-mail="member" hidden>참여 문의 메일 보내기</a>
+        <h4>정회원 가입 신청</h4>
+        <p>홈페이지에 가입한 뒤, 마이페이지에서 가입신청서를 온라인으로 작성할 수 있습니다.</p>
+        <p style="margin-top:10px"><b>회비</b> · 2026년 없음 (필요 시 총회 의결 후 안내)</p>
+        <a class="btn btn-brand" href="#/my/apply" data-need-sb>가입신청서 작성</a>
+        <a class="btn btn-white" data-mail="member" hidden style="margin-top:8px">이메일로 문의하기</a>
         <p class="nomail" data-nomail>문의 이메일은 준비 중입니다.</p>
       </div>
     </div>
@@ -867,21 +1041,58 @@
         <p class="a">아니요. 현재 비영리 임의단체로, 기부금 영수증을 발행할 수 있는 단체가 아닙니다. 그래서 공개 후원 모집은 하지 않고 있습니다.</p></details>
       <details><summary>누가 회원이 될 수 있나요?</summary>
         <p class="a">단체의 목적에 찬동하고 문화·예술, 기획, 디자인, 개발, 교육, 영상제작 등의 분야에서 활동하거나 관심 있는 분이면 소정의 절차를 거쳐 회원이 될 수 있습니다. (정관 제5조)</p></details>
+      <details><summary>지금까지 한 활동만 협력할 수 있나요?</summary>
+        <p class="a">아닙니다. 공연·전시·축제·행사·교육·영상·디자인·기술 융합 등 회원들이 가진 분야를 모아 필요한 프로그램을 새로 설계합니다. 원하는 내용을 먼저 알려 주세요.</p></details>
+      <details><summary>회비가 있나요?</summary>
+        <p class="a">2026년에는 회비가 없습니다. 회비가 필요해지면 총회 의결을 거쳐 별도로 안내합니다.</p></details>
+      <details><summary>자원봉사로만 참여할 수도 있나요?</summary>
+        <p class="a">네. 홈페이지에 가입하면 커뮤니티의 자원봉사 게시판에서 행사 스태프 모집에 참여할 수 있습니다. 정회원 가입은 선택입니다.</p></details>
       <details><summary>단체의 수익은 어디에 쓰이나요?</summary>
         <p class="a">수익은 회원에게 나누지 않고 정관에 정한 목적 사업에만 씁니다. 결산은 매 회계연도 종료 후 정기총회 승인을 거쳐 정보공개 메뉴에 공개합니다. (정관 제20조, 제21조)</p></details>
     </div>
   </div>
 </div>
 
+<!-- ════════ 커뮤니티 ════════ -->
+<div data-page="community" hidden>
+  <div data-sub="free"><div data-board="free"></div></div>
+  <div data-sub="collab"><div data-board="collab"></div></div>
+  <div data-sub="volunteer"><div data-board="volunteer"></div></div>
+  <div data-sub="qna"><div data-board="qna"></div></div>
+</div>
+
+<!-- ════════ 게시글 보기·쓰기 ════════ -->
+<div data-page="board" hidden>
+  <div data-sub="view"><div id="postView"></div></div>
+  <div data-sub="write"><div id="postWrite"></div></div>
+</div>
+
+<!-- ════════ 로그인·회원가입 ════════ -->
+<div data-page="auth" hidden>
+  <div data-sub="login"><div class="auth-box" id="authLogin"></div></div>
+  <div data-sub="signup"><div class="auth-box wide" id="authSignup"></div></div>
+  <div data-sub="reset"><div class="auth-box" id="authReset"></div></div>
+</div>
+
+<!-- ════════ 마이페이지 ════════ -->
+<div data-page="my" hidden>
+  <div data-sub="profile"><div id="myProfile"></div></div>
+  <div data-sub="apply"><div id="myApply"></div></div>
+  <div data-sub="posts"><div id="myPosts"></div></div>
+</div>
+
 <!-- ════════ 알림마당 ════════ -->
 <div data-page="news" hidden>
   <div data-sub="notice">
+    <div data-board="notice"></div>
+    <div data-static-notice>
     <h3 class="s-title">공지사항</h3>
     <table class="board">
       <caption class="sr-only">공지사항 목록</caption>
       <thead><tr><th class="no" scope="col" style="width:80px">번호</th><th scope="col">제목</th><th class="hide-m" scope="col" style="width:140px">작성일</th></tr></thead>
       <tbody id="noticeBody"></tbody>
     </table>
+    </div>
   </div>
   <div data-sub="activities">
     <h3 class="s-title">활동 소식</h3>
@@ -928,20 +1139,34 @@
   <div data-sub="privacy">
     <h3 class="s-title">개인정보처리방침</h3>
     <div class="policy">
-      <p><span data-f="name"></span>(이하 "단체")는 이용자의 개인정보를 소중히 다루며, 「개인정보 보호법」을 준수합니다.</p>
-      <h4>1. 홈페이지에서의 개인정보 수집</h4>
-      <p>이 홈페이지는 회원가입, 입력 양식, 방문 통계 도구를 운영하지 않으며, 홈페이지를 통해 개인정보를 수집하지 않습니다.</p>
-      <h4>2. 이메일 문의 시 처리</h4>
+      <p><span data-f="name"></span>(이하 "단체")는 「개인정보 보호법」에 따라 이용자의 개인정보를 보호하고 관련 고충을 신속하게 처리하기 위해 다음과 같이 처리방침을 둡니다.</p>
+      <h4>1. 수집 항목과 목적</h4>
       <ul>
-        <li>이용자가 이메일로 보낸 이름, 연락처, 문의 내용은 회신과 협력·가입 절차 진행에만 이용합니다.</li>
-        <li>문의 처리가 끝나면 지체 없이 파기합니다. 다만 회원으로 가입한 경우에는 별도의 동의를 받아 회원 관리에 이용합니다.</li>
-        <li>법령에 따른 경우를 제외하고 제3자에게 제공하지 않습니다.</li>
+        <li><b>홈페이지 회원가입(필수)</b>: 이메일, 비밀번호(암호화 저장), 이름 또는 활동명, 회원 유형 — 로그인, 본인 확인, 게시판 이용</li>
+        <li><b>홈페이지 회원가입(선택)</b>: 소속 단체명, 활동하는 동(洞) — 네트워크 안내, 마을 지도 집계(동별 인원 수만 공개)</li>
+        <li><b>정회원 가입 신청(필수)</b>: 성명, 생년월일, 연락처 — 회원 관리, 활동 안내, 프로젝트 참여 연락</li>
+        <li><b>정회원 가입 신청(선택)</b>: 활동 분야, 경력, 자격, 장비, 활동 가능 시간, 포트폴리오, 소득 구분 — 프로젝트 매칭, 강사 배정</li>
+        <li><b>선택 동의</b>: 활동 사진·영상의 홍보 활용, 지원사업 주관기관(지방자치단체·문화재단 등)에 대한 참여자 정보 제공. 동의하지 않아도 가입할 수 있습니다.</li>
       </ul>
-      <h4>3. 사진 게시</h4>
-      <p>활동 사진은 촬영 대상자의 동의를 받은 경우에만 게시하며, 게시 중단을 요청하면 지체 없이 삭제합니다.</p>
-      <h4>4. 문의</h4>
-      <p>개인정보 관련 문의와 열람·정정·삭제 요청은 아래 이메일로 받습니다.</p>
+      <p style="margin-top:8px">주민등록번호와 범죄경력 조회 정보는 홈페이지에서 받지 않습니다. 아동·청소년 대상 프로그램에 참여하는 경우에만 관련 법령에 따라 별도로 동의를 받아 조회하고, 조회가 끝나면 즉시 파기합니다.</p>
+      <h4>2. 보유 기간</h4>
+      <ul>
+        <li>회원 정보: 회원 탈퇴 시까지. 탈퇴 요청을 받으면 지체 없이 파기합니다.</li>
+        <li>지원사업 제출 정보: 해당 사업의 정산이 끝날 때까지</li>
+        <li>게시글·댓글: 작성자가 삭제하거나 탈퇴할 때까지</li>
+      </ul>
+      <h4>3. 처리 위탁</h4>
+      <p>회원 인증과 데이터 보관을 위해 Supabase Inc.의 클라우드 서비스를 이용합니다. <span data-privacy-region>보관 위치: 대한민국(서울) 리전</span></p>
+      <h4>4. 이용자의 권리</h4>
+      <p>이용자는 언제든지 자신의 개인정보를 조회·수정할 수 있고(마이페이지), 동의 철회와 탈퇴를 요청할 수 있습니다.</p>
+      <h4>5. 사진 게시</h4>
+      <p>활동 사진은 촬영 대상자의 동의를 받은 경우에만 게시하며, 미성년자는 법정대리인의 동의를 받습니다. 게시 중단을 요청하면 지체 없이 삭제합니다.</p>
+      <h4>6. 게시판 운영</h4>
+      <p>타인의 권리를 침해하거나 법령에 어긋나는 게시물, 광고·도배 게시물은 신고 또는 운영진 판단에 따라 숨김 처리될 수 있습니다.</p>
+      <h4>7. 개인정보 보호책임자와 문의</h4>
+      <p>보호책임자: 대표 <span data-f="rep"></span> · 개인정보 관련 문의와 열람·정정·삭제 요청은 아래로 받습니다.</p>
       <p data-row="email" style="margin-top:6px;font-weight:700" data-f="email"></p>
+      <p style="margin-top:16px;color:var(--sub);font-size:14px">시행일: 회원 기능 오픈일부터</p>
     </div>
   </div>
 </div>
@@ -1001,6 +1226,8 @@
   </div></div>
 </footer>
 
+<script src="assets/config.js"></script>
+<script src="assets/sb.js"></script>
 <script>
 /* ═══════════ 여기만 수정하세요 ═══════════ */
 const SITE = {
@@ -1024,10 +1251,7 @@ const SITE = {
     { role: "부대표", name: "", bio: "", photo: "" },
     { role: "회계",   name: "", bio: "", photo: "" },
   ],
-
-  /* 활동 기록 DB(Supabase) — 공개용 view: public_activities (anon 키만) */
-  supabaseUrl: "",
-  supabaseAnonKey: "",
+  /* 로그인·게시판·활동 DB 연결 설정은 assets/config.js 에 있습니다 */
 };
 
 /* 연혁 (단체의 주요 이정표) */
@@ -1063,29 +1287,77 @@ const PLACES = [
 ];
 /* ═══════════════════════════════════════ */
 
+/* 주요 활동 (가입안내 2. 주요 활동 기준)
+   status: "수행 중" 또는 "추진 예정" — 실제 진행 상황에 맞게 바꿔 주세요 */
 const PROGRAMS = [
-  { key: "performance", cat: "공연", icon: "music", title: "지역 축제·행사 기획·운영 및 청년 예술인 공연",
-    short: "행사 성격에 맞는 청년 예술인 공연을 기획·섭외하고 현장 운영을 돕습니다.",
-    target: "지역 축제·행사 주최 측", how: "공연 기획, 예술인 섭외, 현장 운영 지원" },
-  { key: "publicart", cat: "공공미술", icon: "brush", title: "공공미술·벽화 등 지역 참여 활동",
-    short: "주민과 함께하는 벽화·공공미술 활동을 진행합니다.",
-    target: "지역 주민, 마을·기관", how: "벽화·공공미술 기획 및 참여형 활동" },
-  { key: "career", cat: "교육", icon: "game", title: "청소년 진로체험",
-    short: "AI·게임 제작·디지털 창작을 직접 해보는 체험 부스와 수업을 운영합니다.",
-    target: "청소년, 학교·교육기관", how: "체험 부스, 진로 수업" },
-  { key: "education", cat: "교육", icon: "code", title: "청년 AI·Unity 창작 교육", wip: true,
-    short: "청년 대상 AI·Unity 창작 교육 과정을 준비하고 있습니다. 아직 운영 전입니다.",
-    target: "시흥 청년", how: "준비 중" },
+  { key: "performance", status: "수행 중", icon: "music", title: "공연·전시·상영",
+    short: "장르를 가리지 않는 공연·전시·상영 등 문화예술 활동을 만듭니다.",
+    target: "축제·행사 주최 측, 기관, 시민", how: "축제 공연 기획·섭외, 거리공연, 전시, 상영회" },
+  { key: "content", status: "추진 예정", icon: "film", title: "지역문화 콘텐츠 기획·제작",
+    short: "시흥의 이야기와 장소를 영상·출판·디자인 콘텐츠로 기록하고 만듭니다.",
+    target: "지역 기관, 시민", how: "지역 기록 영상, 출판물, 디자인 콘텐츠" },
+  { key: "collab", status: "추진 예정", icon: "people", title: "분야를 넘는 협업 프로젝트",
+    short: "서로 다른 분야의 창작자가 만나 하나의 작품과 프로젝트를 만듭니다.",
+    target: "청년 창작자", how: "음악×영상, 미술×공간, 공연×기술 등 공동 창작" },
+  { key: "education", status: "수행 중", icon: "book", title: "문화예술 교육·시민 체험",
+    short: "청소년과 시민이 직접 해 보는 문화예술 교육과 체험 프로그램을 운영합니다.",
+    target: "청소년, 학교, 시민", how: "청소년 진로체험 부스, 찾아가는 체험, 원데이 클래스" },
+  { key: "tech", status: "추진 예정", icon: "code", title: "문화예술 × 기술 융합",
+    short: "AI·XR·게임 등 기술과 예술을 결합한 새로운 콘텐츠를 개발합니다.",
+    target: "청년, 청소년, 기관", how: "AI 창작, 미디어아트, 게임·인터랙티브, Unity 교육" },
+  { key: "local", status: "수행 중", icon: "pin", title: "지역 공간·상권·주민 연계",
+    short: "지역의 공간과 상권, 주민과 함께하는 문화활동을 만듭니다.",
+    target: "마을, 상권, 지역 축제", how: "공공미술·벽화, 상권 연계 행사, 마을 축제 참여" },
+  { key: "life", status: "추진 예정", icon: "leaf", title: "생활문화·여가 프로그램",
+    short: "일상 속에서 누구나 즐길 수 있는 생활문화 프로그램을 운영합니다.",
+    target: "시민, 동아리", how: "생활예술, 동아리, 움직임·여가 활동" },
+  { key: "network", status: "추진 예정", icon: "chat", title: "청년 창작자 네트워킹",
+    short: "시흥의 청년 창작자가 만나고, 서로의 기술로 공동 프로젝트를 꾸립니다.",
+    target: "청년 창작자", how: "창작자 교류회, 프로젝트 매칭" },
+];
+
+/* 함께하는 분야 (가입신청서 3. 활동 분야) */
+const FIELDS = [
+  ["음악","밴드·대중음악, 클래식, 연주, 보컬, 작·편곡"],["국악","국악 연주, 판소리, 사물놀이, 전통연희"],
+  ["무용","한국무용, 현대무용, 발레, 스트리트댄스"],["연극","배우, 연출, 극작, 무대"],["뮤지컬","뮤지컬 실연·제작"],
+  ["연예","공연 진행, 사회(MC), 대중 퍼포먼스"],["미술","회화, 조각, 설치, 공예"],["응용미술","그래픽·공간·무대 디자인, 일러스트"],
+  ["사진","사진 창작, 기록촬영"],["만화·애니","만화, 웹툰, 애니메이션"],["영화·영상","연출·촬영·편집, 방송·1인 미디어"],
+  ["문학·출판","시, 소설, 에세이, 극본, 편집·출판"],["건축·공간","건축, 공간 기획·연출, 인테리어"],["게임","게임, 인터랙티브 콘텐츠"],
+  ["융합예술","미디어아트, 기술결합 창작, AI·XR"],["생활문화","생활체육·움직임, 동아리, 여가 문화활동"],
+];
+/* 참여하는 방식 (가입신청서 활동 코드) */
+const ROLE_CODES = ["A. 공연·연주·상연","B. 전시·작품 발표","C. 영상·기록 제작","D. 문화예술 교육","E. 지역문화 콘텐츠 제작","F. 행사 기획·운영","G. 기술융합 프로젝트","H. 아동·청소년 대상 교육","I. 생활문화·시민 참여형","J. 홍보·디자인 지원","K. 회원 간 협업","L. 기타"];
+/* 가입 후 참여 방식 (가입안내 4) */
+const JOIN_WAYS = [
+  ["프로젝트 참여","공연·전시·교육·콘텐츠 제작 등 단체 사업에 참여"],["프로젝트 기획","회원이 직접 사업을 제안하고 프로젝트를 구성"],
+  ["협업","타 분야 회원과의 공동 작업 수행"],["행사 참여","지역 문화행사 및 단체 자체 프로그램 참여"],
+  ["네트워킹","회원 간 교류 및 협업 기회 제공"],["전문성 공유","보유 기술 및 전문 분야를 프로젝트에 활용"],
+];
+/* 협력 가능 분야 — 지금까지 한 활동에 한정되지 않음 */
+const COLLAB = [
+  ["music","공연·연주","음악·국악·무용·연극·뮤지컬·거리공연"],["photo","전시·작품 발표","회화·조각·공예·사진·미디어아트"],
+  ["star","축제·행사 기획·운영","기획, 무대, 진행·MC, 현장 운영"],["book","문화예술 교육·체험","아동·청소년, 시민, 진로체험"],
+  ["film","영상·사진 기록","행사 기록, 홍보 영상, 1인 미디어"],["brush","디자인·홍보","포스터, 홍보물, 공간·무대 디자인"],
+  ["pin","공공미술·공간 연출","벽화, 설치, 공간 기획"],["code","융합·기술 콘텐츠","AI·XR, 게임, 인터랙티브, 무대기술"],
+  ["leaf","생활문화 프로그램","동아리, 생활예술, 여가 활동"],["people","지역 연계 프로젝트","상권·공간·주민과 함께하는 행사"],
 ];
 
 const MENU = [
   { id: "about", label: "단체소개", en: "ABOUT US", desc: "시흥 청년문화예술공동체를 소개합니다.", subs: [["greeting","인사말"],["vision","미션·비전"],["history","연혁"],["team","조직"],["location","오시는 길"]] },
-  { id: "programs", label: "주요사업", en: "PROGRAMS", desc: "지역과 함께 운영하는 문화 프로그램입니다.", subs: [["list","사업 안내"]] },
+  { id: "programs", label: "주요활동", en: "PROGRAMS", desc: "장르를 가리지 않고 청년이 직접 만드는 문화입니다.", subs: [["list","주요 활동"]] },
   { id: "map", label: "마을지도", en: "VILLAGE MAP", desc: "시흥 20개 마을에서의 활동을 지도로 봅니다.", subs: [["all","시흥 마을 지도"]] },
   { id: "join", label: "참여·협력", en: "JOIN US", desc: "기관·학교·축제, 그리고 청년과 함께합니다.", subs: [["partner","협력 제안"],["member","회원 참여"],["faq","자주 묻는 질문"]] },
+  { id: "community", label: "커뮤니티", en: "COMMUNITY", desc: "회원·자원봉사자·단체가 함께 이야기하는 곳입니다.", subs: [["free","자유게시판"],["collab","협업 제안"],["volunteer","자원봉사"],["qna","묻고 답하기"]] },
   { id: "news", label: "알림마당", en: "NEWS", desc: "공동체의 소식과 활동 기록입니다.", subs: [["notice","공지사항"],["activities","활동 소식"]] },
   { id: "disclosure", label: "정보공개", en: "DISCLOSURE", desc: "단체 운영의 기본 정보를 투명하게 공개합니다.", subs: [["articles","정관"],["finance","결산 공개"],["info","기본 정보"],["privacy","개인정보처리방침"]] },
+  /* 메뉴에 나오지 않는 페이지 */
+  { id: "auth", label: "회원", en: "MEMBERSHIP", hidden: true, subs: [["login","로그인"],["signup","회원가입"],["reset","비밀번호 찾기"]] },
+  { id: "my", label: "마이페이지", en: "MY PAGE", hidden: true, subs: [["profile","내 정보"],["apply","정회원 가입 신청"],["posts","내가 쓴 글"]] },
+  { id: "board", label: "게시판", en: "BOARD", hidden: true, subs: [["view","게시글"],["write","글쓰기"]] },
 ];
+const MENU_SHOWN = MENU.filter(m => !m.hidden);
+/* 전체메뉴에서는 정보공개를 위로 올림 */
+const ALLMENU_ORDER = ["about", "disclosure", "programs", "map", "join", "community", "news"];
 
 const ICONS = {
   music:'<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
@@ -1103,10 +1375,16 @@ const ICONS = {
   left:'<path d="M15 5l-7 7 7 7"/>', right:'<path d="M9 5l7 7-7 7"/>', up:'<path d="M12 19V5M5 12l7-7 7 7"/>',
   chev:'<path d="M6 15l6-6 6 6"/>', down:'<path d="M6 9l6 6 6-6"/>',
   close:'<path d="M5 5l14 14M19 5L5 19"/>', pause:'<path d="M8 5v14M16 5v14"/>', play:'<path d="M7 4l13 8-13 8z"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.2 4.2-6.5 8-6.5s7 2.3 8 6.5"/>',
+  briefcase:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/>',
+  chat:'<path d="M4 5h16v11H9l-5 4z"/><path d="M8 10h8"/>',
+  film:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 5v14M17 5v14M3 9h4M3 15h4M17 9h4M17 15h4"/>',
+  book:'<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M9 8h6"/>',
+  leaf:'<path d="M5 19c0-8 5-13 15-14-1 10-6 15-14 15"/><path d="M5 19l7-7"/>',
   etc:'<circle cx="12" cy="12" r="8"/><path d="M8 12h8"/>',
 };
 const LOGO = '<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="23" cy="9" r="3.5" fill="#ffc02e"/><path d="M5 20c3-3 6-3 9 0s6 3 11 0" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M5 25c3-3 6-3 9 0s6 3 11 0" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" opacity=".5"/></svg>';
-const TYPE_ICON = { "공연": "music", "공공미술": "brush", "교육": "game", "개발": "code" };
+const TYPE_ICON = { "공연": "music", "전시": "photo", "공공미술": "brush", "교육": "book", "축제·행사": "star", "콘텐츠": "film", "생활문화": "leaf", "봉사": "hand", "개발": "code" };
 
 /* ── 유틸 ── */
 const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
@@ -1120,7 +1398,7 @@ const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 function subVisible(page, sub) {
   if (page === "about" && sub === "greeting") return !!SITE.greeting.trim();
   if (page === "about" && sub === "team") return SITE.team.some(m => m.name.trim());
-  if (page === "news" && sub === "notice") return NOTICES.length > 0;
+  if (page === "news" && sub === "notice") return SB.configured || NOTICES.length > 0;
   return true;
 }
 const visibleSubs = m => m.subs.filter(([s]) => subVisible(m.id, s));
@@ -1167,7 +1445,7 @@ function fill() {
   $("#kakaoMap").href = "https://map.kakao.com/?q=" + q;
 
   /* GNB 메가메뉴 */
-  $("#gnbList").innerHTML = MENU.map(m => `
+  $("#gnbList").innerHTML = MENU_SHOWN.map(m => `
     <li>
       <a class="dep1" data-menu="${m.id}" href="#/${m.id}/${visibleSubs(m)[0][0]}" aria-haspopup="true">${m.label}<span class="chev">${svg("down", 2.2)}</span></a>
       <div class="mega"><div class="wrap">
@@ -1177,19 +1455,21 @@ function fill() {
     </li>`).join("");
 
   /* 전체메뉴 */
-  $("#amDep1").innerHTML = MENU.map((m, i) => `<a href="#am-${m.id}" class="${i ? "" : "on"}" data-am="${m.id}">${m.label}</a>`).join("");
-  $("#amSubs").innerHTML = MENU.map(m => `
+  const amMenus = ALLMENU_ORDER.map(id => MENU.find(m => m.id === id));
+  $("#amDep1").innerHTML = amMenus.map((m, i) => `<a href="#am-${m.id}" class="${i ? "" : "on"}" data-am="${m.id}">${m.label}</a>`).join("");
+  $("#amSubs").innerHTML = amMenus.map(m => `
     <section id="am-${m.id}"><h3>${m.label}</h3>${visibleSubs(m).map(([s, l]) => `<a href="#/${m.id}/${s}">${l}</a>`).join("")}</section>`).join("");
 
-  /* 사업 탭 + 카드 */
-  const cats = ["전체보기", ...new Set(PROGRAMS.map(p => p.cat))];
+  /* 우리가 만드는 문화: 수행 중 / 추진 예정 */
+  const cats = ["전체보기", "수행 중", "추진 예정"];
   $("#progTabs").innerHTML = cats.map((c, i) => `<button type="button" role="tab" aria-selected="${i === 0}" data-cat="${c}">${c}</button>`).join("");
+  const statusChip = p => p.status === "수행 중" ? `<span class="chip now">수행 중</span>` : `<span class="chip wip">추진 예정</span>`;
   const drawProg = cat => {
     const g = $("#homePrograms");
-    g.innerHTML = PROGRAMS.filter(p => cat === "전체보기" || p.cat === cat).map((p, i) => `
-      <a class="card" href="#/programs/list" style="--d:${i * .07}s">
-        ${thumb(p.icon, `images/program-${p.key}.jpg`, p.title)}
-        <p class="chips"><span class="chip">${p.cat}</span>${p.wip ? `<span class="chip wip">준비 중</span>` : ""}</p>
+    g.innerHTML = PROGRAMS.filter(p => cat === "전체보기" || p.status === cat).map((p, i) => `
+      <a class="area-card card ${p.status === "수행 중" ? "" : "plan"}" href="#/programs/list" style="--d:${i * .05}s">
+        <span class="ic">${svg(p.icon, 1.6)}</span>
+        <p class="chips">${statusChip(p)}</p>
         <h4>${esc(p.title)}</h4><p>${esc(p.short)}</p>
       </a>`).join("");
     g.classList.remove("anim"); void g.offsetWidth; g.classList.add("anim");
@@ -1204,10 +1484,14 @@ function fill() {
   $("#programList").innerHTML = PROGRAMS.map(p => `
     <div class="p-row">
       ${thumb(p.icon, `images/program-${p.key}.jpg`, p.title)}
-      <div><p class="chips" style="display:flex;gap:6px"><span class="chip">${p.cat}</span>${p.wip ? `<span class="chip wip">준비 중</span>` : ""}</p>
+      <div><p class="chips" style="display:flex;gap:6px">${statusChip(p)}</p>
         <h4>${esc(p.title)}</h4><p class="desc">${esc(p.short)}</p>
-        <dl><dt>대상</dt><dd>${esc(p.target)}</dd><dt>내용</dt><dd>${esc(p.how)}</dd></dl></div>
+        <dl><dt>대상</dt><dd>${esc(p.target)}</dd><dt>예시</dt><dd>${esc(p.how)}</dd></dl></div>
     </div>`).join("");
+  $("#fieldGrid").innerHTML = FIELDS.map(([f, d]) => `<li><b>${f}</b><span>${d}</span></li>`).join("");
+  $("#roleCodes").innerHTML = ROLE_CODES.map(r => `<li>${r}</li>`).join("");
+  $("#joinWays").innerHTML = JOIN_WAYS.map(([k, v]) => `<div class="r"><dt>${k}</dt><dd>${v}</dd></div>`).join("");
+  $("#collabGrid").innerHTML = COLLAB.map(([ic, t, d]) => `<li><span class="ic">${svg(ic, 1.8)}</span><div><b>${t}</b><span>${d}</span></div></li>`).join("");
 
   /* 참여 모집 */
   $("#recruit").innerHTML = RECRUITS.map(r => {
@@ -1243,7 +1527,7 @@ function renderStats(list) {
   const acts = list.filter(a => a.title);
   const days = Math.floor((today() - new Date(SITE.foundedDate)) / DAY) + 1;
   const people = acts.reduce((s, a) => s + (parseInt(a.beneficiaries, 10) || 0), 0);
-  const running = PROGRAMS.filter(p => !p.wip).length;
+  const running = PROGRAMS.filter(p => p.status === "수행 중").length;
   const items = [
     ["calendar", "함께한 날", days, "일", `${SITE.foundedDate.replaceAll("-", ".")} 설립`],
     ["photo", "기록된 활동", acts.length, "건", "활동 소식 기준"],
@@ -1295,20 +1579,18 @@ function initNewsTabs() {
     drawNewsTab(b.dataset.tab);
   });
 }
+let MEMBER_DONGS = {};
 async function loadActivities() {
   renderNews(ACTIVITIES);
-  if (!SITE.supabaseUrl || !SITE.supabaseAnonKey) return;
+  const c = await SB.client();
+  if (!c) return;
   try {
-    await new Promise((ok, fail) => {
-      const s = document.createElement("script");
-      s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
-      s.onload = ok; s.onerror = fail; document.head.appendChild(s);
-    });
-    const client = window.supabase.createClient(SITE.supabaseUrl, SITE.supabaseAnonKey, { auth: { persistSession: false } });
-    const { data, error } = await client.from("public_activities")
+    const { data, error } = await c.from("public_activities")
       .select("activity_date,date_label,title,activity_type,description,image_url,beneficiaries,dong");
     if (error) throw error;
-    if (data && data.length) renderNews(data);
+    const { data: md } = await c.rpc("dong_member_counts");
+    (md || []).forEach(r => MEMBER_DONGS[r.dong] = +r.members);
+    if (data && data.length) renderNews(data); else MAPS.forEach(m => m.refresh());
   } catch (e) { console.warn("활동 기록 불러오기 실패, 기본 기록 표시:", e); }
 }
 
@@ -1327,53 +1609,86 @@ const DONG_ORDER = AREA_DEF.flatMap(a => a[2]);
 const MAPS = [];
 
 function buildMap(host) {
-  const st = { tab: "전체", sel: null, page: 1 }, PER = 5;
+  const st = { tab: "전체", sel: null, page: 1, revealed: false }, PER = 5;
   host.innerHTML = `<div class="vmap rv">
     <div class="vm-map">
+      <div class="vm-score">
+        <p class="k">청년의 문화로 채운 마을</p>
+        <p class="v"><b data-filled>0</b><span>/ ${DONGS.length}</span></p>
+        <p class="vm-bar"><span data-fillbar></span></p>
+        <p class="n">누적 활동 <b data-acts>0</b>건<span data-mem-wrap hidden> · 회원이 있는 마을 <b data-mdongs>0</b>곳</span></p>
+      </div>
       <span class="vm-water" aria-hidden="true">SIHEUNG</span>
-      <svg viewBox="0 0 600 600" role="group" aria-label="시흥시 행정동 지도">
-        <g>${DONGS.map((d, i) => `<path class="dong a-${AREA_OF[d.name][1]}" data-dong="${d.name}" d="${d.d}" style="--d:${(i * .035).toFixed(2)}s" tabindex="0" role="button" aria-label="${d.name}"></path>`).join("")}</g>
+      <svg viewBox="0 0 600 600" role="group" aria-label="시흥시 행정동 지도. 활동이 많을수록 진하게 채워집니다">
+        <g>${DONGS.map(d => `<path class="dong l0" data-dong="${d.name}" d="${d.d}" tabindex="0" role="button" aria-label="${d.name}"></path>`).join("")}</g>
         <g>${DONGS.map(d => `<text class="lbl" data-dong="${d.name}" x="${d.cx}" y="${d.cy + 4}">${d.name}</text>`).join("")}</g>
         <g class="g-pin"></g>
       </svg>
       <p class="vm-tip" hidden></p>
-      <p class="vm-legend">${AREA_DEF.map(([a, c]) => `<span><i class="lg-${c}"></i>${a}</span>`).join("")}<span><i class="pin-l"></i>활동·거점이 있는 마을</span></p>
+      <p class="vm-legend"><span><i class="lv0"></i>아직 비어 있음</span><span><i class="lv1"></i>1건</span><span><i class="lv2"></i>2~3건</span><span><i class="lv3"></i>4건 이상</span><span><i class="pin-l"></i>거점</span></p>
     </div>
     <div class="vm-side">
       <div class="vm-tabs" role="tablist" aria-label="권역">${["전체", ...AREA_DEF.map(a => a[0])].map(t => `<button type="button" role="tab" data-tab="${t}">${t}</button>`).join("")}</div>
       <div class="vm-body" aria-live="polite"></div>
-      <p class="vm-note">권역은 이 지도에서 편의상 나눈 것으로 시흥시의 공식 구분이 아닙니다.<br>행정동 경계: 통계청 SGIS 행정구역 경계 (2026년 7월 기준, 단순화)</p>
+      <p class="vm-note">색은 홈페이지에 기록된 활동 수에 따라 자동으로 채워집니다. 권역은 편의상 나눈 것으로 시흥시의 공식 구분이 아닙니다.<br>행정동 경계: 통계청 SGIS 행정구역 경계 (2026년 7월 기준, 단순화)</p>
     </div>
   </div>`;
   const mapBox = host.querySelector(".vm-map"), body = host.querySelector(".vm-body"), tip = host.querySelector(".vm-tip");
   const acts = () => NEWS_SRC.filter(a => a.dong);
   const inDong = d => acts().filter(a => a.dong === d);
   const placesIn = d => PLACES.filter(p => p.dong === d);
+  const score = d => inDong(d).length + placesIn(d).length;
+  const level = d => { const n = inDong(d).length; return n >= 4 ? 3 : n >= 2 ? 2 : n === 1 ? 1 : placesIn(d).length ? 1 : 0; };
+  const members = d => MEMBER_DONGS[d] || 0;
+  const people = d => inDong(d).reduce((s, a) => s + (parseInt(a.beneficiaries, 10) || 0), 0);
 
-  function paint() {
+  function paintLevels(animate) {
+    const filled = DONGS.map(d => d.name).filter(d => level(d) > 0);
+    /* 처음 화면에 보일 때: 가장 먼저 활동한 마을부터 차례로 채워지는 연출 */
+    const first = d => (inDong(d).map(a => a.activity_date || "9999").sort()[0]) || "9999";
+    const order = filled.sort((a, b) => first(a).localeCompare(first(b)));
+    host.querySelectorAll(".dong").forEach(p => { if (!order.includes(p.dataset.dong)) p.setAttribute("class", "dong l0"); });
+    const put = (d, i) => {
+      const p = host.querySelector(`.dong[data-dong="${d}"]`), l = host.querySelector(`.lbl[data-dong="${d}"]`);
+      p.setAttribute("class", `dong l${level(d)}${animate ? " pop" : ""}`);
+      l.classList.toggle("on-dark", level(d) >= 2);
+      host.querySelector("[data-filled]").textContent = i + 1;
+    };
+    host.querySelectorAll(".lbl").forEach(l => l.classList.remove("on-dark"));
+    host.querySelector("[data-filled]").textContent = 0;
+    if (animate && !reduceMotion) order.forEach((d, i) => setTimeout(() => put(d, i), 500 + i * 450));
+    else order.forEach(put);
+    host.querySelector("[data-fillbar]").style.width = `${order.length / DONGS.length * 100}%`;
+    host.querySelector("[data-acts]").textContent = acts().length;
+    const md = Object.keys(MEMBER_DONGS).filter(k => MEMBER_DONGS[k] > 0).length;
+    host.querySelector("[data-mem-wrap]").hidden = !md;
+    host.querySelector("[data-mdongs]").textContent = md;
+    decorate();
+  }
+  function decorate() {
     host.querySelectorAll("[data-tab]").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === st.tab));
     host.querySelectorAll(".dong, .lbl").forEach(el => {
       const d = el.dataset.dong;
       el.classList.toggle("dim", st.tab !== "전체" && AREA_OF[d][0] !== st.tab && st.sel !== d);
       el.classList.toggle("sel", st.sel === d);
     });
-    const pinned = [...new Set([...acts().map(a => a.dong), ...PLACES.filter(p => p.dong).map(p => p.dong)])];
-    host.querySelector(".g-pin").innerHTML = pinned.map(d => DONGS.find(x => x.name === d)).filter(Boolean)
+    host.querySelector(".g-pin").innerHTML = [...new Set(PLACES.filter(p => p.dong).map(p => p.dong))]
+      .map(d => DONGS.find(x => x.name === d)).filter(Boolean)
       .map(o => `<g class="pin" transform="translate(${o.cx} ${o.cy - 13})"><circle class="ring" r="6"/><circle class="core" r="5"/></g>`).join("");
   }
   function listView() {
     const ds = DONG_ORDER.filter(d => st.tab === "전체" || AREA_OF[d][0] === st.tab)
-      .sort((a, b) => (inDong(b).length + placesIn(b).length) - (inDong(a).length + placesIn(a).length));
+      .sort((a, b) => score(b) - score(a));
     const pages = Math.max(1, Math.ceil(ds.length / PER));
     st.page = Math.min(st.page, pages);
     const rows = ds.slice((st.page - 1) * PER, st.page * PER);
     const pageBtns = Array.from({ length: pages }, (_, i) => `<button type="button" data-pg="${i + 1}" ${i + 1 === st.page ? 'aria-current="page"' : ""}>${i + 1}</button>`).join("");
     return `<ul class="vm-list">${rows.map(d => {
-      const [a, c] = AREA_OF[d], list = inDong(d), last = list[0], pl = placesIn(d)[0];
-      const info = last ? esc(last.title) : pl ? esc(pl.name) : `<span class="none">아직 기록된 활동이 없습니다</span>`;
-      return `<li class="vm-row"><div class="r1"><span class="badge b-${c}">${a}</span><strong>${d}</strong>
+      const [a, c] = AREA_OF[d], list = inDong(d), last = list[0], pl = placesIn(d)[0], m = members(d);
+      const info = last ? esc(last.title) : pl ? esc(pl.name) : `<span class="none">아직 비어 있는 마을 · 첫 프로젝트를 기다립니다</span>`;
+      return `<li class="vm-row"><div class="r1"><span class="badge b-${c}">${a}</span><strong>${d}</strong><span class="lvdot lv${level(d)}" title="채움 단계"></span>
         <button type="button" class="vm-go" data-dong="${d}">마을 보기 ›</button></div>
-        <div class="r2"><span>${svg("pin", 2)}${info}</span><span class="cnt">활동 <b>${list.length}</b>건</span></div></li>`;
+        <div class="r2"><span>${svg("pin", 2)}${info}</span><span class="cnt">활동 <b>${list.length}</b>건${m ? ` · 회원 <b>${m}</b>명` : ""}</span></div></li>`;
     }).join("")}</ul>
     <div class="vm-pager">
       <button type="button" class="edge" data-pg="1" aria-label="첫 페이지" ${st.page === 1 ? "disabled" : ""}>«</button>${pageBtns}
@@ -1381,18 +1696,22 @@ function buildMap(host) {
     </div>`;
   }
   function detailView() {
-    const d = st.sel, [a, c] = AREA_OF[d], list = inDong(d), pl = placesIn(d);
+    const d = st.sel, [a, c] = AREA_OF[d], list = inDong(d), pl = placesIn(d), m = members(d), ppl = people(d);
+    const empty = !list.length && !pl.length;
     return `<button type="button" class="vm-back">← ${st.tab === "전체" ? "전체" : st.tab} 목록</button>
-      <div class="vm-dh"><span class="badge b-${c}">${a}</span><h4>${d}</h4><p>활동 <b>${list.length}</b>건</p></div>
-      ${list.length || pl.length ? `<ul class="vm-acts">
+      <div class="vm-dh"><span class="badge b-${c}">${a}</span><h4>${d}</h4><span class="lvdot lv${level(d)}"></span></div>
+      <ul class="vm-kpi"><li><b>${list.length}</b>활동</li><li><b>${ppl.toLocaleString()}</b>함께한 시민</li><li><b>${m}</b>회원</li></ul>
+      ${empty ? "" : `<ul class="vm-acts">
         ${pl.map(p => `<li><span class="dt">${esc(p.type)}</span><h5>${esc(p.name)}</h5></li>`).join("")}
         ${list.map(x => `<li><span class="dt">${esc(x.date_label || "")}</span><h5>${esc(x.title)}</h5>${x.activity_type ? `<span class="chip">${esc(x.activity_type)}</span>` : ""}</li>`).join("")}
-      </ul>` : ""}
-      <div class="vm-cta"><h5>${d}에서 함께할 마을 파트너를 찾습니다</h5>
-        <p>공간, 축제, 학교, 동아리, 상점가 등 무엇이든 좋습니다. 이 마을에서 청년 문화 프로젝트를 함께 만들어요.</p>
+      </ul>`}
+      <div class="vm-cta">${empty
+        ? `<h5>${d}은(는) 아직 비어 있는 마을입니다</h5><p>이 마을의 첫 문화 프로젝트를 함께 만들 공간, 축제, 학교, 동아리, 상점가를 찾습니다.</p>`
+        : `<h5>${d}에서 다음 프로젝트를 함께 만들어요</h5><p>공연·전시·교육·축제 무엇이든 좋습니다. 이 마을을 더 진하게 채울 파트너를 찾습니다.</p>`}
         <a class="btn btn-brand" href="#/join/partner">협력 문의</a></div>`;
   }
-  function render() { paint(); body.innerHTML = st.sel ? detailView() : listView(); }
+  function render() { decorate(); body.innerHTML = st.sel ? detailView() : listView(); }
+  function refresh() { paintLevels(false); render(); }
   function select(d) { st.sel = d; if (st.tab !== "전체" && AREA_OF[d][0] !== st.tab) st.tab = AREA_OF[d][0]; render(); }
 
   host.addEventListener("click", e => {
@@ -1409,7 +1728,7 @@ function buildMap(host) {
   });
   const showTip = (el, x, y) => {
     const d = el.dataset.dong, n = inDong(d).length;
-    tip.textContent = `${d} · ${AREA_OF[d][0]} · 활동 ${n}건`;
+    tip.textContent = `${d} · ${n ? `활동 ${n}건` : "아직 비어 있음"}`;
     tip.style.left = x + "px"; tip.style.top = y + "px"; tip.hidden = false;
   };
   mapBox.addEventListener("mousemove", e => {
@@ -1424,8 +1743,15 @@ function buildMap(host) {
   });
   mapBox.addEventListener("focusout", () => tip.hidden = true);
 
+  /* 화면에 처음 보일 때 채워지는 연출 */
+  if ("IntersectionObserver" in window && !reduceMotion) {
+    const obs = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting && !st.revealed) { st.revealed = true; paintLevels(true); obs.disconnect(); }
+    }), { threshold: .35 });
+    obs.observe(host.querySelector("svg"));
+  } else { st.revealed = true; paintLevels(false); }
   render();
-  return { refresh: render };
+  return { refresh: () => { if (st.revealed) refresh(); else render(); } };
 }
 
 /* ── 메인 슬라이드: 양옆이 보이는 무한 루프 ── */
@@ -1480,7 +1806,9 @@ function initSlider() {
 /* ── 라우터: #/페이지/하위메뉴 ── */
 function route() {
   if (location.hash && !location.hash.startsWith("#/")) return;
-  const [, pageId, subId] = location.hash.split("/");
+  const [path, qs = ""] = location.hash.split("?");
+  const [, pageId, subId] = path.split("/");
+  const params = new URLSearchParams(qs);
   const menu = MENU.find(m => m.id === pageId);
   $$("[data-page]").forEach(el => el.hidden = true);
   $$(".dep1").forEach(a => a.classList.toggle("on", a.dataset.menu === pageId));
@@ -1502,7 +1830,7 @@ function route() {
         <p class="en">${menu.en}</p><h2>${cur[1]}</h2>
         <p class="crumb"><span>홈</span><span>${menu.label}</span><span>${cur[1]}</span></p>
       </div></div>
-      ${subs.length > 1 ? `<nav class="lnb" aria-label="${menu.label} 하위 메뉴"><div class="wrap"><ul>
+      ${subs.length > 1 && (!menu.hidden || menu.id === "my") ? `<nav class="lnb" aria-label="${menu.label} 하위 메뉴"><div class="wrap"><ul>
         ${subs.map(([s, l]) => `<li><a href="#/${menu.id}/${s}" class="${s === cur[0] ? "on" : ""}" ${s === cur[0] ? 'aria-current="page"' : ""}>${l}</a></li>`).join("")}
       </ul></div></nav>` : ""}`;
     page.before(shell);
@@ -1510,6 +1838,7 @@ function route() {
     page.style.animation = "none"; void page.offsetWidth; page.style.animation = "";
     page.hidden = false;
     document.title = `${cur[1]} | ${menu.label} | ${SITE.name}`;
+    if (window.CM) CM.onRoute(menu.id, cur[0], params);
   }
   setAll(false);
   window.scrollTo(0, 0);
@@ -1583,5 +1912,6 @@ watch();
 window.addEventListener("hashchange", route);
 route();
 </script>
+<script src="assets/community.js"></script>
 </body>
 </html>
