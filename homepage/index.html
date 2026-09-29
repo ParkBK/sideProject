@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+  ─────────────────────────────────────────────────────────────
+  시흥 청년문화예술공동체 홈페이지 (단일 HTML 파일)
+
+  [정보 수정] 아래 <script> 맨 위 SITE 객체만 고치면 됩니다.
+             빈 값("")인 항목은 화면에 나타나지 않습니다.
+
+  [사진 교체 규칙] 이 HTML 파일 옆에 images/ 폴더를 만들고 아래 이름으로 저장
+    images/og-image.jpg                       공유 미리보기 (1200×630)
+    images/activity-YYYY-MM-주제.jpg           활동 사진 (정사각형 800×800 권장)
+      예) images/activity-2026-07-founding.jpg
+          images/activity-2026-07-performance.jpg
+          images/activity-2026-09-gaetgol-mural.jpg
+          images/activity-XXXX-XX-career-booth.jpg
+    images/member-role.jpg                    운영진 사진 (예: member-rep.jpg, 400×400)
+
+  [정관] 이 파일 옆 docs/articles.pdf  (대표 직인은 가린 사본을 올리세요)
+  ─────────────────────────────────────────────────────────────
+-->
+<title>시흥 청년문화예술공동체 | 시흥의 청년 문화 프로젝트</title>
+<meta name="description" content="문화예술, 기획, 디자인, 개발, 교육 분야의 청년들이 함께 시흥의 문화 프로젝트를 만드는 비영리 공동체입니다.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="시흥 청년문화예술공동체">
+<meta property="og:description" content="분야를 넘나드는 청년들의 협업으로, 지역의 문제를 문화로 풀어냅니다.">
+<!-- og:image 자리: 배포 후 절대 주소로 바꿔 주세요. 예) https://도메인/images/og-image.jpg -->
+<meta property="og:image" content="images/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#2f5d6b">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232f5d6b'/%3E%3Ctext x='16' y='21' font-size='12' text-anchor='middle' fill='%23f6f7f4' font-family='sans-serif' font-weight='700'%3E%EC%8B%9C%ED%9D%A5%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+  :root {
+    --paper:#f6f7f4; --ink:#1b2a38; --brand:#2f5d6b; --brand-light:#5f94a1; --teal:#eaf1f1;
+    --muted:rgba(27,42,56,.68); --ring:rgba(27,42,56,.1);
+    --r-lg:26px; --r-md:18px; --r-sm:12px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:72px}
+  body{font-family:"Noto Sans KR",-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:var(--paper);color:var(--ink);line-height:1.65;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block}
+  :focus-visible{outline:3px solid var(--brand-light);outline-offset:3px;border-radius:6px}
+  .skip{position:absolute;left:-999px;top:8px;background:var(--brand);color:var(--paper);padding:8px 14px;border-radius:8px;z-index:100}
+  .skip:focus{left:8px}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+  @media(min-width:640px){.wrap{padding:0 32px}}
+  .bg-deco{position:relative;overflow:hidden}
+  .bg-deco::before,.bg-deco::after{content:"";position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none;z-index:0}
+  .bg-deco::before{top:-120px;left:-120px;width:380px;height:380px;background:rgba(47,93,107,.1)}
+  .bg-deco::after{top:260px;right:-140px;width:320px;height:320px;background:rgba(95,148,161,.15)}
+  .glass{background:rgba(255,255,255,.6);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--ring)}
+
+  /* 헤더 */
+  header{position:sticky;top:0;z-index:50;background:rgba(246,247,244,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--ring)}
+  .head{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:14px}
+  .mark{width:32px;height:32px;border-radius:10px;background:var(--brand);color:var(--paper);display:grid;place-items:center;font-size:12px}
+  nav ul{list-style:none;display:flex;gap:4px}
+  nav a{display:block;padding:8px 12px;font-size:14px;border-radius:10px;color:var(--muted)}
+  nav a:hover{background:var(--teal);color:var(--brand)}
+  .menu-btn{display:none;background:none;border:1px solid var(--ring);border-radius:10px;width:40px;height:40px;cursor:pointer;color:var(--ink)}
+  @media(max-width:859px){
+    .menu-btn{display:grid;place-items:center}
+    nav{position:absolute;top:60px;left:0;right:0;background:var(--paper);border-bottom:1px solid var(--ring);display:none}
+    nav.open{display:block}
+    nav ul{flex-direction:column;padding:8px 20px 16px}
+    nav a{padding:12px;font-size:15px}
+  }
+
+  /* 버튼 */
+  .btn{display:inline-flex;align-items:center;gap:8px;border-radius:var(--r-sm);padding:11px 20px;font-size:14px;font-weight:500;transition:transform .2s;border:1px solid transparent}
+  .btn:hover{transform:translateY(-1px)}
+  .btn-primary{background:var(--brand);color:var(--paper)}
+  .btn-ghost{color:var(--brand);border-color:rgba(47,93,107,.3);background:rgba(255,255,255,.5)}
+
+  /* 히어로 */
+  .hero{padding:40px 0 56px;position:relative;z-index:1}
+  @media(min-width:640px){.hero{padding:72px 0 88px}}
+  .hero-card{border-radius:var(--r-lg);padding:28px}
+  @media(min-width:640px){.hero-card{padding:48px}}
+  .badge{display:inline-flex;align-items:center;gap:8px;background:var(--teal);border-radius:999px;padding:4px 12px;font-size:12px;font-weight:500;color:var(--brand)}
+  .badge::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--brand)}
+  .hero h1{margin-top:20px;font-size:30px;font-weight:700;line-height:1.25;letter-spacing:-.02em}
+  @media(min-width:640px){.hero h1{font-size:46px}}
+  .lead{margin-top:16px;max-width:46ch;font-size:16px;color:var(--muted)}
+  @media(min-width:640px){.lead{font-size:18px}}
+  .cta{margin-top:28px;display:flex;flex-wrap:wrap;gap:12px}
+  .meta{margin-top:32px;padding-top:20px;border-top:1px solid var(--ring);display:flex;flex-wrap:wrap;gap:6px 24px;font-size:13px;color:var(--muted)}
+
+  /* 섹션 */
+  section{position:relative;z-index:1;padding-bottom:64px}
+  @media(min-width:640px){section{padding-bottom:96px}}
+  .eyebrow{font-size:12px;font-weight:600;letter-spacing:.08em;color:var(--brand)}
+  .sec-title{margin-top:6px;font-size:24px;font-weight:700;letter-spacing:-.02em}
+  .sec-desc{margin-top:6px;font-size:14px;color:var(--muted)}
+  .grid{margin-top:24px;display:grid;gap:16px;grid-template-columns:1fr}
+  @media(min-width:640px){.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}}
+  @media(min-width:1024px){.g4{grid-template-columns:repeat(4,1fr)}}
+  @media(min-width:640px) and (max-width:1023px){.g4{grid-template-columns:repeat(2,1fr)}}
+  .card{border-radius:var(--r-md);padding:22px}
+  .card h3{font-size:16px;font-weight:600;line-height:1.4}
+  .card p{margin-top:8px;font-size:14px;color:var(--muted)}
+  .icon{width:36px;height:36px;border-radius:10px;background:var(--teal);color:var(--brand);display:grid;place-items:center;margin-bottom:14px}
+
+  /* 소개 */
+  .mv{display:grid;gap:16px;margin-top:24px}
+  @media(min-width:640px){.mv{grid-template-columns:1fr 1fr}}
+  .mv .label{font-size:12px;font-weight:600;color:var(--brand)}
+  .mv .card p{margin-top:8px;font-size:17px;color:var(--ink);font-weight:500;line-height:1.55}
+  .value-num{font-size:12px;font-weight:600;color:var(--brand-light)}
+
+  /* 준비 중 */
+  .card.wip{background:rgba(255,255,255,.35);border-style:dashed;border-color:rgba(47,93,107,.35)}
+  .chip-wip{display:inline-block;margin-bottom:10px;border-radius:999px;background:#fff4dc;color:#7a5200;border:1px solid #ecd49a;padding:3px 10px;font-size:12px;font-weight:600}
+
+  /* 타임라인 */
+  .timeline{margin-top:28px;list-style:none;position:relative;display:flex;flex-direction:column;gap:14px}
+  .t-item{border-radius:var(--r-md);padding:16px;display:grid;gap:16px;grid-template-columns:1fr;align-items:center}
+  @media(min-width:640px){.t-item{grid-template-columns:160px 1fr;padding:20px}}
+  .photo{aspect-ratio:1/1;border-radius:var(--r-sm);background:repeating-linear-gradient(45deg,var(--teal),var(--teal) 10px,#e1eaea 10px,#e1eaea 20px);display:grid;place-items:center;font-size:12px;color:var(--muted);text-align:center;padding:8px;overflow:hidden}
+  @media(max-width:639px){.photo{aspect-ratio:16/9}}
+  .photo img{width:100%;height:100%;object-fit:cover}
+  .t-date{display:inline-block;font-size:13px;font-weight:600;color:var(--brand);background:var(--teal);border-radius:999px;padding:2px 10px}
+  .t-item h3{margin-top:8px;font-size:16px;font-weight:600}
+  .t-item p{margin-top:4px;font-size:14px;color:var(--muted)}
+  .t-status{margin-top:12px;font-size:12px;color:var(--muted)}
+  .t-item.no-photo{grid-template-columns:1fr}
+  .t-type{display:inline-block;margin-left:6px;font-size:12px;color:var(--muted)}
+
+  /* 인사말 */
+  .greeting{margin-top:36px;border-radius:var(--r-md);padding:24px}
+  @media(min-width:640px){.greeting{padding:32px}}
+  .greeting p{font-size:15px;white-space:pre-line}
+  .greeting .sign{margin-top:16px;font-weight:600;text-align:right}
+
+  /* FAQ */
+  .faq{margin-top:24px;display:flex;flex-direction:column;gap:10px}
+  .faq details{border-radius:var(--r-md);padding:0}
+  .faq summary{cursor:pointer;list-style:none;padding:18px 22px;font-weight:600;font-size:15px;display:flex;justify-content:space-between;gap:12px}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";color:var(--brand);font-weight:700}
+  .faq details[open] summary::after{content:"−"}
+  .faq .a{padding:0 22px 18px;font-size:14px;color:var(--muted)}
+
+  /* 목적 사업 */
+  .purpose{margin:0;padding-left:18px;font-size:14px;columns:2;column-gap:24px}
+  @media(max-width:639px){.purpose{columns:1}}
+
+  /* 조직 */
+  .person .avatar{width:64px;height:64px;border-radius:50%;background:var(--teal);margin-bottom:14px;overflow:hidden}
+  .person .role{font-size:12px;font-weight:600;color:var(--brand)}
+  .person h3{margin-top:4px}
+
+  /* 투명성 */
+  .info{margin-top:24px;border-radius:var(--r-md);overflow:hidden}
+  .info dl{display:grid;grid-template-columns:1fr}
+  .info .row{display:grid;grid-template-columns:1fr;gap:4px;padding:16px 22px;border-bottom:1px solid var(--ring)}
+  .info .row:last-child{border-bottom:0}
+  @media(min-width:640px){.info .row{grid-template-columns:160px 1fr;gap:16px}}
+  .info dt{font-size:13px;font-weight:600;color:var(--brand)}
+  .info dd{font-size:15px}
+  .info a.dl{display:inline-flex;align-items:center;gap:6px;color:var(--brand);font-weight:500;text-decoration:underline;text-underline-offset:3px}
+
+  /* 함께하기 */
+  .join h3{font-size:18px}
+  .join .who{margin-top:6px;font-size:14px;color:var(--muted)}
+  .tags{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;list-style:none}
+  .tags li{font-size:13px;padding:4px 12px;border-radius:999px;background:var(--teal);color:var(--brand)}
+  .steps{margin:16px 0 0 18px;font-size:14px;color:var(--muted)}
+  .join .btn{margin-top:22px}
+  .no-mail{margin-top:22px;font-size:13px;color:var(--muted)}
+
+  /* 푸터 */
+  footer{border-top:1px solid var(--ring);padding:40px 0 48px;font-size:13px;color:var(--muted);position:relative;z-index:1}
+  footer .fname{font-size:15px;font-weight:600;color:var(--ink)}
+  footer dl{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px 20px}
+  footer dt{display:inline;font-weight:500}
+  footer dd{display:inline;margin-left:4px}
+  footer a{text-decoration:underline;text-underline-offset:3px}
+  footer .note{margin-top:18px;font-size:12px}
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">본문 바로가기</a>
+
+<header>
+  <div class="wrap head">
+    <a class="brand" href="#top" aria-label="시흥 청년문화예술공동체 처음으로">
+      <span class="mark" aria-hidden="true">시흥</span>
+      <span data-f="name"></span>
+    </a>
+    <button class="menu-btn" id="menuBtn" aria-controls="nav" aria-expanded="false" aria-label="메뉴 열기">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <nav id="nav" aria-label="주요 메뉴">
+      <ul>
+        <li><a href="#about">소개</a></li>
+        <li><a href="#programs">사업</a></li>
+        <li><a href="#activities">활동 기록</a></li>
+        <li id="navTeam" class="hidden"><a href="#team">조직</a></li>
+        <li><a href="#transparency">투명성</a></li>
+        <li><a href="#join">함께하기</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="bg-deco">
+  <!-- 1. 첫 화면 -->
+  <div class="hero" id="top">
+    <div class="wrap">
+      <div class="hero-card glass">
+        <span class="badge">경기도 시흥시 · 비영리 청년 공동체</span>
+        <h1 data-f="name"></h1>
+        <p class="lead" data-f="tagline"></p>
+        <div class="cta">
+          <a class="btn btn-primary" href="#join-partner">협력 문의</a>
+          <a class="btn btn-ghost" href="#join-member">함께하기</a>
+        </div>
+        <div class="meta">
+          <span>설립 <span data-f="founded"></span></span>
+          <span>활동 지역 경기도 시흥시</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. 소개 -->
+  <section id="about" aria-labelledby="about-t">
+    <div class="wrap">
+      <p class="eyebrow">ABOUT</p>
+      <h2 class="sec-title" id="about-t">소개</h2>
+      <div class="mv">
+        <div class="card glass"><span class="label">미션</span><p data-f="mission"></p></div>
+        <div class="card glass"><span class="label">비전</span><p data-f="vision"></p></div>
+      </div>
+      <h3 style="margin-top:36px;font-size:16px;font-weight:600">핵심 가치</h3>
+      <div class="grid g3">
+        <div class="card glass"><span class="value-num">01</span><h3>협업</h3><p>분야가 다른 청년이 함께 만듭니다.</p></div>
+        <div class="card glass"><span class="value-num">02</span><h3>현장</h3><p>축제, 거리, 학교 등 시민이 있는 곳에서 활동합니다.</p></div>
+        <div class="card glass"><span class="value-num">03</span><h3>공익</h3><p>수익은 나누지 않고 목적 사업에만 씁니다.</p></div>
+      </div>
+      <!-- 인사말 — SITE.greeting을 채우면 표시됩니다 -->
+      <div class="greeting glass hidden" id="greeting">
+        <h3 style="font-size:16px;font-weight:600;margin-bottom:12px">대표 인사말</h3>
+        <p data-f="greeting"></p>
+        <p class="sign"><span data-f="name"></span> 대표 <span data-f="rep"></span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 사업 -->
+  <section id="programs" aria-labelledby="prog-t">
+    <div class="wrap">
+      <p class="eyebrow">PROGRAMS</p>
+      <h2 class="sec-title" id="prog-t">사업</h2>
+      <p class="sec-desc">기관·학교·축제 주최 측과 함께 운영할 수 있는 프로그램입니다.</p>
+      <div class="grid g4">
+        <div class="card glass">
+          <div class="icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+          <h3>지역 축제·행사 기획·운영 및 청년 예술인 공연</h3>
+          <p>행사 성격에 맞는 청년 예술인 공연을 기획·섭외하고 현장 운영을 돕습니다.</p>
+        </div>
+        <div class="card glass">
+          <div class="icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 3l3 3-9 9H9v-3z"/><path d="M3 21h18"/></svg></div>
+          <h3>공공미술·벽화 등 지역 참여 활동</h3>
+          <p>주민과 함께하는 벽화·공공미술 활동을 진행합니다.</p>
+        </div>
+        <div class="card glass">
+          <div class="icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="3"/><path d="M6 12h4M8 10v4M15 11h.01M18 13h.01"/></svg></div>
+          <h3>청소년 진로체험</h3>
+          <p>AI·게임 제작·디지털 창작을 직접 해보는 체험 부스와 수업을 운영합니다.</p>
+        </div>
+        <div class="card wip" aria-label="준비 중인 사업: 청년 AI·Unity 창작 교육">
+          <span class="chip-wip">준비 중</span>
+          <h3>청년 AI·Unity 창작 교육</h3>
+          <p>청년 대상 AI·Unity 창작 교육 과정을 준비하고 있습니다. 아직 운영 전입니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. 활동 기록 -->
+  <section id="activities" aria-labelledby="act-t">
+    <div class="wrap">
+      <p class="eyebrow">ACTIVITIES</p>
+      <h2 class="sec-title" id="act-t">활동 기록</h2>
+      <p class="sec-desc">날짜순으로 정리한 활동입니다.</p>
+      <ol class="timeline" id="timeline"></ol>
+      <p class="t-status" id="tStatus" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- 5. 조직 — 이름이 하나라도 채워지면 표시됩니다 (SITE.team 수정) -->
+  <section id="team" class="hidden" aria-labelledby="team-t">
+    <div class="wrap">
+      <p class="eyebrow">PEOPLE</p>
+      <h2 class="sec-title" id="team-t">조직</h2>
+      <div class="grid g3" id="teamGrid"></div>
+    </div>
+  </section>
+
+  <!-- 6. 투명성 -->
+  <section id="transparency" aria-labelledby="tr-t">
+    <div class="wrap">
+      <p class="eyebrow">TRANSPARENCY</p>
+      <h2 class="sec-title" id="tr-t">투명성</h2>
+      <p class="sec-desc">단체 운영의 기본 정보를 공개합니다.</p>
+      <div class="info glass">
+        <dl>
+          <div class="row"><dt>정관</dt><dd><a class="dl" href="docs/articles.pdf" download="시흥청년문화예술공동체_정관.pdf">정관 PDF 내려받기
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 21h16"/></svg></a></dd></div>
+          <div class="row"><dt>법적 형태</dt><dd>비영리 임의단체</dd></div>
+          <div class="row"><dt>목적 사업<br><span style="font-weight:400;color:var(--muted)">(정관 제4조)</span></dt><dd>
+            <ol class="purpose">
+              <li>문화·예술 프로그램 운영</li><li>교육 프로그램 운영</li><li>문화콘텐츠 기획 및 제작</li>
+              <li>지역축제 및 행사 기획·운영</li><li>지역문화 활성화 사업</li><li>지역 네트워크 구축</li>
+              <li>세미나 및 포럼 개최</li><li>연구 및 정책 제안</li><li>공익 프로젝트 운영</li>
+            </ol></dd></div>
+          <div class="row"><dt>수익 사용</dt><dd>수익은 회원에게 분배하지 않으며 목적 사업에만 사용합니다. (정관 제20조)</dd></div>
+          <div class="row" data-row="regNo"><dt>고유번호</dt><dd data-f="regNo"></dd></div>
+          <div class="row"><dt>설립일</dt><dd data-f="founded"></dd></div>
+          <div class="row"><dt>회계연도</dt><dd>매년 1월 1일 ~ 12월 31일</dd></div>
+          <div class="row"><dt>결산 공개</dt><dd>2026 회계연도 결산은 정기총회 승인 후 2027년 4월까지 공개합니다.</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. 함께하기 -->
+  <section id="join" aria-labelledby="join-t">
+    <div class="wrap">
+      <p class="eyebrow">JOIN</p>
+      <h2 class="sec-title" id="join-t">함께하기</h2>
+      <div class="grid g2">
+        <div class="card glass join" id="join-partner">
+          <h3>협력 제안</h3>
+          <p class="who">기관·학교·축제 주최 측</p>
+          <ul class="tags" aria-label="가능한 협력 형태">
+            <li>공연 기획·섭외</li><li>진로체험 부스</li><li>공공미술</li><li>교육 프로그램</li>
+          </ul>
+          <p style="margin-top:16px;font-size:14px;color:var(--muted)">행사 일정, 장소, 대상, 원하는 협력 형태를 적어 보내 주시면 검토 후 회신드립니다.</p>
+          <a class="btn btn-primary hidden" data-mail="partner">협력 제안 메일 보내기</a>
+          <p class="no-mail" data-nomail>문의 이메일은 준비 중입니다.</p>
+        </div>
+        <div class="card glass join" id="join-member">
+          <h3>회원 참여</h3>
+          <p class="who">시흥에서 함께 활동할 청년</p>
+          <ul class="tags" aria-label="참여 분야">
+            <li>문화예술</li><li>기획</li><li>디자인</li><li>개발</li><li>교육</li><li>영상</li>
+          </ul>
+          <ol class="steps">
+            <li>이메일로 이름, 활동 분야, 간단한 소개를 보내 주세요.</li>
+            <li>운영진이 확인 후 만남 일정을 안내드립니다.</li>
+            <li>정관에 따른 절차를 거쳐 회원으로 함께합니다.</li>
+          </ol>
+          <a class="btn btn-ghost hidden" data-mail="member">참여 문의 메일 보내기</a>
+          <p class="no-mail" data-nomail>문의 이메일은 준비 중입니다.</p>
+        </div>
+      </div>
+      <!-- 오시는 길 -->
+      <div class="info glass" style="margin-top:16px">
+        <dl>
+          <div class="row"><dt>오시는 길</dt><dd><span data-f="address"></span>
+            <a class="dl" id="mapLink" target="_blank" rel="noopener" style="margin-left:8px">지도 보기</a></dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. 자주 묻는 질문 -->
+  <section id="faq" aria-labelledby="faq-t">
+    <div class="wrap">
+      <p class="eyebrow">FAQ</p>
+      <h2 class="sec-title" id="faq-t">자주 묻는 질문</h2>
+      <div class="faq">
+        <details class="glass"><summary>협력 비용은 어떻게 되나요?</summary>
+          <p class="a">행사 규모, 인원, 기간, 필요한 장비에 따라 달라집니다. 일정과 내용을 보내 주시면 견적을 안내드립니다.</p></details>
+        <details class="glass"><summary>후원하면 기부금 영수증을 받을 수 있나요?</summary>
+          <p class="a">아니요. 현재 비영리 임의단체로, 기부금 영수증을 발행할 수 있는 단체가 아닙니다. 그래서 공개 후원 모집은 하지 않고 있습니다.</p></details>
+        <details class="glass"><summary>누가 회원이 될 수 있나요?</summary>
+          <p class="a">단체의 목적에 찬동하고 문화·예술, 기획, 디자인, 개발, 교육, 영상제작 등의 분야에서 활동하거나 관심 있는 분이면 소정의 절차를 거쳐 회원이 될 수 있습니다. (정관 제5조)</p></details>
+        <details class="glass"><summary>단체의 수익은 어디에 쓰이나요?</summary>
+          <p class="a">수익은 회원에게 나누지 않고 정관에 정한 목적 사업에만 씁니다. 결산은 매 회계연도 종료 후 정기총회 승인을 거쳐 이 페이지에 공개합니다.</p></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- 8. 푸터 -->
+<footer>
+  <div class="wrap">
+    <p class="fname" data-f="name"></p>
+    <dl>
+      <div data-row="regNo"><dt>고유번호</dt><dd data-f="regNo"></dd></div>
+      <div><dt>대표자</dt><dd data-f="rep"></dd></div>
+      <div><dt>소재지</dt><dd data-f="address"></dd></div>
+      <div data-row="email"><dt>이메일</dt><dd><a data-f="email" id="fMail"></a></dd></div>
+      <div data-row="instagram"><dt>인스타그램</dt><dd><a data-f="instagram" id="fInsta" target="_blank" rel="noopener"></a></dd></div>
+    </dl>
+    <p class="note"><a href="docs/articles.pdf" download="시흥청년문화예술공동체_정관.pdf">정관</a> · 이 페이지는 방문자의 개인정보를 수집하지 않습니다.</p>
+    <p class="note">본 페이지는 단체 소개용이며, 특정 기관과의 지정·후원 관계를 나타내지 않습니다.</p>
+    <p class="note">© <span id="year"></span> <span data-f="name"></span>. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+/* ═══════════ 여기만 수정하세요 ═══════════ */
+const SITE = {
+  name: "시흥 청년문화예술공동체",
+  tagline: "문화예술, 기획, 디자인, 개발, 교육 분야의 청년들이 함께 시흥의 문화 프로젝트를 만드는 비영리 공동체",
+  mission: "분야를 넘나드는 청년들의 협업으로, 지역의 문제를 문화로 풀어냅니다.",
+  vision: "시흥의 청년 창작자가 지역의 문화를 함께 만들어가는 도시",
+  founded: "2026년 7월 2일",
+  rep: "박병근",
+  address: "경기도 시흥시 서촌상가 2길 25-1, 405호",
+  regNo: "",          // 고유번호 예: "000-00-00000"
+  email: "",          // 예: "hello@example.com" → 문의 버튼 자동 생성
+  instagram: "",      // 예: "@siheung_youth"
+  instagramUrl: "",   // 예: "https://instagram.com/siheung_youth"
+
+  /* 대표 인사말 — 채우면 '소개' 아래에 표시됩니다. 줄바꿈은 \n */
+  greeting: "",
+
+  /* 조직 — 이름을 채우면 '조직' 영역이 나타납니다. photo 예: "images/member-rep.jpg" */
+  team: [
+    { role: "대표",   name: "", bio: "", photo: "" },
+    { role: "부대표", name: "", bio: "", photo: "" },
+    { role: "회계",   name: "", bio: "", photo: "" },
+  ],
+
+  /* 활동 기록 불러오기 — 공개용 view: public_activities
+     필요한 열: activity_date(date, 정렬용), date_label(text, 예 "2026.09"), title, activity_type, description, image_url
+     anon(공개) 키만 넣으세요. 비어 있거나 실패하면 아래 기본 기록을 보여 줍니다. */
+  supabaseUrl: "",
+  supabaseAnonKey: "",
+};
+
+/* 기본 활동 기록 (날짜순). 사진: images/activity-YYYY-MM-주제.jpg */
+const FALLBACK_ACTIVITIES = [
+  { date_label: "2026.07.02", title: "단체 설립 (창립총회)", activity_type: "", description: "", image_url: "" /* images/activity-2026-07-founding.jpg */ },
+  { date_label: "2026.07~", title: "청년 문화예술인 공연 참여 운영", activity_type: "공연", description: "", image_url: "" /* images/activity-2026-07-performance.jpg */ },
+  { date_label: "2026.09", title: "시흥갯골축제 벽화 봉사", activity_type: "공공미술", description: "", image_url: "" /* images/activity-2026-09-gaetgol-mural.jpg */ },
+  { date_label: "", title: "청소년 진로체험 부스 운영", activity_type: "교육", description: "", image_url: "" /* images/activity-XXXX-XX-career-booth.jpg */ },
+];
+/* ═══════════════════════════════════════ */
+
+const $$ = s => document.querySelectorAll(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+function fill() {
+  $$("[data-f]").forEach(el => { el.textContent = (SITE[el.dataset.f] || "").trim(); });
+  $$("[data-row]").forEach(el => { if (!(SITE[el.dataset.row] || "").trim()) el.classList.add("hidden"); });
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  const mail = SITE.email.trim();
+  if (mail) {
+    document.getElementById("fMail").href = "mailto:" + mail;
+    const subj = { partner: "[협력 제안] ", member: "[회원 참여 문의] " };
+    $$("[data-mail]").forEach(a => {
+      a.href = `mailto:${mail}?subject=${encodeURIComponent(subj[a.dataset.mail] + SITE.name)}`;
+      a.classList.remove("hidden");
+    });
+    $$("[data-nomail]").forEach(p => p.classList.add("hidden"));
+  }
+  if (SITE.instagramUrl.trim()) document.getElementById("fInsta").href = SITE.instagramUrl.trim();
+  if (SITE.greeting.trim()) document.getElementById("greeting").classList.remove("hidden");
+  document.getElementById("mapLink").href = "https://map.naver.com/p/search/" + encodeURIComponent(SITE.address.split(",")[0]);
+
+  const members = SITE.team.filter(m => m.name.trim());
+  if (members.length) {
+    document.getElementById("teamGrid").innerHTML = members.map(m => `
+      <div class="card glass person">
+        <div class="avatar">${m.photo ? `<img src="${esc(m.photo)}" alt="${esc(m.name)} 사진">` : ""}</div>
+        <p class="role">${esc(m.role)}</p><h3>${esc(m.name)}</h3>
+        ${m.bio ? `<p>${esc(m.bio)}</p>` : ""}
+      </div>`).join("");
+    document.getElementById("team").classList.remove("hidden");
+    document.getElementById("navTeam").classList.remove("hidden");
+  }
+}
+
+function renderTimeline(list) {
+  document.getElementById("timeline").innerHTML = list.filter(a => a.title).map(a => `
+    <li class="t-item glass${a.image_url ? "" : " no-photo"}">
+      ${a.image_url ? `<div class="photo"><img src="${esc(a.image_url)}" alt="${esc(a.title)} 활동 사진" loading="lazy"></div>` : ""}
+      <div>
+        ${a.date_label ? `<span class="t-date">${esc(a.date_label)}</span>` : ""}
+        ${a.activity_type ? `<span class="t-type">${esc(a.activity_type)}</span>` : ""}
+        <h3>${esc(a.title)}</h3>
+        ${a.description ? `<p>${esc(a.description)}</p>` : ""}
+      </div>
+    </li>`).join("");
+}
+
+async function loadActivities() {
+  renderTimeline(FALLBACK_ACTIVITIES);
+  if (!SITE.supabaseUrl || !SITE.supabaseAnonKey) return;
+  try {
+    // Supabase 설정이 있을 때만 라이브러리를 불러옵니다
+    await new Promise((ok, fail) => {
+      const s = document.createElement("script");
+      s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+      s.onload = ok; s.onerror = fail;
+      document.head.appendChild(s);
+    });
+    const client = window.supabase.createClient(SITE.supabaseUrl, SITE.supabaseAnonKey, { auth: { persistSession: false } });
+    const { data, error } = await client.from("public_activities")
+      .select("activity_date,date_label,title,activity_type,description,image_url")
+      .order("activity_date", { ascending: true, nullsFirst: false });
+    if (error) throw error;
+    if (data && data.length) renderTimeline(data);
+  } catch (e) {
+    console.warn("활동 기록 불러오기 실패, 기본 기록 표시:", e);
+  }
+}
+
+/* 모바일 메뉴 */
+const btn = document.getElementById("menuBtn"), nav = document.getElementById("nav");
+function setMenu(open) {
+  nav.classList.toggle("open", open);
+  btn.setAttribute("aria-expanded", open);
+  btn.setAttribute("aria-label", open ? "메뉴 닫기" : "메뉴 열기");
+}
+btn.addEventListener("click", () => setMenu(!nav.classList.contains("open")));
+nav.addEventListener("click", e => { if (e.target.tagName === "A") setMenu(false); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && nav.classList.contains("open")) { setMenu(false); btn.focus(); } });
+
+fill();
+loadActivities();
+</script>
+</body>
+</html>
