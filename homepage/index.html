@@ -16,7 +16,7 @@
     images/program-publicart.jpg           사업: 공공미술·벽화
     images/program-career.jpg              사업: 청소년 진로체험
     images/program-education.jpg           사업: AI·Unity 창작 교육
-    images/activity-YYYY-MM-주제.jpg       활동 사진 → ACTIVITIES의 image_url에 경로 입력
+    images/activity-YYYY-MM-주제.jpg       (DB 연결 전용) 활동 사진. DB 연결 후엔 활동 소식 → 활동 기록하기에서 올림
     images/og-image.jpg                    공유 미리보기 (1200×630)
     ※ 사람이 나오는 사진은 초상권 동의, 미성년자는 법정대리인 동의를 받은 것만 쓰세요.
 
@@ -309,6 +309,7 @@
   .card h4{margin-top:12px;font-size:18px;font-weight:700;line-height:1.45;letter-spacing:-.03em}
   .card p{margin-top:6px;font-size:14.5px;color:var(--sub)}
   .card .date{display:block;margin-top:6px;font-size:13.5px;color:var(--sub)}
+  .card .clamp2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   @media(max-width:767px){.card h4{font-size:15.5px}.card p{font-size:13px}.chip{font-size:12px}}
   .card-grid.anim .card{animation:rise .6s var(--ease) both;animation-delay:var(--d,0s)}
 
@@ -538,7 +539,7 @@
   .form .row{display:grid;gap:6px;align-content:start}
   .form label,.form .lb{font-size:14.5px;font-weight:700}
   .form label em,.form .lb em{font-style:normal;color:#c62828;margin-left:2px}
-  .form input[type=text],.form input[type=email],.form input[type=password],.form input[type=tel],.form input[type=date],.form input[type=url],.form select,.form textarea,.cmt-form textarea{width:100%;font:inherit;font-size:15.5px;padding:12px 14px;border:1px solid #cfd3d8;border-radius:8px;background:#fff;color:var(--ink);transition:border-color .2s,box-shadow .2s}
+  .form input[type=text],.form input[type=email],.form input[type=password],.form input[type=tel],.form input[type=date],.form input[type=url],.form input[type=number],.form select,.form textarea,.cmt-form textarea{width:100%;font:inherit;font-size:15.5px;padding:12px 14px;border:1px solid #cfd3d8;border-radius:8px;background:#fff;color:var(--ink);transition:border-color .2s,box-shadow .2s}
   .form textarea,.cmt-form textarea{min-height:120px;resize:vertical;line-height:1.7}
   .form input:focus,.form select:focus,.form textarea:focus,.cmt-form textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(24,71,164,.15)}
   .form .hint{font-size:13px;color:var(--sub)}
@@ -569,6 +570,33 @@
   .my-card .acts{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
   fieldset{border:0;display:grid;gap:18px;padding:24px 0;border-top:1px solid var(--line)}
   legend{font-size:18px;font-weight:800;padding:0 0 4px;letter-spacing:-.03em}
+  /* 활동 소식: 임원 도구 · 상세 · 작성 */
+  .act-tools{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;padding:18px 22px;border-radius:14px;background:var(--brand-soft,#eef2fb);margin-bottom:28px}
+  .act-tools p{font-size:14.5px;color:var(--ink2);min-width:0}
+  .act-tools p b{margin-right:8px;color:var(--brand)}
+  .act-drafts{display:flex;flex-wrap:wrap;gap:6px 14px;margin:-12px 0 28px;font-size:14px;color:var(--sub)}
+  .act-drafts b{color:var(--ink)}
+  .act-drafts a{text-decoration:underline;text-underline-offset:3px}
+  .act-view .chips{display:flex;gap:6px;flex-wrap:wrap}
+  .act-gal{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));padding:28px 0;border-bottom:1px solid var(--line)}
+  .act-gal a{display:block;aspect-ratio:4/3;border-radius:10px;overflow:hidden;background:var(--soft)}
+  .act-gal img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease)}
+  .act-gal a:hover img{transform:scale(1.04)}
+  @media(max-width:767px){.act-gal{grid-template-columns:1fr 1fr;gap:6px}}
+  .act-form .duo2{display:grid;gap:18px}
+  @media(min-width:640px){.act-form .duo2{grid-template-columns:1fr 1fr}}
+  .act-form .ck{display:flex;gap:8px;align-items:flex-start;font-size:15px;font-weight:500;line-height:1.5;cursor:pointer}
+  .act-form .ck input{width:18px;height:18px;margin-top:2px;flex:none}
+  .act-form .act-photos{gap:12px}
+  .ph-grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
+  .ph-grid:empty{display:none}
+  .ph-grid figure{position:relative;margin:0;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--soft)}
+  .ph-grid img{width:100%;height:100%;object-fit:cover}
+  .ph-grid span,.ph-grid [data-cover]{position:absolute;left:6px;bottom:6px;padding:3px 8px;border-radius:6px;font-size:12px;font-weight:700;background:rgba(0,0,0,.66);color:#fff}
+  .ph-grid span{background:var(--brand)}
+  .ph-grid .x{position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.66);color:#fff;font-size:18px;line-height:1}
+  .ph-add{justify-self:start;cursor:pointer}
+  .ph-add.off{opacity:.45;pointer-events:none}
 
   /* ── 서브 페이지 ── */
   .subvisual{background:var(--soft);padding:64px 0 56px;text-align:center}
@@ -1112,7 +1140,9 @@
   </div>
   <div data-sub="activities">
     <h3 class="s-title">활동 소식</h3>
+    <div data-act-tools></div>
     <div class="card-grid" id="newsAll" style="margin-top:0"></div>
+    <div data-act-view hidden></div>
   </div>
 </div>
 
@@ -1566,12 +1596,13 @@ function renderStats(list) {
 
 /* ── 활동 소식 ── */
 function newsCard(a, i) {
-  return `<article class="card" style="--d:${i * .07}s">
+  const tag = a.id ? `a href="#/news/activities?id=${a.id}"` : "article";
+  return `<${tag} class="card" style="--d:${i * .07}s">
     ${thumb(TYPE_ICON[a.activity_type] || "photo", a.image_url, a.title + " 활동 사진")}
     <p class="chips">${a.activity_type ? `<span class="chip">${esc(a.activity_type)}</span>` : ""}</p>
     <h4>${esc(a.title)}</h4>${a.date_label ? `<span class="date">${esc(a.date_label)}</span>` : ""}
-    ${a.description ? `<p>${esc(a.description)}</p>` : ""}
-  </article>`;
+    ${a.description ? `<p class="clamp2">${esc(a.description)}</p>` : ""}
+  </${a.id ? "a" : "article"}>`;
 }
 let NEWS_SRC = [];
 function renderNews(list) {
@@ -1609,7 +1640,7 @@ async function loadActivities() {
   if (!c) return;
   try {
     const { data, error } = await c.from("public_activities")
-      .select("activity_date,date_label,title,activity_type,description,image_url,beneficiaries,dong");
+      .select("id,activity_date,date_label,title,activity_type,description,image_url,beneficiaries,dong,photos");
     if (error) throw error;
     const { data: md } = await c.rpc("dong_member_counts");
     (md || []).forEach(r => MEMBER_DONGS[r.dong] = +r.members);

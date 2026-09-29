@@ -366,7 +366,7 @@
             <label>수혜 인원<input type="number" min="0" name="beneficiaries"></label>
             <label>참여 회원 수<input type="number" min="0" name="members_joined"></label></div>
           <label>설명<textarea name="description" maxlength="2000"></textarea></label>
-          <label>대표 사진 경로 <span class="hint">예: images/activity-2026-09-gaetgol.jpg (홈페이지 images 폴더에 올린 파일)</span><input name="image_url" maxlength="300"></label>
+          <p class="hint">사진은 홈페이지 <a href="index.html#/news/activities?edit=new" style="text-decoration:underline">활동 소식 → 활동 기록하기</a>에서 여러 장을 올릴 수 있습니다. 여기서는 글만 기록합니다.</p><input type="hidden" name="image_url">
           <div class="row">
             <label class="ck"><input type="checkbox" name="paid"> 유상(계약·위탁)</label>
             <label class="ck"><input type="checkbox" name="portrait_consent"> 사진 속 인물 초상권 동의 받음</label>
@@ -402,7 +402,16 @@
       const { error } = await c.from("activities").update({ is_public: b.dataset.v !== "true" }).eq("id", b.dataset.pub);
       if (error) return alert(/publish_consent/.test(error.message) ? "동의 확인이 없어 공개할 수 없습니다." : SB.errText(error)); acts(el);
     });
-    el.querySelectorAll("[data-del]").forEach(b => b.onclick = async () => { if (confirm("삭제할까요?")) { await c.from("activities").delete().eq("id", b.dataset.del); acts(el); } });
+    el.querySelectorAll("[data-del]").forEach(b => b.onclick = async () => {
+      if (!confirm("삭제할까요? 올린 사진도 함께 지워집니다.")) return;
+      const { data: a } = await c.from("activities").select("image_url,photos").eq("id", b.dataset.del).maybeSingle();
+      const { error } = await c.from("activities").delete().eq("id", b.dataset.del);
+      if (error) return alert(error.message);
+      const k = "/object/public/activity-photos/";
+      const paths = [...new Set([...(a?.photos || []), a?.image_url])].filter(u => u && u.includes(k)).map(u => decodeURIComponent(u.split(k)[1]));
+      if (paths.length) await c.storage.from("activity-photos").remove(paths);
+      acts(el);
+    });
   }
 
   /* ── 가입 신청·회원 ── */

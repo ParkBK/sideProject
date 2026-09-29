@@ -121,7 +121,7 @@
       <div class="post-act">
         <a class="btn-s" href="${listHref(p.board)}">목록</a>
         ${mine ? `<a class="btn-s" href="#/board/write?b=${p.board}&id=${p.id}">수정</a><button class="btn-s danger" data-act="del-post">삭제</button>` : ""}
-        ${off && !mine ? `<button class="btn-s danger" data-act="del-post">삭제</button>` : ""}
+        ${off && !mine ? `${p.board === "notice" ? `<a class="btn-s" href="#/board/write?b=notice&id=${p.id}">수정</a>` : ""}<button class="btn-s danger" data-act="del-post">삭제</button>` : ""}
         ${off ? `<button class="btn-s" data-act="hide-post">${p.is_hidden ? "숨김 해제" : "숨김"}</button>` : ""}
         ${ME && !mine ? `<button class="btn-s" data-act="report" data-type="post" data-id="${p.id}">신고</button>` : ""}
       </div>
@@ -481,8 +481,196 @@
       : `<li class="empty">아직 쓴 글이 없습니다.</li>`}</ul>`;
   }
 
+  /* ── 활동 소식: 임원 작성·수정·삭제 + 사진 ─────── */
+  const PHOTO_BUCKET = "activity-photos", MAX_PHOTOS = 12;
+  const ACT_TYPES = ["공연", "전시", "공공미술", "교육", "축제·행사", "콘텐츠", "생활문화", "봉사", "기타"];
+  const isOff = () => !!ME && SB.isOfficer(ME.profile);
+  const photoPath = url => { const k = `/object/public/${PHOTO_BUCKET}/`, i = (url || "").indexOf(k); return i < 0 ? null : decodeURIComponent(url.slice(i + k.length)); };
+  const dotDate = d => d ? d.replaceAll("-", ".") : "";
+
+  /* 폰 원본(5~10MB)을 긴 변 1600px JPEG로 줄여서 올림. 다시 그리면서 위치정보(EXIF)도 빠짐 */
+  function shrink(file, max = 1600, quality = .82) {
+    return new Promise((ok, no) => {
+      const img = new Image(), url = URL.createObjectURL(file);
+      img.onload = () => {
+        const r = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+        const cv = document.createElement("canvas");
+        cv.width = Math.round(img.naturalWidth * r); cv.height = Math.round(img.naturalHeight * r);
+        cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
+        URL.revokeObjectURL(url);
+        cv.toBlob(b => b ? ok(b) : no(new Error("사진 변환에 실패했습니다.")), "image/jpeg", quality);
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); no(new Error(`${file.name}: 열 수 없는 사진 형식입니다. JPG나 PNG로 올려 주세요.`)); };
+      img.src = url;
+    });
+  }
+  async function removePhotos(c, urls) {
+    const paths = urls.map(photoPath).filter(Boolean);
+    if (paths.length) await c.storage.from(PHOTO_BUCKET).remove(paths);
+  }
+  const refreshNews = async () => { if (window.loadActivities) await window.loadActivities(); };
+
+  /* 목록 위: 임원에게만 "활동 기록하기" 버튼과 비공개 기록 */
+  async function actTools(host) {
+    if (!isOff()) { host.innerHTML = ""; return; }
+    const c = await SB.client();
+    const { data } = await c.from("activities").select("id,title,date_label").eq("is_public", false).order("activity_date", { ascending: false, nullsFirst: false }).limit(20);
+    host.innerHTML = `<div class="act-tools">
+      <p><b>임원 메뉴</b> 활동이 끝나면 사진과 함께 기록해 주세요. 동을 넣으면 마을 지도가 채워집니다.</p>
+      <a class="btn btn-brand" href="#/news/activities?edit=new">＋ 활동 기록하기</a></div>
+      ${(data || []).length ? `<p class="act-drafts"><b>비공개 기록</b>${data.map(a => `<a href="#/news/activities?id=${a.id}">${h(a.title)}${a.date_label ? ` · ${h(a.date_label)}` : ""}</a>`).join("")}</p>` : ""}`;
+  }
+
+  async function actView(host, id) {
+    const c = await SB.client();
+    let { data: a } = await c.from("public_activities").select("*").eq("id", id).maybeSingle();
+    let draft = false;
+    if (!a && isOff()) { ({ data: a } = await c.from("activities").select("*").eq("id", id).maybeSingle()); draft = !!a; }
+    if (!a) { host.innerHTML = `<div class="notice-box">기록을 찾을 수 없습니다.<br><a class="btn-s" style="margin-top:12px" href="#/news/activities">활동 소식으로</a></div>`; return; }
+    const photos = a.photos && a.photos.length ? a.photos : a.image_url ? [a.image_url] : [];
+    host.innerHTML = `<article class="post act-view">
+        <div class="post-h"><p class="chips" style="margin:0 0 6px">${a.activity_type ? `<span class="chip">${h(a.activity_type)}</span>` : ""}${a.dong ? `<span class="chip line">${h(a.dong)}</span>` : ""}${draft ? '<span class="chip wip">비공개</span>' : ""}</p>
+          <h3>${h(a.title)}</h3>
+          <p>${a.date_label ? `<span>${h(a.date_label)}</span>` : ""}${a.beneficiaries ? `<span>함께한 시민 ${Number(a.beneficiaries).toLocaleString()}명</span>` : ""}${photos.length ? `<span>사진 ${photos.length}장</span>` : ""}</p></div>
+        ${a.description ? `<div class="post-b">${h(a.description)}</div>` : ""}
+        ${photos.length ? `<div class="act-gal">${photos.map((u, i) => `<a href="${h(u)}" target="_blank" rel="noopener"><img src="${h(u)}" alt="${h(a.title)} 사진 ${i + 1}" loading="lazy"></a>`).join("")}</div>` : ""}
+      </article>
+      <div class="post-act">
+        <a class="btn-s" href="#/news/activities">목록</a>
+        ${isOff() ? `<a class="btn-s" href="#/news/activities?edit=${a.id}">수정</a><button class="btn-s danger" data-act-del>삭제</button>` : ""}
+      </div>`;
+    const del = host.querySelector("[data-act-del]");
+    if (del) del.onclick = async () => {
+      if (!confirm("이 활동 기록과 사진을 삭제할까요? 되돌릴 수 없습니다.")) return;
+      const { data: full } = await c.from("activities").select("image_url,photos").eq("id", a.id).maybeSingle();
+      const { error } = await c.from("activities").delete().eq("id", a.id);
+      if (error) return alert(SB.errText(error));
+      await removePhotos(c, [...new Set([...(full?.photos || []), full?.image_url].filter(Boolean))]);
+      await refreshNews();
+      location.hash = "#/news/activities";
+    };
+  }
+
+  async function actEdit(host, id) {
+    if (!ME) { host.innerHTML = needLogin(location.hash); return; }
+    if (!isOff()) { host.innerHTML = `<div class="notice-box">활동 기록은 임원만 작성할 수 있습니다.</div>`; return; }
+    const c = await SB.client();
+    let a = null;
+    if (id) {
+      ({ data: a } = await c.from("activities").select("*").eq("id", id).maybeSingle());
+      if (!a) { host.innerHTML = `<div class="notice-box">기록을 찾을 수 없습니다.</div>`; return; }
+    }
+    const st = { photos: a ? (a.photos && a.photos.length ? [...a.photos] : a.image_url ? [a.image_url] : []) : [], added: [], removed: [] };
+    const ck = (n, on, label) => `<label class="ck"><input type="checkbox" name="${n}" ${on ? "checked" : ""}><span>${label}</span></label>`;
+    host.innerHTML = `<form class="form act-form" data-actform style="max-width:820px;margin:0 auto">
+      <div class="row"><label for="aTitle">활동 이름<em>*</em></label><input type="text" id="aTitle" name="title" maxlength="120" required value="${h(a?.title || "")}" placeholder="예: 시흥갯골축제 벽화 봉사"></div>
+      <div class="duo2">
+        <div class="row"><label for="aDate">날짜</label><input type="date" id="aDate" name="activity_date" value="${h(a?.activity_date || "")}"></div>
+        <div class="row"><label for="aLabel">날짜 표기 <span class="hint">비우면 날짜로 자동 (예: 2026.07~)</span></label><input type="text" id="aLabel" name="date_label" maxlength="30" value="${h(a?.date_label && a.date_label !== dotDate(a.activity_date) ? a.date_label : "")}"></div>
+      </div>
+      <div class="duo2">
+        <div class="row"><label for="aType">유형</label><select id="aType" name="activity_type">${ACT_TYPES.map(t => `<option ${a?.activity_type === t ? "selected" : ""}>${t}</option>`).join("")}</select></div>
+        <div class="row"><label for="aDong">활동한 동 <span class="hint">넣으면 마을 지도가 채워집니다</span></label><select id="aDong" name="dong"><option value="">선택 안 함</option>${DONG_NAMES.map(d => `<option ${a?.dong === d ? "selected" : ""}>${d}</option>`).join("")}</select></div>
+      </div>
+      <div class="row"><label for="aDesc">내용</label><textarea id="aDesc" name="description" maxlength="3000" style="min-height:180px" placeholder="무엇을, 누구와, 어떻게 했는지 적어 주세요.">${h(a?.description || "")}</textarea></div>
+      <div class="row"><label for="aBen">함께한 시민 수 <span class="hint">모르면 비워 두세요</span></label><input type="number" id="aBen" name="beneficiaries" min="0" step="1" value="${a?.beneficiaries ?? ""}" style="max-width:200px"></div>
+      <fieldset class="row act-photos"><legend>사진 <span class="hint">최대 ${MAX_PHOTOS}장 · 첫 장이 대표 사진 · 올릴 때 자동으로 줄입니다</span></legend>
+        ${ck("portrait_consent", a?.portrait_consent, "사진 속 <b>알아볼 수 있는 사람</b>에게 촬영·공개 동의를 받았습니다 (사람이 없으면 체크)")}
+        ${ck("has_minor", a?.has_minor, "만 14세 미만 아동이 사진이나 활동에 포함됩니다")}
+        <span data-guardian ${a?.has_minor ? "" : "hidden"}>${ck("guardian_consent", a?.guardian_consent, "법정대리인(보호자) 동의를 받았습니다")}</span>
+        <div class="ph-grid" data-phgrid></div>
+        <label class="btn btn-white ph-add" data-phadd><input type="file" accept="image/*" multiple hidden data-phfile> 사진 추가</label>
+        <p class="hint" data-phmsg></p>
+      </fieldset>
+      ${ck("is_public", a ? a.is_public : true, "홈페이지에 공개")}
+      <div data-actmsg></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end"><button type="button" class="btn btn-white" data-actcancel>취소</button><button class="btn btn-brand">${a ? "수정" : "등록"}</button></div>
+    </form>`;
+    const f = host.querySelector("[data-actform]"), grid = f.querySelector("[data-phgrid]"), file = f.querySelector("[data-phfile]"), phmsg = f.querySelector("[data-phmsg]");
+    const paint = () => {
+      grid.innerHTML = st.photos.map((u, i) => `<figure><img src="${h(u)}" alt="">${i === 0 ? "<span>대표</span>" : `<button type="button" data-cover="${i}">대표로</button>`}<button type="button" class="x" data-rm="${i}" aria-label="사진 빼기">×</button></figure>`).join("");
+      const lock = !f.portrait_consent.checked || st.photos.length >= MAX_PHOTOS;
+      file.disabled = lock; f.querySelector("[data-phadd]").classList.toggle("off", lock);
+      if (!f.portrait_consent.checked) phmsg.textContent = "사진을 올리려면 먼저 위의 동의 확인에 체크하세요. 사진은 올리는 즉시 주소를 아는 누구나 볼 수 있습니다.";
+      else if (!phmsg.dataset.busy) phmsg.textContent = "";
+    };
+    paint();
+    f.portrait_consent.onchange = paint;
+    f.has_minor.onchange = () => { f.querySelector("[data-guardian]").hidden = !f.has_minor.checked; };
+    grid.onclick = e => {
+      const rm = e.target.closest("[data-rm]"), cv = e.target.closest("[data-cover]");
+      if (rm) {
+        const [u] = st.photos.splice(+rm.dataset.rm, 1);
+        const j = st.added.indexOf(u);
+        if (j >= 0) { st.added.splice(j, 1); removePhotos(c, [u]); } else st.removed.push(u);
+      }
+      if (cv) { const [u] = st.photos.splice(+cv.dataset.cover, 1); st.photos.unshift(u); }
+      paint();
+    };
+    file.onchange = async () => {
+      const files = [...file.files].slice(0, MAX_PHOTOS - st.photos.length); file.value = "";
+      if (!files.length) return;
+      phmsg.dataset.busy = "1";
+      const errs = [];
+      for (let i = 0; i < files.length; i++) {
+        phmsg.textContent = `사진 올리는 중… (${i + 1}/${files.length})`;
+        try {
+          const blob = await shrink(files[i]);
+          const path = `${new Date().getFullYear()}/${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}.jpg`;
+          const { error } = await c.storage.from(PHOTO_BUCKET).upload(path, blob, { contentType: "image/jpeg", cacheControl: "31536000" });
+          if (error) throw new Error(SB.errText(error));
+          const u = c.storage.from(PHOTO_BUCKET).getPublicUrl(path).data.publicUrl;
+          st.photos.push(u); st.added.push(u); paint();
+        } catch (e) { errs.push(e.message); }
+      }
+      delete phmsg.dataset.busy; paint();
+      if (errs.length) phmsg.textContent = errs.join(" / ");
+    };
+    f.querySelector("[data-actcancel]").onclick = async () => {
+      await removePhotos(c, st.added);
+      location.hash = a ? `#/news/activities?id=${a.id}` : "#/news/activities";
+    };
+    f.onsubmit = async e => {
+      e.preventDefault();
+      const d = f.activity_date.value;
+      const row = {
+        title: f.title.value.trim(), activity_date: d || null, date_label: f.date_label.value.trim() || dotDate(d) || null,
+        activity_type: f.activity_type.value, dong: f.dong.value || null, description: f.description.value.trim() || null,
+        beneficiaries: f.beneficiaries.value === "" ? null : Math.max(0, parseInt(f.beneficiaries.value, 10) || 0),
+        photos: st.photos, image_url: st.photos[0] || null,
+        portrait_consent: f.portrait_consent.checked, has_minor: f.has_minor.checked, guardian_consent: f.has_minor.checked && f.guardian_consent.checked,
+        is_public: f.is_public.checked,
+      };
+      const out = f.querySelector("[data-actmsg]");
+      if (!row.title) return;
+      if (row.is_public && row.has_minor && !row.guardian_consent) return msg(out, "만 14세 미만 아동이 포함된 기록은 보호자 동의 없이 공개할 수 없습니다. 동의를 받거나 '홈페이지에 공개'를 끄세요.");
+      const btn = f.querySelector("button.btn-brand"); btn.disabled = true;
+      const res = a ? await c.from("activities").update(row).eq("id", a.id).select("id").single()
+                    : await c.from("activities").insert(row).select("id").single();
+      if (res.error) { btn.disabled = false; return msg(out, SB.errText(res.error)); }
+      await removePhotos(c, st.removed);
+      await refreshNews();
+      location.hash = `#/news/activities?id=${res.data.id}`;
+    };
+  }
+
+  function activitiesRoute(params) {
+    const list = q("#newsAll"), view = q("[data-act-view]"), tools = q("[data-act-tools]"), title = view.parentElement.querySelector(".s-title");
+    const id = +params.get("id") || null, edit = params.get("edit");
+    const detail = SB.configured && (id || edit);
+    list.hidden = !!detail; view.hidden = !detail;
+    title.hidden = !!detail && !edit;
+    title.textContent = edit && detail ? (edit === "new" ? "활동 기록하기" : "활동 기록 수정") : "활동 소식";
+    if (!SB.configured) return;
+    if (!detail) return actTools(tools);
+    tools.innerHTML = "";
+    view.innerHTML = `<p class="notice-box">불러오는 중…</p>`;
+    return edit ? actEdit(view, edit === "new" ? null : +edit) : actView(view, id);
+  }
+
   /* ── 라우팅 연결 ──────────────────────────────── */
   function onRoute(page, sub, params) {
+    if (page === "news" && sub === "activities") return activitiesRoute(params);
     if (page === "community") return boardList(q(`[data-board="${sub}"]`), sub, params);
     if (page === "news" && sub === "notice") {
       q("[data-static-notice]").hidden = SB.configured;
@@ -499,7 +687,7 @@
     if (page === "my" && sub === "posts") return myPosts(q("#myPosts"));
   }
 
-  const NEEDS_CM = /^#\/(auth|my|board|community|news\/notice)/;
+  const NEEDS_CM = /^#\/(auth|my|board|community|news\/(notice|activities))/;
   async function init() {
     paintAuth();
     if (NEEDS_CM.test(location.hash) && window.route) window.route();

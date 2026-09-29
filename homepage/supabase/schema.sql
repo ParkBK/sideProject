@@ -300,11 +300,53 @@ alter table public.activities enable row level security;
 drop policy if exists "activities: 임원 관리" on public.activities;
 create policy "activities: 임원 관리" on public.activities for all using (public.is_officer()) with check (public.is_officer());
 
+-- 활동 사진 여러 장 (activity-photos 버킷의 공개 주소). image_url은 대표 사진(첫 장)
+alter table public.activities add column if not exists photos text[] not null default '{}';
+alter table public.activities drop constraint if exists activities_photos_max;
+alter table public.activities add constraint activities_photos_max check (cardinality(photos) <= 12);
+alter table public.activities drop constraint if exists activities_publish_consent;
+alter table public.activities add constraint activities_publish_consent check (
+  not is_public
+  or (((image_url is null or image_url = '') and cardinality(photos) = 0) or portrait_consent)
+     and (not has_minor or guardian_consent)
+);
+
 -- 외부에 공개하는 필드만 담은 뷰 (유상 여부·동의 여부·작성자는 노출하지 않음)
 create or replace view public.public_activities as
-  select id, activity_date, date_label, title, activity_type, dong, description, image_url, beneficiaries
+  select id, activity_date, date_label, title, activity_type, dong, description, image_url, beneficiaries, photos
   from public.activities where is_public;
 grant select on public.public_activities to anon, authenticated;
+
+-- 첫 설치 때만: 홈페이지에 있던 기존 활동 기록을 데이터베이스로 옮김 (활동이 하나라도 있으면 건너뜀)
+insert into public.activities (activity_date, date_label, activity_type, title, dong, is_public)
+select v.d::date, v.l, v.t, v.ti, v.dg, true
+from (values
+  ('2026-07-02', '2026.07.02', '기타',     '단체 설립 (창립총회)', null),
+  ('2026-07-01', '2026.07~',   '공연',     '지역 행사 청년 문화예술인 공연 참여 운영', null),
+  ('2026-09-01', '2026.09',    '공공미술', '시흥갯골축제 벽화 봉사', '장곡동'),
+  (null,         null,         '교육',     '청소년 진로체험 부스 운영', null)
+) as v(d, l, t, ti, dg)
+where not exists (select 1 from public.activities);
+
+-- 활동 사진 파일: 공개 버킷(누구나 볼 수 있음), 올리기·지우기는 임원만
+-- ※ 공개 버킷이라 비공개 활동의 사진도 주소를 알면 열립니다. 동의받지 않은 사진은 올리지 마세요.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+  values ('activity-photos', 'activity-photos', true, 5242880, array['image/jpeg','image/png','image/webp'])
+  on conflict (id) do update set public = true, file_size_limit = excluded.file_size_limit,
+    allowed_mime_types = excluded.allowed_mime_types;
+drop policy if exists "activity-photos: 임원 조회" on storage.objects;
+create policy "activity-photos: 임원 조회" on storage.objects for select
+  using (bucket_id = 'activity-photos' and public.is_officer());
+drop policy if exists "activity-photos: 임원 올리기" on storage.objects;
+create policy "activity-photos: 임원 올리기" on storage.objects for insert
+  with check (bucket_id = 'activity-photos' and public.is_officer());
+drop policy if exists "activity-photos: 임원 수정" on storage.objects;
+create policy "activity-photos: 임원 수정" on storage.objects for update
+  using (bucket_id = 'activity-photos' and public.is_officer())
+  with check (bucket_id = 'activity-photos' and public.is_officer());
+drop policy if exists "activity-photos: 임원 삭제" on storage.objects;
+create policy "activity-photos: 임원 삭제" on storage.objects for delete
+  using (bucket_id = 'activity-photos' and public.is_officer());
 
 -- 마을 지도: 동별 회원 수 (개인 식별 없이 숫자만)
 create or replace function public.dong_member_counts()
