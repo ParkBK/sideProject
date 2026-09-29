@@ -488,22 +488,6 @@
   const photoPath = url => { const k = `/object/public/${PHOTO_BUCKET}/`, i = (url || "").indexOf(k); return i < 0 ? null : decodeURIComponent(url.slice(i + k.length)); };
   const dotDate = d => d ? d.replaceAll("-", ".") : "";
 
-  /* 폰 원본(5~10MB)을 긴 변 1600px JPEG로 줄여서 올림. 다시 그리면서 위치정보(EXIF)도 빠짐 */
-  function shrink(file, max = 1600, quality = .82) {
-    return new Promise((ok, no) => {
-      const img = new Image(), url = URL.createObjectURL(file);
-      img.onload = () => {
-        const r = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
-        const cv = document.createElement("canvas");
-        cv.width = Math.round(img.naturalWidth * r); cv.height = Math.round(img.naturalHeight * r);
-        cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
-        URL.revokeObjectURL(url);
-        cv.toBlob(b => b ? ok(b) : no(new Error("사진 변환에 실패했습니다.")), "image/jpeg", quality);
-      };
-      img.onerror = () => { URL.revokeObjectURL(url); no(new Error(`${file.name}: 열 수 없는 사진 형식입니다. JPG나 PNG로 올려 주세요.`)); };
-      img.src = url;
-    });
-  }
   async function removePhotos(c, urls) {
     const paths = urls.map(photoPath).filter(Boolean);
     if (paths.length) await c.storage.from(PHOTO_BUCKET).remove(paths);
@@ -615,11 +599,7 @@
       for (let i = 0; i < files.length; i++) {
         phmsg.textContent = `사진 올리는 중… (${i + 1}/${files.length})`;
         try {
-          const blob = await shrink(files[i]);
-          const path = `${new Date().getFullYear()}/${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}.jpg`;
-          const { error } = await c.storage.from(PHOTO_BUCKET).upload(path, blob, { contentType: "image/jpeg", cacheControl: "31536000" });
-          if (error) throw new Error(SB.errText(error));
-          const u = c.storage.from(PHOTO_BUCKET).getPublicUrl(path).data.publicUrl;
+          const u = await SB.uploadPhoto(files[i], String(new Date().getFullYear()));
           st.photos.push(u); st.added.push(u); paint();
         } catch (e) { errs.push(e.message); }
       }

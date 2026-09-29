@@ -44,5 +44,31 @@
     return m;
   }
 
-  window.SB = { configured, client, me, ROLE_LABEL, isOfficer, isAccountant, errText };
+  /* 사진을 긴 변 max px JPEG로 줄임. 다시 그리면서 위치정보(EXIF)도 빠짐 */
+  function shrinkImage(file, max = 1600, quality = .82) {
+    return new Promise((ok, no) => {
+      const img = new Image(), url = URL.createObjectURL(file);
+      img.onload = () => {
+        const r = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+        const cv = document.createElement("canvas");
+        cv.width = Math.round(img.naturalWidth * r); cv.height = Math.round(img.naturalHeight * r);
+        cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
+        URL.revokeObjectURL(url);
+        cv.toBlob(b => b ? ok(b) : no(new Error("사진 변환에 실패했습니다.")), "image/jpeg", quality);
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); no(new Error(`${file.name}: 열 수 없는 사진 형식입니다. JPG나 PNG로 올려 주세요.`)); };
+      img.src = url;
+    });
+  }
+  /* 공개 사진 저장소(activity-photos)에 올리고 공개 주소를 돌려줌 */
+  async function uploadPhoto(file, folder, max) {
+    const c = await client();
+    const blob = await shrinkImage(file, max);
+    const path = `${folder}/${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}.jpg`;
+    const { error } = await c.storage.from("activity-photos").upload(path, blob, { contentType: "image/jpeg", cacheControl: "31536000" });
+    if (error) throw new Error(errText(error));
+    return c.storage.from("activity-photos").getPublicUrl(path).data.publicUrl;
+  }
+
+  window.SB = { configured, client, me, ROLE_LABEL, isOfficer, isAccountant, errText, shrinkImage, uploadPhoto };
 })();

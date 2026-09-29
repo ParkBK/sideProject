@@ -7,7 +7,8 @@
   ─────────────────────────────────────────────────────────────
   시흥 청년문화예술공동체 홈페이지 (단일 HTML 파일)
 
-  [정보 수정] 맨 아래 <script>의 "여기만 수정하세요" 영역만 고치면 됩니다.
+  [정보 수정] 데이터베이스 연결 후: 업무공간 → "홈페이지 관리"에서 화면으로 고칩니다.
+             연결 전이나 화면에 없는 항목: assets/site-data.js 를 고칩니다.
              빈 값("")이나 빈 목록은 화면과 메뉴에서 자동으로 숨겨집니다.
 
   [사진] 이 파일 옆 images/ 폴더에 아래 이름으로 넣으면 자동으로 표시됩니다.
@@ -65,6 +66,9 @@
   .js .tit-wrap.rv,.js .duo>.rv:first-child{transform:translateX(-56px)}
   .js .duo>.rv:last-child{transform:translateX(56px)}
   .js .tit-wrap.rv.in,.js .duo>.rv.in{transform:none}
+  /* 모바일: 옆에서 들어오면 화면 밖으로 삐져나가 가로 스크롤이 생기므로 아래에서 올라오게 */
+  @media(max-width:900px){.js .tit-wrap.rv,.js .duo>.rv:first-child,.js .duo>.rv:last-child{transform:translateY(48px)}}
+  body{overflow-x:clip}
   .js .map-head.rv{transform:translateY(40px) scale(.94)}
   .js .map-head.rv.in{transform:none}
   /* 카드는 하나씩 차례로 */
@@ -1275,93 +1279,8 @@
 
 <script src="assets/config.js"></script>
 <script src="assets/sb.js"></script>
+<script src="assets/site-data.js"></script>
 <script>
-/* ═══════════ 여기만 수정하세요 ═══════════ */
-const SITE = {
-  name: "시흥 청년문화예술공동체",
-  mission: "분야를 넘나드는 청년들의 협업으로, 지역의 문제를 문화로 풀어냅니다.",
-  vision: "시흥의 청년 창작자가 지역의 문화를 함께 만들어가는 도시",
-  founded: "2026년 7월 2일",
-  foundedDate: "2026-07-02",
-  rep: "박병근",
-  address: "경기도 시흥시 서촌상가 2길 25-1, 405호",
-  regNo: "",          // 고유번호 예: "000-00-00000"
-  email: "",          // 입력하면 문의 버튼이 생깁니다
-  instagramUrl: "",   // 예: "https://instagram.com/계정"
-
-  /* 대표 인사말 — 비어 있으면 '인사말' 메뉴가 숨겨집니다. 줄바꿈은 \n */
-  greeting: "",
-
-  /* 조직 — 이름이 하나라도 있으면 '조직' 메뉴가 나타납니다. photo 예: "images/member-rep.jpg" */
-  team: [
-    { role: "대표",   name: "", bio: "", photo: "" },
-    { role: "부대표", name: "", bio: "", photo: "" },
-    { role: "회계",   name: "", bio: "", photo: "" },
-  ],
-  /* 로그인·게시판·활동 DB 연결 설정은 assets/config.js 에 있습니다 */
-};
-
-/* 연혁 (단체의 주요 이정표) */
-const HISTORY = [
-  { date: "2026.07.02", text: "시흥 청년문화예술공동체 창립총회 및 설립" },
-];
-
-/* 공지사항 — 비어 있으면 '공지사항' 메뉴와 탭이 숨겨집니다. 새 글은 맨 위에 */
-const NOTICES = [
-  // { date: "2026.10.01", title: "홈페이지를 개설했습니다", url: "" },
-];
-
-/* 참여 모집 — deadline(YYYY-MM-DD)이 있으면 D-day, 없으면 '상시 모집'
-   capacity(정원)와 applied(신청 인원)를 숫자로 넣으면 진행 막대가 표시됩니다 */
-const RECRUITS = [
-  { org: "회원 모집", title: "함께 활동할 시흥 청년 회원 모집", place: "시흥시 일대", time: "프로젝트별 상이", period: "상시", deadline: "", capacity: "", applied: "", link: "#/join/member" },
-];
-
-/* 활동 소식 (DB 연결 전 기본값)
-   type: 공연 / 공공미술 / 교육 / 기타,  beneficiaries: 수혜 인원(숫자, 모르면 비워 둠)
-   dong: 활동한 행정동 이름(예: "장곡동"). 넣으면 마을 지도에 표시됩니다. 모르면 비워 둠 */
-const ACTIVITIES = [
-  { activity_date: "2026-07-02", date_label: "2026.07.02", activity_type: "기타", title: "단체 설립 (창립총회)", description: "", image_url: "", beneficiaries: "", dong: "" },
-  { activity_date: "2026-07-01", date_label: "2026.07~", activity_type: "공연", title: "지역 행사 청년 문화예술인 공연 참여 운영", description: "", image_url: "", beneficiaries: "", dong: "" },
-  { activity_date: "2026-09-01", date_label: "2026.09", activity_type: "공공미술", title: "시흥갯골축제 벽화 봉사", description: "", image_url: "", beneficiaries: "", dong: "장곡동" /* 갯골생태공원: 장곡동 */ },
-  { activity_date: "", date_label: "", activity_type: "교육", title: "청소년 진로체험 부스 운영", description: "", image_url: "", beneficiaries: "", dong: "" },
-];
-
-/* 마을 거점 — 사무소, 협력 공간 등. dong을 넣으면 지도에 핀이 찍힙니다
-   사무소(서촌상가2길)는 법정동 정왕동입니다. 정왕본동·정왕1~4동·거북섬동 중 어느 행정동인지 확인해 넣으세요 */
-const PLACES = [
-  { name: "단체 사무소", type: "거점", dong: "", address: "경기도 시흥시 서촌상가 2길 25-1, 405호" },
-];
-/* ═══════════════════════════════════════ */
-
-/* 주요 활동 (가입안내 2. 주요 활동 기준)
-   status: "수행 중" 또는 "추진 예정" — 실제 진행 상황에 맞게 바꿔 주세요 */
-const PROGRAMS = [
-  { key: "performance", status: "수행 중", icon: "music", title: "공연·전시·상영",
-    short: "장르를 가리지 않는 공연·전시·상영 등 문화예술 활동을 만듭니다.",
-    target: "축제·행사 주최 측, 기관, 시민", how: "축제 공연 기획·섭외, 거리공연, 전시, 상영회" },
-  { key: "content", status: "추진 예정", icon: "film", title: "지역문화 콘텐츠 기획·제작",
-    short: "시흥의 이야기와 장소를 영상·출판·디자인 콘텐츠로 기록하고 만듭니다.",
-    target: "지역 기관, 시민", how: "지역 기록 영상, 출판물, 디자인 콘텐츠" },
-  { key: "collab", status: "추진 예정", icon: "people", title: "분야를 넘는 협업 프로젝트",
-    short: "서로 다른 분야의 창작자가 만나 하나의 작품과 프로젝트를 만듭니다.",
-    target: "청년 창작자", how: "음악×영상, 미술×공간, 공연×기술 등 공동 창작" },
-  { key: "education", status: "수행 중", icon: "book", title: "문화예술 교육·시민 체험",
-    short: "청소년과 시민이 직접 해 보는 문화예술 교육과 체험 프로그램을 운영합니다.",
-    target: "청소년, 학교, 시민", how: "청소년 진로체험 부스, 찾아가는 체험, 원데이 클래스" },
-  { key: "tech", status: "추진 예정", icon: "code", title: "문화예술 × 기술 융합",
-    short: "AI·XR·게임 등 기술과 예술을 결합한 새로운 콘텐츠를 개발합니다.",
-    target: "청년, 청소년, 기관", how: "AI 창작, 미디어아트, 게임·인터랙티브, Unity 교육" },
-  { key: "local", status: "수행 중", icon: "pin", title: "지역 공간·상권·주민 연계",
-    short: "지역의 공간과 상권, 주민과 함께하는 문화활동을 만듭니다.",
-    target: "마을, 상권, 지역 축제", how: "공공미술·벽화, 상권 연계 행사, 마을 축제 참여" },
-  { key: "life", status: "추진 예정", icon: "leaf", title: "생활문화·여가 프로그램",
-    short: "일상 속에서 누구나 즐길 수 있는 생활문화 프로그램을 운영합니다.",
-    target: "시민, 동아리", how: "생활예술, 동아리, 움직임·여가 활동" },
-  { key: "network", status: "추진 예정", icon: "chat", title: "청년 창작자 네트워킹",
-    short: "시흥의 청년 창작자가 만나고, 서로의 기술로 공동 프로젝트를 꾸립니다.",
-    target: "청년 창작자", how: "창작자 교류회, 프로젝트 매칭" },
-];
 
 /* 함께하는 분야 (가입신청서 3. 활동 분야) */
 const FIELDS = [
@@ -1480,19 +1399,20 @@ function countUp(el) {
 /* ── 채우기 ── */
 function fill() {
   $$("[data-f]").forEach(el => { el.textContent = (SITE[el.dataset.f] || "").trim(); });
-  $$("[data-row]").forEach(el => { if (!(SITE[el.dataset.row] || "").trim()) el.hidden = true; });
   $$("[data-icon]").forEach(el => { el.innerHTML = svg(el.dataset.icon, el.closest(".m-link .ic") ? 1.4 : 2); });
   $$("[data-logo]").forEach(el => el.innerHTML = LOGO);
   $("#year").textContent = $("#nowYear").textContent = new Date().getFullYear();
   $("#sinceYear").textContent = SITE.foundedDate.slice(0, 4);
 
-  if (SITE.instagramUrl.trim()) { const li = $("#mhInsta"); li.querySelector("a").href = SITE.instagramUrl.trim(); li.hidden = false; }
+  $$("[data-row]").forEach(el => { el.hidden = !(SITE[el.dataset.row] || "").trim(); });
+  { const li = $("#mhInsta"); li.hidden = !SITE.instagramUrl.trim(); if (!li.hidden) li.querySelector("a").href = SITE.instagramUrl.trim(); }
   const mail = SITE.email.trim();
   if (mail) {
     const subj = { partner: "[협력 제안] ", member: "[회원 참여 문의] " };
-    $$("[data-mail]").forEach(a => { a.href = `mailto:${mail}?subject=${encodeURIComponent(subj[a.dataset.mail] + SITE.name)}`; a.hidden = false; });
-    $$("[data-nomail]").forEach(p => p.hidden = true);
+    $$("[data-mail]").forEach(a => { a.href = `mailto:${mail}?subject=${encodeURIComponent(subj[a.dataset.mail] + SITE.name)}`; });
   }
+  $$("[data-mail]").forEach(a => a.hidden = !mail);
+  $$("[data-nomail]").forEach(p => p.hidden = !!mail);
   const q = encodeURIComponent(SITE.address.split(",")[0]);
   $("#naverMap").href = "https://map.naver.com/p/search/" + q;
   $("#kakaoMap").href = "https://map.kakao.com/?q=" + q;
@@ -1527,11 +1447,11 @@ function fill() {
       </a>`).join("");
     g.classList.remove("anim"); void g.offsetWidth; g.classList.add("anim");
   };
-  $("#progTabs").addEventListener("click", e => {
+  $("#progTabs").onclick = e => {
     const b = e.target.closest("button"); if (!b) return;
     $$("#progTabs button").forEach(x => x.setAttribute("aria-selected", x === b));
     drawProg(b.dataset.cat);
-  });
+  };
   drawProg("전체보기");
 
   $("#programList").innerHTML = PROGRAMS.map(p => `
@@ -1632,6 +1552,25 @@ function initNewsTabs() {
     $$("#newsTabs button").forEach(x => x.setAttribute("aria-selected", x === b));
     drawNewsTab(b.dataset.tab);
   });
+}
+/* 업무공간 "홈페이지 관리"에서 저장한 내용 반영 (다음 방문 때 깜빡임 없도록 브라우저에도 보관) */
+async function loadSettings() {
+  const c = await SB.client();
+  if (!c) return;
+  try {
+    const { data, error } = await c.from("site_settings").select("key,value");
+    if (error) throw error;
+    const json = JSON.stringify(data || []);
+    let cached = null;
+    try { cached = localStorage.getItem("siteSettings"); localStorage.setItem("siteSettings", json); } catch (e) {}
+    if (cached === json) return;             /* 이미 브라우저 보관본으로 그렸음 */
+    applySiteSettings(data);
+    fill();
+    $$("[data-seen] .bar span[data-w]").forEach(b => b.style.width = b.dataset.w);
+    renderStats(NEWS_SRC);
+    MAPS.forEach(m => m.refresh());
+    if (/^#\/about/.test(location.hash)) route();
+  } catch (e) { console.warn("홈페이지 설정 불러오기 실패, 기본값 표시:", e); }
 }
 let MEMBER_DONGS = {};
 async function loadActivities() {
@@ -1965,10 +1904,12 @@ addEventListener("scroll", () => {
 }, { passive: true });
 btnTop.addEventListener("click", e => { e.preventDefault(); scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" }); });
 
+try { applySiteSettings(JSON.parse(localStorage.getItem("siteSettings") || "null")); } catch (e) {}
 fill();
 document.querySelectorAll("[data-map]").forEach(h => MAPS.push(buildMap(h)));
 initNewsTabs();
 loadActivities();
+loadSettings();
 initSlider();
 watch();
 window.addEventListener("hashchange", route);

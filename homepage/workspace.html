@@ -125,6 +125,19 @@
   details.app summary{cursor:pointer;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-weight:700}
   details.app dl{display:grid;grid-template-columns:130px 1fr;gap:6px 12px;margin:14px 0;font-size:14px}
   details.app dt{color:var(--sub);font-weight:600}
+
+  /* 홈페이지 관리 */
+  .li-item{border:1px solid var(--line);border-radius:10px;padding:14px;background:#fff}
+  .li-item+.li-item{margin-top:10px}
+  .li-h{display:flex;align-items:center;gap:6px;margin-bottom:10px}
+  .li-h b{margin-right:auto;font-size:14px}
+  .ph-prev{display:flex;align-items:center;gap:10px}
+  .ph-prev img{width:64px;height:64px;border-radius:8px;object-fit:cover;background:var(--soft)}
+  .ph-prev label.btn{cursor:pointer}
+  .st-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+  .st-row span{flex:1;min-width:0;font-weight:600}
+  .st-row select{width:auto}
+  .upd{font-size:12.5px;color:var(--sub);font-weight:400;margin-left:auto}
 </style>
 </head>
 <body>
@@ -147,6 +160,7 @@
 
 <script src="assets/config.js"></script>
 <script src="assets/sb.js"></script>
+<script src="assets/site-data.js"></script>
 <script>
 (function () {
   const $ = s => document.querySelector(s);
@@ -200,7 +214,7 @@
 
   const VIEWS = [
     ["dash", "대시보드", "🏠", () => OFF], ["cal", "달력", "📅", () => OFF], ["tasks", "할 일·체크리스트", "✅", () => OFF],
-    ["acts", "활동 기록", "📍", () => OFF], ["sep"], ["members", "가입 신청·회원", "👥", () => OFF], ["reports", "신고 처리", "🚩", () => OFF],
+    ["acts", "활동 기록", "📍", () => OFF], ["site", "홈페이지 관리", "🛠", () => OFF], ["sep"], ["members", "가입 신청·회원", "👥", () => OFF], ["reports", "신고 처리", "🚩", () => OFF],
     ["sep"], ["ledger", "회계 장부", "🧾", () => ACC],
   ];
   async function buildSide() {
@@ -218,7 +232,7 @@
     const view = VIEWS.find(x => x[0] === v && x[3] && x[3]()) || VIEWS.find(x => x[3] && x[3]());
     location.hash = view[0];
     document.querySelectorAll("#side [data-v]").forEach(b => b.setAttribute("aria-current", b.dataset.v === view[0] ? "page" : "false"));
-    ({ dash, cal, tasks, acts, members, reports, ledger })[view[0]]($("#main"));
+    ({ dash, cal, tasks, acts, site, members, reports, ledger })[view[0]]($("#main"));
     scrollTo(0, 0);
   }
 
@@ -412,6 +426,129 @@
       if (paths.length) await c.storage.from("activity-photos").remove(paths);
       acts(el);
     });
+  }
+
+  /* ── 홈페이지 관리 ──
+     저장하면 홈페이지에 바로 반영됩니다(방문자는 새로고침 후). 기본값은 assets/site-data.js */
+  const SITE_FORMS = [
+    { key: "recruits", title: "참여 모집", item: "모집", view: "index.html#/",
+      desc: "홈 화면 '참여 모집'에 나옵니다. 마감일을 넣으면 D-day, 정원을 넣으면 진행 막대가 표시됩니다.",
+      fields: [["org", "구분", "text", "예: 회원 모집, 자원봉사"], ["title", "제목"], ["place", "장소"], ["time", "활동 시간"],
+        ["period", "접수 기간", "text", "예: 상시, 10.1~10.15"], ["deadline", "마감일", "date"], ["capacity", "정원", "number"], ["applied", "신청 인원", "number"],
+        ["link", "누르면 갈 주소", "text", "예: #/join/member 또는 https://신청서 주소"]] },
+    { key: "programs", title: "주요활동 진행 상태", status: true, view: "index.html#/programs/list",
+      desc: "시작한 사업은 '수행 중'으로 바꾸세요. 홈 화면 숫자(운영 중인 사업)도 함께 바뀝니다." },
+    { key: "history", title: "연혁", item: "연혁", view: "index.html#/about/history",
+      fields: [["date", "날짜", "text", "예: 2026.07.02 또는 2026.07"], ["text", "내용"]] },
+    { key: "team", title: "조직 (운영진)", item: "사람", view: "index.html#/about/team",
+      desc: "이름을 넣은 사람만 홈페이지에 나옵니다. 이름이 하나라도 있으면 '조직' 메뉴가 나타납니다. 사진은 선택입니다(본인 동의 필수).",
+      fields: [["role", "직책"], ["name", "이름"], ["bio", "소개", "textarea"], ["photo", "사진", "photo"]] },
+    { key: "places", title: "마을 거점", item: "거점", view: "index.html#/map/all",
+      desc: "동을 넣으면 마을 지도에 핀이 찍힙니다.",
+      fields: [["name", "이름"], ["type", "종류", "text", "예: 거점, 협력 공간"], ["dong", "동", "dong"], ["address", "주소"]] },
+    { key: "site", title: "기본 정보", obj: true, view: "index.html#/about/location",
+      desc: "푸터, 오시는 길, 문의 버튼에 쓰입니다. 비워 둔 항목은 화면에서 숨겨집니다.",
+      fields: [["mission", "미션", "textarea"], ["vision", "비전", "textarea"], ["rep", "대표자"], ["address", "주소"],
+        ["regNo", "고유번호", "text", "000-00-00000"], ["email", "문의 이메일", "email", "넣으면 '이메일로 보내기' 버튼이 생깁니다"],
+        ["instagramUrl", "인스타그램 주소", "text", "https://instagram.com/계정"], ["greeting", "대표 인사말", "textarea", "비우면 '인사말' 메뉴가 숨겨집니다"]] },
+  ];
+  const clone = v => JSON.parse(JSON.stringify(v));
+  function fieldHtml([k, label, type = "text", ph = ""], v) {
+    const val = h(v ?? "");
+    const hint = ph && type !== "text" ? ` <span class="hint">${h(ph)}</span>` : "";
+    if (type === "textarea") return `<label style="grid-column:1/-1">${label}${hint}<textarea data-k="${k}" maxlength="2000">${val}</textarea></label>`;
+    if (type === "dong") return `<label>${label}<select data-k="${k}"><option value="">선택 안 함</option>${DONGS.map(d => `<option ${v === d ? "selected" : ""}>${d}</option>`).join("")}</select></label>`;
+    if (type === "photo") return `<div style="grid-column:1/-1"><span class="hint" style="font-weight:700;color:var(--ink2)">${label}</span><div class="ph-prev">
+        ${v ? `<img src="${val}" alt="">` : ""}<label class="btn w s">${v ? "바꾸기" : "사진 올리기"}<input type="file" accept="image/*" hidden data-photo="${k}"></label>
+        ${v ? `<button type="button" class="btn w s" data-unphoto="${k}">빼기</button>` : ""}</div></div>`;
+    return `<label>${label}<input type="${type}" data-k="${k}" value="${val}" ${type === "number" ? 'min="0"' : ""} maxlength="300" placeholder="${h(type === "text" ? ph : "")}"></label>`;
+  }
+  async function site(el) {
+    const { data } = await c.from("site_settings").select("*");
+    const rows = Object.fromEntries((data || []).map(r => [r.key, r]));
+    el.innerHTML = `<h2>홈페이지 관리</h2><p class="lead">여기서 고친 내용은 저장 즉시 홈페이지에 반영됩니다. 활동 소식과 공지사항은 홈페이지에서 직접 쓰고 고칩니다.
+      <br><a href="index.html#/news/activities" style="text-decoration:underline">활동 소식 쓰기</a> · <a href="index.html#/board/write?b=notice" style="text-decoration:underline">공지 쓰기</a></p>
+      ${SITE_FORMS.map(F => `<div class="panel" data-sk="${F.key}"></div>`).join("")}`;
+    SITE_FORMS.forEach(F => sitePanel(el.querySelector(`[data-sk="${F.key}"]`), F, rows[F.key]));
+  }
+  function sitePanel(box, F, row) {
+    const D = SITE_DEFAULTS[F.key];
+    let st = row ? clone(row.value) : clone(D);
+    if (F.obj) st = { ...clone(D), ...st };
+    if (F.status) st = { ...clone(D), ...st };
+    const who = row ? `마지막 수정 ${fmt(row.updated_at)}${OFFICERS.find(o => o.id === row.updated_by) ? " · " + h(OFFICERS.find(o => o.id === row.updated_by).display_name) : ""}` : "기본값 사용 중";
+    const paint = () => {
+      let body;
+      if (F.status) body = PROGRAMS.map(p => `<div class="st-row"><span>${h(p.title)}</span><select data-prog="${p.key}">${PROGRAM_STATUS.map(x => `<option ${st[p.key] === x ? "selected" : ""}>${x}</option>`).join("")}</select></div>`).join("");
+      else if (F.obj) body = `<div class="form"><div class="f2">${F.fields.map(f => fieldHtml(f, st[f[0]])).join("")}</div></div>`;
+      else body = (st.length ? st.map((it, i) => `<div class="li-item" data-i="${i}"><div class="li-h"><b>${F.item} ${i + 1}</b>
+          <button type="button" class="btn w s" data-mv="-1" ${i ? "" : "disabled"} aria-label="위로">↑</button><button type="button" class="btn w s" data-mv="1" ${i < st.length - 1 ? "" : "disabled"} aria-label="아래로">↓</button>
+          <button type="button" class="btn s danger" data-rm>삭제</button></div>
+          <div class="form"><div class="f2">${F.fields.map(f => fieldHtml(f, it[f[0]])).join("")}</div></div></div>`).join("")
+          : `<p class="empty">항목이 없습니다. 비워 두면 홈페이지에서 이 부분이 숨겨집니다.</p>`)
+          + `<div class="row" style="margin-top:10px"><button type="button" class="btn w" data-add>＋ ${F.item} 추가</button></div>`;
+      box.innerHTML = `<h3>${F.title}<span class="upd">${who}</span></h3>${F.desc ? `<p class="hint" style="margin:-4px 0 14px">${h(F.desc)}</p>` : ""}
+        ${body}
+        <div class="row" style="margin-top:16px;border-top:1px solid var(--line);padding-top:14px"><button type="button" class="btn" data-save>저장</button>
+          <a class="btn w" href="${F.view}" target="_blank" rel="noopener">홈페이지에서 보기</a>
+          ${row ? `<button type="button" class="btn w" data-reset>기본값으로 되돌리기</button>` : ""}<span data-m></span></div>`;
+    };
+    paint();
+    const setVal = (t, v) => {
+      if (F.status) { st[t.dataset.prog] = v; return; }
+      const it = t.closest("[data-i]"); const tgt = F.obj ? st : st[+it.dataset.i];
+      tgt[t.dataset.k] = v;
+    };
+    box.oninput = e => { const t = e.target; if (t.dataset.k || t.dataset.prog) setVal(t, t.value); };
+    box.onchange = async e => {
+      const t = e.target;
+      if (t.dataset.k || t.dataset.prog) return setVal(t, t.value);
+      if (t.dataset.photo) {
+        const file = t.files[0]; if (!file) return;
+        const m = box.querySelector("[data-m]"); msg(m, "사진 올리는 중…", true);
+        try { const u = await SB.uploadPhoto(file, "site", 800); (F.obj ? st : st[+t.closest("[data-i]").dataset.i])[t.dataset.photo] = u; paint(); msg(box.querySelector("[data-m]"), "사진을 올렸습니다. 저장을 눌러야 홈페이지에 반영됩니다.", true); }
+        catch (err) { msg(m, err.message); }
+      }
+    };
+    box.onclick = async e => {
+      const b = e.target.closest("button"); if (!b) return;
+      const it = b.closest("[data-i]"), i = it ? +it.dataset.i : -1;
+      if (b.dataset.add !== undefined) { st.push(Object.fromEntries(SITE_FIELDS[F.key].map(k => [k, ""]))); paint(); [...box.querySelectorAll(".li-item")].pop()?.querySelector("input, textarea")?.focus(); return; }
+      if (b.dataset.rm !== undefined) { if (confirm(`${F.item} ${i + 1}을(를) 목록에서 뺄까요? 저장해야 반영됩니다.`)) { st.splice(i, 1); paint(); } return; }
+      if (b.dataset.mv) { const j = i + +b.dataset.mv; [st[i], st[j]] = [st[j], st[i]]; paint(); return; }
+      if (b.dataset.unphoto) { (F.obj ? st : st[i])[b.dataset.unphoto] = ""; paint(); return; }
+      const m = box.querySelector("[data-m]");
+      if (b.dataset.reset !== undefined) {
+        if (!confirm(`${F.title}을(를) 처음 기본값으로 되돌릴까요? 여기서 고친 내용은 사라집니다.`)) return;
+        const { error } = await c.from("site_settings").delete().eq("key", F.key);
+        if (error) return msg(m, SB.errText(error));
+        return sitePanel(box, F, null);
+      }
+      if (b.dataset.save !== undefined) {
+        let value;
+        if (F.status) value = st;
+        else if (F.obj) {
+          value = Object.fromEntries(SITE_FIELDS.site.map(k => [k, String(st[k] ?? "").trim()]));
+          if (value.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value.email)) return msg(m, "이메일 형식을 확인하세요.");
+          if (value.instagramUrl && !/^https:\/\//.test(value.instagramUrl)) return msg(m, "인스타그램 주소는 https:// 로 시작해야 합니다.");
+        } else {
+          value = st.map(x => cleanItem(F.key, Object.fromEntries(Object.entries(x).map(([k, v]) => [k, String(v ?? "").trim()]))))
+            .filter(x => Object.values(x).some(v => v));
+          const bad = st.findIndex(x => x.link && !safeUrl(x.link.trim()));
+          if (bad >= 0) return msg(m, `${F.item} ${bad + 1}: 주소는 #/ 또는 https:// 로 시작해야 합니다.`);
+          const badDate = value.findIndex(x => "date" in x && !/^\d{4}\.\d{2}(\.\d{2})?$/.test(x.date));
+          if (F.key === "history" && badDate >= 0) return msg(m, `연혁 ${badDate + 1}: 날짜는 2026.07.02 또는 2026.07 형식으로 넣으세요.`);
+          const noTitle = value.findIndex(x => F.key === "recruits" ? !x.title : F.key === "team" ? false : F.key === "places" ? !x.name : !x.text);
+          if (noTitle >= 0) return msg(m, `${F.item} ${noTitle + 1}: ${F.key === "history" ? "내용" : F.key === "recruits" ? "제목" : "이름"}을 넣어 주세요.`);
+        }
+        b.disabled = true;
+        const { data: saved, error } = await c.from("site_settings").upsert({ key: F.key, value }).select("*").single();
+        b.disabled = false;
+        if (error) return msg(m, SB.errText(error));
+        sitePanel(box, F, saved);
+        msg(box.querySelector("[data-m]"), "저장했습니다. 홈페이지에 반영됐습니다.", true);
+      }
+    };
   }
 
   /* ── 가입 신청·회원 ── */

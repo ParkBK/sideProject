@@ -358,6 +358,31 @@ language sql stable security definer set search_path = public as $$
 $$;
 grant execute on function public.dong_member_counts() to anon, authenticated;
 
+-- ── 4-1. 홈페이지 관리 (업무공간 → 홈페이지 관리에서 고치는 내용) ──
+-- 누구나 읽고(홈페이지에 표시), 임원만 고침. 값이 없으면 홈페이지의 기본값(assets/site-data.js)을 씀
+create table if not exists public.site_settings (
+  key         text primary key check (key in ('site','team','history','recruits','places','programs')),
+  value       jsonb not null check (pg_column_size(value) < 200000),
+  updated_by  uuid references auth.users(id) default auth.uid(),
+  updated_at  timestamptz not null default now()
+);
+alter table public.site_settings enable row level security;
+drop policy if exists "site_settings: 누구나 읽기" on public.site_settings;
+create policy "site_settings: 누구나 읽기" on public.site_settings for select using (true);
+drop policy if exists "site_settings: 임원 쓰기" on public.site_settings;
+create policy "site_settings: 임원 쓰기" on public.site_settings for insert with check (public.is_officer());
+drop policy if exists "site_settings: 임원 수정" on public.site_settings;
+create policy "site_settings: 임원 수정" on public.site_settings for update using (public.is_officer()) with check (public.is_officer());
+drop policy if exists "site_settings: 임원 삭제" on public.site_settings;
+create policy "site_settings: 임원 삭제" on public.site_settings for delete using (public.is_officer());
+create or replace function public.touch_site_settings() returns trigger
+language plpgsql set search_path = public as $$
+begin new.updated_at := now(); new.updated_by := auth.uid(); return new; end $$;
+drop trigger if exists touch_site_settings on public.site_settings;
+create trigger touch_site_settings before insert or update on public.site_settings
+  for each row execute function public.touch_site_settings();
+grant select on public.site_settings to anon;
+
 -- ── 5. 임원 업무공간: 일정 · 할 일 ──────────────────────────────
 create table if not exists public.events (
   id          bigint generated always as identity primary key,
@@ -426,5 +451,5 @@ grant usage on schema public to anon, authenticated;
 grant select on public.posts, public.comments to anon;
 grant select, insert, update, delete on
   public.profiles, public.applications, public.posts, public.comments, public.reports,
-  public.activities, public.events, public.tasks, public.ledger to authenticated;
+  public.activities, public.events, public.tasks, public.ledger, public.site_settings to authenticated;
 revoke insert, delete on public.profiles from authenticated;  -- 프로필은 가입 트리거로만 생성
