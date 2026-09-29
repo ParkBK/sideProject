@@ -343,6 +343,82 @@
   .since .wave{position:absolute;right:-40px;bottom:-10px;width:620px;max-width:70%;opacity:.5}
   @media(max-width:767px){.since{margin-top:90px}.since .wrap{padding-top:56px;padding-bottom:56px}.since .year strong{font-size:40px}.since h5{font-size:21px}.since p{font-size:15px}}
 
+
+  /* ── 시흥 마을 지도 ── */
+  .map-head{text-align:center;margin-bottom:48px}
+  .map-head .en{font-size:13px;font-weight:700;letter-spacing:.2em;color:var(--brand)}
+  .map-head h3{margin-top:8px;font-size:44px;font-weight:800;letter-spacing:-.04em;line-height:1.2}
+  .map-head h3 em{font-style:normal;color:var(--brand)}
+  .map-head p{margin-top:12px;font-size:16px;color:var(--ink2)}
+  @media(max-width:767px){.map-head h3{font-size:30px}.map-head p{font-size:14px}}
+  .vmap{display:grid;gap:40px}
+  @media(min-width:1024px){.vmap{grid-template-columns:1fr 1fr;gap:56px;align-items:start}}
+  .vm-map{position:relative}
+  .vm-water{position:absolute;left:-8px;top:0;writing-mode:vertical-rl;font-size:120px;font-weight:900;line-height:1;letter-spacing:.02em;color:#f2f4f7;user-select:none;pointer-events:none}
+  @media(max-width:1023px){.vm-water{display:none}}
+  .vm-map svg{position:relative;width:100%;height:auto;display:block;overflow:visible}
+  .dong{stroke:#fff;stroke-width:1.6;stroke-linejoin:round;cursor:pointer;transition:fill .25s,opacity .3s,filter .2s;outline:none}
+  .a-n{fill:#d9e5f8}.a-c{fill:#fcecbd}.a-s{fill:#d3ede2}
+  .dong:hover,.dong:focus-visible{filter:brightness(.9)}
+  .dong.dim{opacity:.3}
+  .dong.sel{fill:var(--brand);filter:none}
+  .js .vmap:not(.in) .dong{opacity:0}
+  .vmap.in .dong{animation:popin .6s var(--ease) backwards;animation-delay:var(--d)}
+  @keyframes popin{from{opacity:0;transform:translateY(8px)}}
+  .lbl{font-size:10.5px;font-weight:700;fill:#33373d;text-anchor:middle;pointer-events:none;paint-order:stroke;stroke:rgba(255,255,255,.85);stroke-width:3px;stroke-linejoin:round;transition:opacity .3s}
+  .lbl.dim{opacity:.35}
+  .lbl.sel{fill:#fff;stroke:var(--brand);font-size:12px}
+  .pin{pointer-events:none}
+  .pin .ring{fill:var(--point);transform-box:fill-box;transform-origin:center;animation:pulse 2s ease-out infinite}
+  .pin .core{fill:var(--point);stroke:var(--ink);stroke-width:1.6}
+  @keyframes pulse{from{transform:scale(.6);opacity:.7}to{transform:scale(2.6);opacity:0}}
+  @media(prefers-reduced-motion:reduce){.pin .ring{animation:none;opacity:0}}
+  .vm-tip{position:absolute;z-index:3;pointer-events:none;background:var(--ink);color:#fff;font-size:13px;font-weight:600;padding:6px 10px;border-radius:6px;white-space:nowrap;transform:translate(-50%,calc(-100% - 12px))}
+  .vm-legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;font-size:13px;color:var(--sub)}
+  .vm-legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+  .lg-n{background:#d9e5f8}.lg-c{background:#fcecbd}.lg-s{background:#d3ede2}
+  .vm-legend .pin-l{background:var(--point);border-radius:50%;box-shadow:inset 0 0 0 1.6px var(--ink)}
+  .vm-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .vm-tabs button{height:52px;border-radius:6px;background:#eef0f2;font-size:16px;font-weight:600;color:var(--ink2);transition:background .2s,color .2s}
+  .vm-tabs button:hover{background:#e3e6e9}
+  .vm-tabs button[aria-selected="true"]{background:#2b2d31;color:#fff}
+  @media(max-width:767px){.vm-tabs button{height:44px;font-size:14px}}
+  .vm-body>*{animation:rise .4s var(--ease) both}
+  .vm-list{margin-top:18px}
+  .vm-row{border-bottom:1px solid var(--line)}
+  .vm-row .r1{display:flex;align-items:center;gap:12px;padding:16px 0 14px;border-bottom:1px dashed var(--line)}
+  .vm-row strong{font-size:18px;font-weight:700;letter-spacing:-.02em}
+  .badge{display:inline-flex;align-items:center;height:30px;padding:0 14px;border-radius:15px;font-size:13.5px;font-weight:700;flex:none}
+  .b-n{background:#d9e5f8;color:#1847a4}.b-c{background:#fcecbd;color:#7a5200}.b-s{background:#d3ede2;color:#16654a}
+  .vm-go{margin-left:auto;height:38px;padding:0 14px;border-radius:6px;background:var(--brand);color:#fff;font-size:14px;font-weight:700;transition:background .2s}
+  .vm-go:hover{background:var(--brand-dark)}
+  .vm-row .r2{display:flex;justify-content:space-between;gap:12px;padding:12px 0 14px;font-size:14.5px;color:var(--ink2)}
+  .vm-row .r2 span:first-child{display:flex;gap:6px;align-items:center;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .vm-row .r2 svg{width:15px;height:15px;flex:none;color:var(--sub)}
+  .vm-row .r2 .none{color:var(--sub)}
+  .vm-row .cnt{flex:none}
+  .vm-row .cnt b{color:var(--brand)}
+  .vm-pager{display:flex;justify-content:center;gap:8px;margin-top:28px}
+  .vm-pager button{min-width:40px;height:40px;border-radius:4px;font-size:15px;font-weight:600;color:var(--ink2)}
+  .vm-pager button.edge{border:1px solid var(--line)}
+  .vm-pager button[aria-current="page"]{background:var(--ink);color:#fff}
+  .vm-pager button:disabled{opacity:.35;cursor:default}
+  .vm-note{margin-top:22px;font-size:12.5px;color:var(--sub);line-height:1.7}
+  .vm-back{margin-top:20px;font-size:14px;font-weight:600;color:var(--sub)}
+  .vm-back:hover{color:var(--ink)}
+  .vm-dh{display:flex;align-items:center;gap:12px;margin-top:14px;padding-bottom:18px;border-bottom:2px solid var(--ink)}
+  .vm-dh h4{font-size:30px;font-weight:800;letter-spacing:-.04em}
+  .vm-dh p{margin-left:auto;font-size:15px;color:var(--ink2)}
+  .vm-dh p b{color:var(--brand);font-size:20px}
+  .vm-acts li{display:flex;gap:14px;align-items:center;padding:16px 0;border-bottom:1px solid var(--line)}
+  .vm-acts .dt{flex:none;width:86px;font-size:13.5px;color:var(--sub)}
+  .vm-acts h5{font-size:16px;font-weight:700}
+  .vm-acts .chip{margin-left:auto;flex:none}
+  .vm-cta{margin-top:24px;padding:28px;border-radius:14px;background:var(--point-soft)}
+  .vm-cta h5{font-size:18px;font-weight:800;letter-spacing:-.03em}
+  .vm-cta p{margin-top:6px;font-size:14.5px;color:var(--ink2)}
+  .vm-cta .btn{margin-top:16px;height:46px}
+
   /* ── 서브 페이지 ── */
   .subvisual{background:var(--soft);padding:64px 0 56px;text-align:center}
   .subvisual .en{font-size:13px;font-weight:700;letter-spacing:.16em;color:var(--brand)}
@@ -612,6 +688,16 @@
     </ul>
   </div>
 
+
+  <section class="m-sec"><div class="wrap">
+    <div class="map-head rv">
+      <p class="en">SIHEUNG VILLAGE MAP</p>
+      <h3><em>시흥</em> 마을 지도</h3>
+      <p>시흥의 20개 마을 곳곳에서 청년의 문화를 만듭니다.</p>
+    </div>
+    <div data-map></div>
+  </div></section>
+
   <section class="m-sec"><div class="wrap">
     <div class="tit-wrap rv">
       <div><h3 class="heading">진행 중인 사업</h3><p>기관·학교·축제 주최 측과 함께 운영할 수 있는 프로그램입니다.</p></div>
@@ -716,6 +802,14 @@
   <div data-sub="list">
     <h3 class="s-title">사업 안내</h3>
     <div id="programList"></div>
+  </div>
+</div>
+
+<!-- ════════ 마을지도 ════════ -->
+<div data-page="map" hidden>
+  <div data-sub="all">
+    <p class="s-p" style="text-align:center;margin-bottom:40px">동을 누르면 그 마을에서의 활동을 볼 수 있습니다.</p>
+    <div data-map></div>
   </div>
 </div>
 
@@ -953,12 +1047,19 @@ const RECRUITS = [
 ];
 
 /* 활동 소식 (DB 연결 전 기본값)
-   type: 공연 / 공공미술 / 교육 / 기타,  beneficiaries: 수혜 인원(숫자, 모르면 비워 둠) */
+   type: 공연 / 공공미술 / 교육 / 기타,  beneficiaries: 수혜 인원(숫자, 모르면 비워 둠)
+   dong: 활동한 행정동 이름(예: "장곡동"). 넣으면 마을 지도에 표시됩니다. 모르면 비워 둠 */
 const ACTIVITIES = [
-  { activity_date: "2026-07-02", date_label: "2026.07.02", activity_type: "기타", title: "단체 설립 (창립총회)", description: "", image_url: "", beneficiaries: "" },
-  { activity_date: "2026-07-01", date_label: "2026.07~", activity_type: "공연", title: "지역 행사 청년 문화예술인 공연 참여 운영", description: "", image_url: "", beneficiaries: "" },
-  { activity_date: "2026-09-01", date_label: "2026.09", activity_type: "공공미술", title: "시흥갯골축제 벽화 봉사", description: "", image_url: "", beneficiaries: "" },
-  { activity_date: "", date_label: "", activity_type: "교육", title: "청소년 진로체험 부스 운영", description: "", image_url: "", beneficiaries: "" },
+  { activity_date: "2026-07-02", date_label: "2026.07.02", activity_type: "기타", title: "단체 설립 (창립총회)", description: "", image_url: "", beneficiaries: "", dong: "" },
+  { activity_date: "2026-07-01", date_label: "2026.07~", activity_type: "공연", title: "지역 행사 청년 문화예술인 공연 참여 운영", description: "", image_url: "", beneficiaries: "", dong: "" },
+  { activity_date: "2026-09-01", date_label: "2026.09", activity_type: "공공미술", title: "시흥갯골축제 벽화 봉사", description: "", image_url: "", beneficiaries: "", dong: "장곡동" /* 갯골생태공원: 장곡동 */ },
+  { activity_date: "", date_label: "", activity_type: "교육", title: "청소년 진로체험 부스 운영", description: "", image_url: "", beneficiaries: "", dong: "" },
+];
+
+/* 마을 거점 — 사무소, 협력 공간 등. dong을 넣으면 지도에 핀이 찍힙니다
+   사무소(서촌상가2길)는 법정동 정왕동입니다. 정왕본동·정왕1~4동·거북섬동 중 어느 행정동인지 확인해 넣으세요 */
+const PLACES = [
+  { name: "단체 사무소", type: "거점", dong: "", address: "경기도 시흥시 서촌상가 2길 25-1, 405호" },
 ];
 /* ═══════════════════════════════════════ */
 
@@ -980,6 +1081,7 @@ const PROGRAMS = [
 const MENU = [
   { id: "about", label: "단체소개", en: "ABOUT US", desc: "시흥 청년문화예술공동체를 소개합니다.", subs: [["greeting","인사말"],["vision","미션·비전"],["history","연혁"],["team","조직"],["location","오시는 길"]] },
   { id: "programs", label: "주요사업", en: "PROGRAMS", desc: "지역과 함께 운영하는 문화 프로그램입니다.", subs: [["list","사업 안내"]] },
+  { id: "map", label: "마을지도", en: "VILLAGE MAP", desc: "시흥 20개 마을에서의 활동을 지도로 봅니다.", subs: [["all","시흥 마을 지도"]] },
   { id: "join", label: "참여·협력", en: "JOIN US", desc: "기관·학교·축제, 그리고 청년과 함께합니다.", subs: [["partner","협력 제안"],["member","회원 참여"],["faq","자주 묻는 질문"]] },
   { id: "news", label: "알림마당", en: "NEWS", desc: "공동체의 소식과 활동 기록입니다.", subs: [["notice","공지사항"],["activities","활동 소식"]] },
   { id: "disclosure", label: "정보공개", en: "DISCLOSURE", desc: "단체 운영의 기본 정보를 투명하게 공개합니다.", subs: [["articles","정관"],["finance","결산 공개"],["info","기본 정보"],["privacy","개인정보처리방침"]] },
@@ -1170,6 +1272,7 @@ function renderNews(list) {
   $("#homeNews").innerHTML = NEWS_SRC.slice(0, 4).map(newsCard).join("");
   $("#newsAll").innerHTML = NEWS_SRC.map(newsCard).join("");
   renderStats(list);
+  MAPS.forEach(m => m.refresh());
   drawNewsTab($("#newsTabs [aria-selected='true']")?.dataset.tab || "act");
 }
 function drawNewsTab(tab) {
@@ -1203,10 +1306,126 @@ async function loadActivities() {
     });
     const client = window.supabase.createClient(SITE.supabaseUrl, SITE.supabaseAnonKey, { auth: { persistSession: false } });
     const { data, error } = await client.from("public_activities")
-      .select("activity_date,date_label,title,activity_type,description,image_url,beneficiaries");
+      .select("activity_date,date_label,title,activity_type,description,image_url,beneficiaries,dong");
     if (error) throw error;
     if (data && data.length) renderNews(data);
   } catch (e) { console.warn("활동 기록 불러오기 실패, 기본 기록 표시:", e); }
+}
+
+
+/* ── 시흥 마을 지도 ──
+   행정동 경계: 통계청 SGIS 행정구역 경계(vuski/admdongkor 가공본, 2026.07 기준)를 단순화해 사용 */
+const DONGS = [{"name":"대야동","d":"M365.3,53.4L364.9,56.3L368.8,57.0L370.6,60.1L373.3,60.9L376.9,60.2L377.7,59.2L386.1,58.9L387.3,61.5L393.0,66.3L393.9,69.7L396.1,68.7L397.9,70.2L397.6,66.1L403.6,62.6L409.6,68.6L414.8,67.7L418.0,70.5L424.0,71.4L425.6,77.6L424.3,79.6L424.9,84.6L426.7,86.4L425.2,92.7L429.0,95.7L426.8,100.8L430.8,109.1L428.2,113.5L423.9,117.9L423.7,121.5L426.2,124.9L418.9,127.4L415.2,133.5L410.0,135.8L385.6,139.1L390.6,120.6L380.1,105.2L366.5,109.7L346.9,123.1L343.5,130.4L343.9,135.1L345.1,136.9L336.2,136.8L327.5,133.9L329.6,129.5L315.6,115.7L306.4,103.8L304.9,96.7L308.7,84.6L304.8,82.4L302.5,74.2L308.9,46.6L307.8,37.9L303.9,32.5L304.6,26.5L310.6,27.5L320.8,24.4L320.9,28.2L323.1,32.3L330.3,35.0L330.0,43.0L333.9,47.0L342.6,48.3L348.6,46.8L353.2,52.5L359.3,50.7Z","cx":361.2,"cy":87.7},{"name":"신천동","d":"M304.9,96.7L306.4,103.8L315.6,115.7L329.6,129.5L327.5,133.9L334.6,136.6L345.1,136.9L344.1,139.1L344.1,148.0L345.9,150.0L342.9,163.1L340.2,172.1L334.9,172.3L330.1,169.7L329.0,167.5L300.9,161.9L283.7,169.4L286.2,161.6L286.2,148.7L285.6,143.4L279.7,122.9L284.6,104.3L287.4,98.4Z","cx":309.5,"cy":137.8},{"name":"신현동","d":"M340.2,172.1L339.0,178.4L344.3,186.6L348.4,188.1L354.6,186.7L367.7,187.6L371.0,189.5L370.6,197.8L349.3,223.4L333.9,238.7L334.1,243.9L328.7,242.9L325.8,257.3L332.9,262.9L335.1,270.2L335.7,279.1L326.5,287.8L321.7,294.2L316.8,291.7L312.9,287.8L307.5,289.6L302.8,293.5L301.3,293.8L291.8,287.2L291.1,282.6L282.3,283.9L271.6,284.2L270.1,283.0L269.8,281.3L270.3,275.7L260.8,270.1L241.5,267.4L237.8,267.9L231.8,271.7L227.2,271.5L213.3,265.2L218.5,262.5L221.8,255.2L231.2,241.0L231.2,233.7L235.6,218.1L238.4,209.9L243.1,206.1L239.7,195.2L239.4,191.1L255.3,177.8L266.3,180.4L275.8,177.6L280.2,175.1L283.7,169.4L300.9,161.9L329.0,167.5L330.1,169.7L334.9,172.3Z","cx":292.9,"cy":225.8},{"name":"은행동","d":"M421.0,126.6L431.6,147.2L432.1,151.5L429.9,170.6L424.6,178.0L420.2,180.8L408.9,183.8L402.5,188.0L406.2,198.5L397.5,202.1L390.9,203.0L386.0,200.0L382.1,195.1L372.0,195.4L370.6,197.8L371.0,189.0L368.0,187.6L354.6,186.7L347.4,187.8L344.1,186.4L339.0,178.4L345.9,150.0L344.1,148.0L344.1,139.1L345.1,136.9L344.0,136.2L343.7,129.7L346.9,123.1L366.5,109.7L380.1,105.2L390.6,120.6L385.6,139.1L410.0,135.8L415.2,133.5L418.0,128.1Z","cx":383.0,"cy":156.5},{"name":"매화동","d":"M495.9,254.3L491.5,261.0L495.8,266.5L494.8,273.0L491.5,274.5L491.1,285.5L492.3,298.9L490.8,301.7L477.9,304.5L455.4,296.8L452.6,297.5L447.9,302.0L437.5,304.3L429.6,300.1L421.6,303.3L415.6,294.1L410.0,279.8L411.4,271.4L404.5,257.9L394.9,255.2L387.6,254.5L388.7,249.5L368.8,230.6L350.2,250.4L346.2,252.9L334.1,243.9L333.9,238.7L337.4,236.0L356.3,215.6L358.6,211.6L372.0,195.4L382.1,195.1L386.0,200.0L390.9,203.0L397.5,202.1L406.2,198.5L402.5,188.0L408.0,184.9L418.3,184.2L432.9,191.9L435.0,194.4L440.6,209.5L450.3,225.2L468.4,238.7L468.5,241.5L472.9,245.7L479.4,243.2L484.3,242.9Z","cx":425.6,"cy":246.7},{"name":"목감동","d":"M567.0,259.6L567.7,266.0L568.8,267.2L568.5,276.0L564.5,284.3L569.4,308.9L575.3,326.0L580.0,345.9L573.1,355.0L556.7,371.7L552.5,380.4L534.6,395.1L521.7,395.2L512.8,396.5L507.2,399.2L504.3,398.7L496.0,393.4L494.6,388.1L490.6,383.3L485.2,386.7L477.6,389.2L473.1,389.4L470.7,387.8L467.6,390.5L446.4,394.6L435.8,386.1L432.7,386.4L430.5,389.4L425.4,389.6L422.8,383.9L415.6,375.4L415.5,371.6L417.3,364.2L429.3,358.3L430.9,351.0L429.8,343.6L428.0,341.6L425.6,341.0L421.3,337.3L421.5,329.7L422.4,325.2L425.6,317.8L429.4,317.4L433.2,312.3L421.6,303.3L429.6,300.1L437.5,304.3L447.9,302.0L452.6,297.5L455.4,296.8L477.9,304.5L490.8,301.7L492.3,298.9L491.1,285.5L491.5,274.5L494.8,273.0L495.8,266.5L491.7,260.4L495.9,254.3L505.2,248.2L515.7,259.0L520.0,260.5L527.0,261.4L537.0,261.0L550.0,259.2L561.6,261.2Z","cx":502.9,"cy":332.5},{"name":"과림동","d":"M465.6,80.3L463.7,89.5L464.6,96.9L464.3,112.0L462.6,124.6L462.9,143.0L468.0,144.1L473.3,151.4L473.6,153.5L470.3,155.8L468.8,160.5L473.8,173.4L473.8,178.3L481.7,186.8L483.3,189.9L480.9,196.4L485.5,224.8L487.7,228.2L502.8,238.7L505.2,248.2L495.9,254.3L484.3,242.9L479.4,243.2L472.9,245.7L468.5,241.5L468.4,238.7L450.3,225.2L440.6,209.5L435.0,194.4L432.9,191.9L418.3,184.2L408.0,184.9L411.4,182.9L420.2,180.8L424.6,178.0L429.9,170.6L432.1,151.5L431.6,147.2L421.0,126.6L426.2,124.9L423.7,121.5L423.9,117.9L428.2,113.5L430.8,109.1L426.8,100.8L429.0,95.7L425.2,92.7L426.7,86.4L424.9,84.6L424.3,79.6L425.6,77.6L424.0,71.4L425.6,68.4L430.0,69.3L431.4,67.9L437.0,67.2L438.3,67.4L440.1,70.2L440.2,73.3L448.1,69.1L450.5,64.7L458.8,72.2L462.3,71.3L464.3,74.8L460.7,79.3Z","cx":453.8,"cy":159.5},{"name":"거북섬동","d":"M101.6,505.4L160.7,551.6L142.4,575.6L113.1,565.8L103.9,559.4L76.7,537.2L47.4,533.6L45.0,535.6L36.2,533.5L36.6,528.8L33.2,527.8L31.3,521.2L20.0,500.8L74.2,480.6L75.2,484.7Z","cx":89.8,"cy":526.9},{"name":"정왕3동","d":"M174.0,412.0L101.6,505.4L75.2,484.7L74.2,480.6L75.1,475.6L73.3,469.6L69.9,467.3L58.6,464.1L66.2,437.4L78.0,439.3L100.8,431.3L98.8,428.2L99.9,427.3L103.4,430.5L113.8,423.6L118.8,412.6L128.1,404.0L134.7,409.7L153.7,396.1Z","cx":113.8,"cy":448.6},{"name":"정왕4동","d":"M154.7,396.9L187.7,373.2L204.0,379.9L196.1,392.8L192.9,399.9L187.5,396.1L179.7,406.4L174.0,412.0Z","cx":190.2,"cy":395.6},{"name":"정왕본동","d":"M272.4,396.7L270.6,402.3L270.2,413.0L271.2,423.6L271.9,425.6L277.5,430.2L277.4,433.9L274.3,438.8L277.5,457.9L280.6,462.3L284.3,465.6L278.0,468.9L266.7,461.6L260.2,462.1L255.7,464.2L255.0,467.2L251.2,472.1L201.4,433.2L205.0,428.4L200.2,425.9L195.2,420.3L193.7,415.0L192.8,401.3L196.1,392.8L204.0,379.9L187.7,373.2L187.6,372.3L194.1,367.1L201.1,354.0L202.0,345.8L247.1,350.4L256.3,353.5L260.4,356.6L265.6,365.5L269.4,379.0L263.3,380.7L263.7,387.8L269.6,396.8Z","cx":235.7,"cy":405.3},{"name":"정왕1동","d":"M201.4,433.2L251.2,472.1L228.9,488.4L224.6,507.6L223.4,517.9L220.5,518.0L199.2,501.5L160.7,551.6L128.8,526.2L200.3,432.5Z","cx":189.0,"cy":491.0},{"name":"능곡동","d":"M421.4,362.1L417.3,364.2L415.5,371.6L415.6,375.4L422.8,383.9L425.4,389.6L411.7,401.1L406.7,408.0L386.2,416.4L377.0,422.2L368.2,423.2L349.9,416.4L349.5,410.7L352.2,408.6L354.2,404.7L354.9,381.0L355.4,376.3L358.2,372.9L372.7,370.1L384.5,372.1L386.1,365.0L385.7,347.6L387.9,342.5L400.6,336.8L400.6,341.0L406.4,342.0Z","cx":387.8,"cy":385.2},{"name":"군자동","d":"M339.4,374.1L340.2,376.0L354.9,381.0L354.2,404.7L352.2,408.6L349.5,410.7L349.9,416.4L344.9,422.0L340.1,425.3L338.0,432.3L337.3,440.3L341.4,456.5L338.0,459.7L333.0,467.8L329.0,471.8L320.1,475.4L320.1,471.8L316.8,466.8L307.2,464.8L299.7,460.3L293.1,464.5L284.3,465.6L277.8,458.5L274.3,438.8L277.4,433.9L277.5,430.2L271.9,425.6L270.2,413.0L271.1,400.0L272.4,396.7L276.0,395.5L274.6,389.4L275.1,386.4L285.1,379.0L298.4,371.5L303.8,371.9L312.6,368.8L315.9,365.5L315.8,361.3L319.4,359.5L325.4,368.6L327.3,370.0L337.5,369.8L338.6,370.8Z","cx":311.4,"cy":416.6},{"name":"월곶동","d":"M291.8,287.2L291.9,303.5L289.3,331.6L289.5,339.3L296.7,341.2L319.4,359.5L315.8,361.3L315.9,365.5L312.6,368.8L303.8,371.9L298.4,371.5L285.1,379.0L275.1,386.4L274.6,389.4L276.0,395.5L274.9,396.5L269.6,396.8L263.7,387.8L263.3,380.7L269.4,379.0L265.6,365.5L260.4,356.6L256.3,353.5L247.1,350.4L202.0,345.8L202.8,337.4L204.7,332.4L210.0,324.5L211.3,320.2L218.2,308.2L216.3,304.8L208.5,318.1L202.6,315.0L204.6,310.2L196.3,305.8L191.1,309.8L189.9,309.6L187.7,308.1L185.9,303.1L188.6,293.0L194.3,285.3L193.9,281.7L200.5,276.8L207.8,268.4L213.3,265.2L227.2,271.5L231.8,271.7L237.8,267.9L241.5,267.4L260.8,270.1L270.3,275.7L269.8,281.3L270.1,283.0L271.6,284.2L282.3,283.9L290.3,282.5L291.8,283.3Z","cx":251.5,"cy":319.9},{"name":"연성동","d":"M421.6,303.3L433.2,312.3L429.4,317.4L425.6,317.8L422.4,325.2L421.1,337.1L429.8,343.6L430.9,351.0L429.3,358.3L421.4,362.1L406.4,342.0L400.6,341.0L400.6,336.8L387.9,342.5L385.7,347.6L386.1,365.0L384.5,372.1L372.7,370.1L358.2,372.9L355.4,376.3L354.9,381.0L340.2,376.0L339.4,374.1L345.2,358.2L344.7,344.9L341.8,327.0L333.6,306.6L337.2,293.0L340.1,290.3L336.8,284.2L334.0,281.3L335.7,279.1L335.1,270.2L332.9,262.9L325.8,257.3L328.2,244.5L328.7,242.9L334.1,243.9L346.2,252.9L350.2,250.4L368.8,230.6L388.7,249.5L387.6,254.5L394.9,255.2L404.5,257.9L411.4,271.4L410.0,279.8L415.6,294.1Z","cx":375.5,"cy":305.5},{"name":"장곡동","d":"M339.4,374.1L338.6,370.8L337.5,369.8L327.3,370.0L325.4,368.6L319.4,359.5L296.7,341.2L289.5,339.3L289.3,331.6L291.9,303.5L291.8,287.2L301.3,293.8L302.8,293.5L307.5,289.6L312.9,287.8L316.8,291.7L321.7,294.2L326.5,287.8L334.0,281.3L336.8,284.2L340.1,290.3L337.2,293.0L333.5,305.6L341.8,327.0L345.3,351.4L344.5,361.5Z","cx":318.6,"cy":325.8},{"name":"배곧2동","d":"M140.6,360.4L158.5,373.5L168.7,359.3L187.7,373.2L154.7,396.9L153.7,396.1L134.7,409.7L128.1,404.0L118.8,412.6L113.8,423.6L105.3,429.3L97.4,420.4L98.1,418.0Z","cx":128.5,"cy":383.3},{"name":"배곧1동","d":"M187.7,373.2L168.7,359.3L158.5,373.5L140.6,360.4L178.1,312.6L180.8,311.6L184.0,311.9L210.0,324.5L207.5,328.7L204.7,332.4L202.8,337.4L201.1,354.0L194.1,367.1L187.6,372.3Z","cx":178.1,"cy":343.9},{"name":"정왕2동","d":"M128.8,526.2L101.6,505.4L174.0,412.0L179.7,406.4L187.5,396.1L192.9,399.9L193.7,415.0L196.2,422.0L200.2,425.9L205.0,428.4L201.4,433.2L200.3,432.5Z","cx":154.5,"cy":464.1}];
+const AREA_DEF = [
+  ["북부권", "n", ["대야동","신천동","은행동","과림동","신현동","매화동"]],
+  ["중부권", "c", ["연성동","장곡동","목감동","능곡동","군자동"]],
+  ["남부권", "s", ["월곶동","배곧1동","배곧2동","정왕본동","정왕1동","정왕2동","정왕3동","정왕4동","거북섬동"]],
+];
+const AREA_OF = {};
+AREA_DEF.forEach(([a, c, ds]) => ds.forEach(d => AREA_OF[d] = [a, c]));
+const DONG_ORDER = AREA_DEF.flatMap(a => a[2]);
+const MAPS = [];
+
+function buildMap(host) {
+  const st = { tab: "전체", sel: null, page: 1 }, PER = 5;
+  host.innerHTML = `<div class="vmap rv">
+    <div class="vm-map">
+      <span class="vm-water" aria-hidden="true">SIHEUNG</span>
+      <svg viewBox="0 0 600 600" role="group" aria-label="시흥시 행정동 지도">
+        <g>${DONGS.map((d, i) => `<path class="dong a-${AREA_OF[d.name][1]}" data-dong="${d.name}" d="${d.d}" style="--d:${(i * .035).toFixed(2)}s" tabindex="0" role="button" aria-label="${d.name}"></path>`).join("")}</g>
+        <g>${DONGS.map(d => `<text class="lbl" data-dong="${d.name}" x="${d.cx}" y="${d.cy + 4}">${d.name}</text>`).join("")}</g>
+        <g class="g-pin"></g>
+      </svg>
+      <p class="vm-tip" hidden></p>
+      <p class="vm-legend">${AREA_DEF.map(([a, c]) => `<span><i class="lg-${c}"></i>${a}</span>`).join("")}<span><i class="pin-l"></i>활동·거점이 있는 마을</span></p>
+    </div>
+    <div class="vm-side">
+      <div class="vm-tabs" role="tablist" aria-label="권역">${["전체", ...AREA_DEF.map(a => a[0])].map(t => `<button type="button" role="tab" data-tab="${t}">${t}</button>`).join("")}</div>
+      <div class="vm-body" aria-live="polite"></div>
+      <p class="vm-note">권역은 이 지도에서 편의상 나눈 것으로 시흥시의 공식 구분이 아닙니다.<br>행정동 경계: 통계청 SGIS 행정구역 경계 (2026년 7월 기준, 단순화)</p>
+    </div>
+  </div>`;
+  const mapBox = host.querySelector(".vm-map"), body = host.querySelector(".vm-body"), tip = host.querySelector(".vm-tip");
+  const acts = () => NEWS_SRC.filter(a => a.dong);
+  const inDong = d => acts().filter(a => a.dong === d);
+  const placesIn = d => PLACES.filter(p => p.dong === d);
+
+  function paint() {
+    host.querySelectorAll("[data-tab]").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === st.tab));
+    host.querySelectorAll(".dong, .lbl").forEach(el => {
+      const d = el.dataset.dong;
+      el.classList.toggle("dim", st.tab !== "전체" && AREA_OF[d][0] !== st.tab && st.sel !== d);
+      el.classList.toggle("sel", st.sel === d);
+    });
+    const pinned = [...new Set([...acts().map(a => a.dong), ...PLACES.filter(p => p.dong).map(p => p.dong)])];
+    host.querySelector(".g-pin").innerHTML = pinned.map(d => DONGS.find(x => x.name === d)).filter(Boolean)
+      .map(o => `<g class="pin" transform="translate(${o.cx} ${o.cy - 13})"><circle class="ring" r="6"/><circle class="core" r="5"/></g>`).join("");
+  }
+  function listView() {
+    const ds = DONG_ORDER.filter(d => st.tab === "전체" || AREA_OF[d][0] === st.tab)
+      .sort((a, b) => (inDong(b).length + placesIn(b).length) - (inDong(a).length + placesIn(a).length));
+    const pages = Math.max(1, Math.ceil(ds.length / PER));
+    st.page = Math.min(st.page, pages);
+    const rows = ds.slice((st.page - 1) * PER, st.page * PER);
+    const pageBtns = Array.from({ length: pages }, (_, i) => `<button type="button" data-pg="${i + 1}" ${i + 1 === st.page ? 'aria-current="page"' : ""}>${i + 1}</button>`).join("");
+    return `<ul class="vm-list">${rows.map(d => {
+      const [a, c] = AREA_OF[d], list = inDong(d), last = list[0], pl = placesIn(d)[0];
+      const info = last ? esc(last.title) : pl ? esc(pl.name) : `<span class="none">아직 기록된 활동이 없습니다</span>`;
+      return `<li class="vm-row"><div class="r1"><span class="badge b-${c}">${a}</span><strong>${d}</strong>
+        <button type="button" class="vm-go" data-dong="${d}">마을 보기 ›</button></div>
+        <div class="r2"><span>${svg("pin", 2)}${info}</span><span class="cnt">활동 <b>${list.length}</b>건</span></div></li>`;
+    }).join("")}</ul>
+    <div class="vm-pager">
+      <button type="button" class="edge" data-pg="1" aria-label="첫 페이지" ${st.page === 1 ? "disabled" : ""}>«</button>${pageBtns}
+      <button type="button" class="edge" data-pg="${pages}" aria-label="끝 페이지" ${st.page === pages ? "disabled" : ""}>»</button>
+    </div>`;
+  }
+  function detailView() {
+    const d = st.sel, [a, c] = AREA_OF[d], list = inDong(d), pl = placesIn(d);
+    return `<button type="button" class="vm-back">← ${st.tab === "전체" ? "전체" : st.tab} 목록</button>
+      <div class="vm-dh"><span class="badge b-${c}">${a}</span><h4>${d}</h4><p>활동 <b>${list.length}</b>건</p></div>
+      ${list.length || pl.length ? `<ul class="vm-acts">
+        ${pl.map(p => `<li><span class="dt">${esc(p.type)}</span><h5>${esc(p.name)}</h5></li>`).join("")}
+        ${list.map(x => `<li><span class="dt">${esc(x.date_label || "")}</span><h5>${esc(x.title)}</h5>${x.activity_type ? `<span class="chip">${esc(x.activity_type)}</span>` : ""}</li>`).join("")}
+      </ul>` : ""}
+      <div class="vm-cta"><h5>${d}에서 함께할 마을 파트너를 찾습니다</h5>
+        <p>공간, 축제, 학교, 동아리, 상점가 등 무엇이든 좋습니다. 이 마을에서 청년 문화 프로젝트를 함께 만들어요.</p>
+        <a class="btn btn-brand" href="#/join/partner">협력 문의</a></div>`;
+  }
+  function render() { paint(); body.innerHTML = st.sel ? detailView() : listView(); }
+  function select(d) { st.sel = d; if (st.tab !== "전체" && AREA_OF[d][0] !== st.tab) st.tab = AREA_OF[d][0]; render(); }
+
+  host.addEventListener("click", e => {
+    const t = e.target.closest("[data-tab],[data-pg],.vm-go,.dong,.vm-back");
+    if (!t) return;
+    if (t.dataset.tab) { st.tab = t.dataset.tab; st.sel = null; st.page = 1; }
+    else if (t.dataset.pg) { st.page = +t.dataset.pg; }
+    else if (t.classList.contains("vm-back")) { st.sel = null; }
+    else { select(t.dataset.dong); return; }
+    render();
+  });
+  host.addEventListener("keydown", e => {
+    if ((e.key === "Enter" || e.key === " ") && e.target.classList.contains("dong")) { e.preventDefault(); select(e.target.dataset.dong); }
+  });
+  const showTip = (el, x, y) => {
+    const d = el.dataset.dong, n = inDong(d).length;
+    tip.textContent = `${d} · ${AREA_OF[d][0]} · 활동 ${n}건`;
+    tip.style.left = x + "px"; tip.style.top = y + "px"; tip.hidden = false;
+  };
+  mapBox.addEventListener("mousemove", e => {
+    const el = e.target.closest(".dong"); if (!el) { tip.hidden = true; return; }
+    const r = mapBox.getBoundingClientRect(); showTip(el, e.clientX - r.left, e.clientY - r.top);
+  });
+  mapBox.addEventListener("mouseleave", () => tip.hidden = true);
+  mapBox.addEventListener("focusin", e => {
+    const el = e.target.closest(".dong"); if (!el) return;
+    const r = mapBox.getBoundingClientRect(), b = el.getBoundingClientRect();
+    showTip(el, b.left + b.width / 2 - r.left, b.top - r.top);
+  });
+  mapBox.addEventListener("focusout", () => tip.hidden = true);
+
+  render();
+  return { refresh: render };
 }
 
 /* ── 메인 슬라이드: 양옆이 보이는 무한 루프 ── */
@@ -1356,6 +1575,7 @@ addEventListener("scroll", () => {
 btnTop.addEventListener("click", e => { e.preventDefault(); scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" }); });
 
 fill();
+document.querySelectorAll("[data-map]").forEach(h => MAPS.push(buildMap(h)));
 initNewsTabs();
 loadActivities();
 initSlider();
