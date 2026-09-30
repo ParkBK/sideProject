@@ -281,7 +281,7 @@ create table if not exists public.activities (
   activity_date   date,
   date_label      text,
   title           text not null check (char_length(title) between 1 and 120),
-  activity_type   text check (activity_type in ('공연','전시','공공미술','교육','축제·행사','콘텐츠','생활문화','봉사','기타')),
+  activity_type   text,
   dong            text,
   place           text,
   host_org        text,
@@ -304,6 +304,10 @@ create table if not exists public.activities (
   )
 );
 alter table public.activities enable row level security;
+-- 활동 유형 (유형을 늘릴 때는 여기와 화면의 ACT_TYPES를 함께 고침)
+alter table public.activities drop constraint if exists activities_activity_type_check;
+alter table public.activities add constraint activities_activity_type_check check (activity_type in
+  ('공연','전시','공공미술','교육','축제·행사','콘텐츠','생활문화','봉사','정책·행정','기타'));
 drop policy if exists "activities: 임원 관리" on public.activities;
 create policy "activities: 임원 관리" on public.activities for all using (public.is_officer()) with check (public.is_officer());
 

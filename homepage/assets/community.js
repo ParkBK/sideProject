@@ -500,7 +500,7 @@
 
   /* ── 활동 소식: 임원 작성·수정·삭제 + 사진 ─────── */
   const PHOTO_BUCKET = "activity-photos", MAX_PHOTOS = 12;
-  const ACT_TYPES = ["공연", "전시", "공공미술", "교육", "축제·행사", "콘텐츠", "생활문화", "봉사", "기타"];
+  const ACT_TYPES = ["공연", "전시", "공공미술", "교육", "축제·행사", "콘텐츠", "생활문화", "봉사", "정책·행정", "기타"];
   const isOff = () => !!ME && SB.isOfficer(ME.profile);
   const photoPath = url => { const k = `/object/public/${PHOTO_BUCKET}/`, i = (url || "").indexOf(k); return i < 0 ? null : decodeURIComponent(url.slice(i + k.length)); };
   const dotDate = d => d ? d.replaceAll("-", ".") : "";
