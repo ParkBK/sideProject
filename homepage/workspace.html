@@ -141,6 +141,8 @@
   table.matrix input{width:18px;height:18px}
   table.matrix td.late{background:var(--red-soft)}
   table.matrix td.na,table.mini td.na{color:#c3c7cc}
+  .kpis.rt{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin:4px 0 8px}
+  .kpis.rt .kpi{border:1px solid var(--line)}
   table.matrix th.nowc{background:var(--brand-soft);color:var(--brand)}
   .tabs{gap:6px}
   .cal .ev.mk{background:color-mix(in srgb,var(--fc) 14%,#fff);color:var(--fc);box-shadow:inset 3px 0 0 var(--fc);font-weight:700}
@@ -218,10 +220,12 @@
 
   /* 운영 기본 체크리스트: 작은 비영리단체가 흔히 놓치는 일 */
   const STARTER = [
-    ["2026 회계연도 결산서 작성", "회계", "2027-01-31"],
-    ["정기총회 개최 (결산 승인, 정관 보완 검토)", "운영", "2027-02-28"],
+    ["회계연도 결산서 작성 (전년도)", "회계", null, "yearly", 31, 1],
+    ["회원 명부 정비·연회비 납부 확인", "운영", null, "yearly", 31, 1],
+    ["정기총회 개최 (결산 승인, 사업계획 보고)", "운영", null, "yearly", null, 2],
     ["정관 보완: 이해충돌·임원 보수·감사 조항", "행정", "2027-02-28"],
-    ["홈페이지 결산 공개 (홈페이지에 약속한 일정)", "운영", "2027-04-30"],
+    ["홈페이지 결산 공개 (홈페이지에 약속한 일정)", "운영", null, "yearly", 30, 4],
+    ["다음 해 사업계획·예산안 작성 (총회 안건 준비)", "운영", null, "yearly", 15, 12],
     ["비영리민간단체 등록 요건 점검 (활동 1년·회원 수)", "행정", "2027-07-02"],
     ["월별 장부 마감·영수증 대조 (매월)", "회계", null, "monthly", null],
     ["사례비 원천징수 신고·납부 (지급한 달의 다음 달 10일까지)", "회계", null, "monthly", 10],
@@ -323,28 +327,40 @@
   const lastDay = (y, m) => new Date(y, m, 0).getDate();             /* m: 1~12 */
   const monthOf = d => d.slice(0, 7);
   const quarterOf = d => `${d.slice(0, 4)}-Q${Math.ceil(+d.slice(5, 7) / 3)}`;
-  const periodFor = (t, d) => t.repeat === "monthly" ? monthOf(d) : quarterOf(d);
+  const periodFor = (t, d) => t.repeat === "monthly" ? monthOf(d) : t.repeat === "yearly" ? d.slice(0, 4) : quarterOf(d);
+  const kindOf = p => p.length === 4 ? "yearly" : p.includes("Q") ? "quarterly" : "monthly";
   /* 정기 업무의 그 달·분기 마감일 (분기는 마지막 달) */
   function periodDue(t, period) {
-    const y = +period.slice(0, 4), m = period.includes("Q") ? +period.slice(6) * 3 : +period.slice(5, 7);
+    const y = +period.slice(0, 4), m = period.length === 4 ? (t.repeat_month || 12) : period.includes("Q") ? +period.slice(6) * 3 : +period.slice(5, 7);
     return `${y}-${pad(m)}-${pad(Math.min(t.repeat_day || lastDay(y, m), lastDay(y, m)))}`;
   }
-  const repeatLabel = t => t.repeat === "monthly" ? `매월 ${t.repeat_day ? t.repeat_day + "일" : "말일"}` : t.repeat === "quarterly" ? `분기 마지막 달 ${t.repeat_day ? t.repeat_day + "일" : "말일"}` : "";
-  const periodName = p => p.includes("Q") ? `${p.slice(0, 4)}년 ${p.slice(6)}분기` : `${+p.slice(5, 7)}월`;
+  const dayLabel = t => t.repeat_day ? t.repeat_day + "일" : "말일";
+  const repeatLabel = t => t.repeat === "monthly" ? `매월 ${dayLabel(t)}` : t.repeat === "quarterly" ? `분기 마지막 달 ${dayLabel(t)}` : t.repeat === "yearly" ? `매년 ${t.repeat_month || 12}월 ${dayLabel(t)}` : "";
+  const periodName = p => p.length === 4 ? `${p}년` : p.includes("Q") ? `${p.slice(0, 4)}년 ${p.slice(6)}분기` : `${+p.slice(5, 7)}월`;
   async function loadTasks() {
     const [t, k] = await Promise.all([c.from("tasks").select("*").order("created_at"), c.from("task_checks").select("*")]);
     const checks = new Set((k.data || []).map(x => `${x.task_id}|${x.period}`));
     return { all: t.data || [], checks };
   }
-  /* 등록하기 전 달·분기는 해당 없음 (지난 달이 전부 '지남'으로 뜨지 않도록) */
-  const applies = (t, p) => p >= periodFor(t, (t.created_at || TODAY).slice(0, 10));
+  /* 등록하기 전에 마감이 지난 달·분기·해는 해당 없음 (지난 마감이 전부 '지남'으로 뜨지 않도록) */
+  const applies = (t, p) => periodDue(t, p) >= (t.created_at || TODAY).slice(0, 10);
+  function nextPeriod(p) {
+    if (p.length === 4) return String(+p + 1);
+    const y = +p.slice(0, 4);
+    if (p.includes("Q")) { const q = +p.slice(6); return q === 4 ? `${y + 1}-Q1` : `${y}-Q${q + 1}`; }
+    const m = +p.slice(5, 7); return m === 12 ? `${y + 1}-01` : `${y}-${pad(m + 1)}`;
+  }
+  /* 지금 기준으로 챙길 회차: 이번 회차가 등록 전에 끝났으면 다음 회차 */
+  const currentPeriod = t => { const p = periodFor(t, TODAY); return applies(t, p) ? p : nextPeriod(p); };
   /* 정기 업무를 특정 달·분기의 할 일로 펼침 */
   const instance = (t, period, checks) => ({ ...t, _period: period, due_date: periodDue(t, period), done: checks.has(`${t.id}|${period}`) });
   const byPriority = (a, b) => (a.done - b.done) || ((MARK_ORDER[a.marker] ?? 9) - (MARK_ORDER[b.marker] ?? 9)) || (a.due_date || "9999").localeCompare(b.due_date || "9999");
-  /* 지금 챙겨야 할 것: 안 끝난 일회성 + 이번 달·분기 정기 업무 */
+  /* 매년 업무는 마감 60일 전부터 '지금 할 일'에 올라옴 (1년 내내 떠 있지 않도록) */
+  const soon = x => x.repeat !== "yearly" || x.due_date <= ymd(new Date(Date.now() + 60 * 864e5));
+  /* 지금 챙겨야 할 것: 안 끝난 일회성 + 이번 달·분기 정기 업무 + 다가오는 매년 업무 */
   function nowList({ all, checks }) {
     const once = all.filter(x => x.repeat === "none" && !x.done);
-    const rec = all.filter(x => x.repeat !== "none").map(t => instance(t, periodFor(t, TODAY), checks)).filter(x => !x.done);
+    const rec = all.filter(x => x.repeat !== "none").map(t => instance(t, currentPeriod(t), checks)).filter(x => !x.done && soon(x));
     return [...once, ...rec].sort(byPriority);
   }
 
@@ -378,26 +394,29 @@
     el.querySelectorAll("[data-edittask]").forEach(b => b.onclick = () => { taskEditId = b.dataset.edittask; go("tasks"); });
   }
 
+  const STARTER_OLD = { "회계연도 결산서 작성 (전년도)": "2026 회계연도 결산서 작성", "정기총회 개최 (결산 승인, 사업계획 보고)": "정기총회 개최 (결산 승인, 정관 보완 검토)" };
   async function addStarter() {
     const { data } = await c.from("tasks").select("id,title,repeat");
     const have = new Map((data || []).map(x => [x.title, x]));
-    const rows = STARTER.filter(s => !have.has(s[0])).map(([title, category, due_date, repeat = "none", repeat_day = null]) => ({ title, category, due_date: repeat === "none" ? due_date : null, repeat, repeat_day }));
+    const old = t => have.get(STARTER_OLD[t]);
+    const rows = STARTER.filter(s => !have.has(s[0]) && !old(s[0])).map(([title, category, due_date, repeat = "none", repeat_day = null, repeat_month = null]) => ({ title, category, due_date: repeat === "none" ? due_date : null, repeat, repeat_day, repeat_month }));
     if (rows.length) await c.from("tasks").insert(rows);
     /* 예전에 불러온 기본 항목 중 정기 업무는 정기로 바꿔 줌 */
-    for (const [title, , , repeat = "none", repeat_day = null] of STARTER) {
-      const ex = have.get(title);
-      if (ex && repeat !== "none" && ex.repeat === "none") await c.from("tasks").update({ repeat, repeat_day, due_date: null }).eq("id", ex.id);
+    for (const [title, , , repeat = "none", repeat_day = null, repeat_month = null] of STARTER) {
+      const ex = have.get(title) || old(title);
+      if (ex && repeat !== "none" && ex.repeat === "none") await c.from("tasks").update({ title, repeat, repeat_day, repeat_month, due_date: null }).eq("id", ex.id);
     }
   }
 
   /* ── 할 일 ── */
   let taskView = "open", taskYear = new Date().getFullYear(), taskEditId = null;
-  const TASK_VIEWS = [["open", "지금 할 일"], ["month", "월별"], ["quarter", "분기별"], ["routine", "정기 업무 표"], ["done", "완료"], ["all", "전체"]];
+  const TASK_VIEWS = [["open", "지금 할 일"], ["routine", "정기 업무 (월·분기·연)"], ["month", "월별"], ["quarter", "분기별"], ["done", "완료"], ["all", "전체"]];
   async function tasks(el) {
     const data = await loadTasks();
     const { all, checks } = data;
     const once = all.filter(x => x.repeat === "none"), rec = all.filter(x => x.repeat !== "none");
-    const monthly = rec.filter(x => x.repeat === "monthly"), quarterly = rec.filter(x => x.repeat === "quarterly");
+    const monthly = rec.filter(x => x.repeat === "monthly"), quarterly = rec.filter(x => x.repeat === "quarterly"), yearly = rec.filter(x => x.repeat === "yearly");
+    const yIn = (ms, y) => yearly.filter(t => ms.includes(t.repeat_month || 12) && applies(t, String(y))).map(t => instance(t, String(y), checks));
     const ed = taskEditId ? all.find(x => String(x.id) === String(taskEditId)) : null;
     const yearSel = `<select data-ty style="width:auto">${[-1, 0, 1].map(i => new Date().getFullYear() + i).map(y => `<option ${y === taskYear ? "selected" : ""}>${y}</option>`).join("")}</select>`;
     const nowN = nowList(data).length;
@@ -407,14 +426,14 @@
       const nl = nowList(data);
       const urgent = nl.filter(x => x.marker === "red" || (x.due_date && x.due_date < TODAY));
       body = `${urgent.length ? `<div class="hot"><b>🔴 먼저 챙길 일 ${urgent.length}건</b> 긴급 표식이거나 마감이 지난 일입니다.</div>` : ""}
-        <h4 class="sec">이번 달·이번 분기 정기 업무 <span class="hint">${periodName(monthOf(TODAY))} · ${periodName(quarterOf(TODAY))}</span></h4>
-        ${taskList(rec.map(t => instance(t, periodFor(t, TODAY), checks)).sort(byPriority)) || `<p class="empty">정기 업무가 없습니다. 할 일을 추가할 때 '반복'을 매월·매 분기로 고르세요.</p>`}
+        <h4 class="sec">이번 달·분기 정기 업무와 다가오는 연간 업무 <span class="hint">${periodName(monthOf(TODAY))} · ${periodName(quarterOf(TODAY))} · 연간 업무는 마감 60일 전부터</span></h4>
+        ${taskList(rec.map(t => instance(t, currentPeriod(t), checks)).filter(soon).sort(byPriority)) || `<p class="empty">지금 챙길 정기 업무가 없습니다. 할 일을 추가할 때 '반복'을 매월·매 분기·매년으로 고르세요.</p>`}
         <h4 class="sec">해야 할 일</h4>${taskList(once.filter(x => !x.done).sort(byPriority)) || `<p class="empty">남은 일이 없습니다.</p>`}`;
     } else if (taskView === "month") {
       body = `<div class="row" style="margin-bottom:8px">${yearSel}<span class="hint">한 해 동안 달마다 해야 할 일을 한 번에 봅니다. 정기 업무는 달마다 따로 체크합니다.</span></div>
         <div class="periods">${Array.from({ length: 12 }, (_, i) => {
           const p = `${taskYear}-${pad(i + 1)}`, qEnd = (i + 1) % 3 === 0 ? `${taskYear}-Q${(i + 1) / 3}` : null;
-          const items = [...once.filter(x => x.due_date && monthOf(x.due_date) === p), ...monthly.filter(t => applies(t, p)).map(t => instance(t, p, checks)), ...(qEnd ? quarterly.filter(t => applies(t, qEnd)).map(t => instance(t, qEnd, checks)) : [])].sort(byPriority);
+          const items = [...once.filter(x => x.due_date && monthOf(x.due_date) === p), ...monthly.filter(t => applies(t, p)).map(t => instance(t, p, checks)), ...(qEnd ? quarterly.filter(t => applies(t, qEnd)).map(t => instance(t, qEnd, checks)) : []), ...yIn([i + 1], taskYear)].sort(byPriority);
           const left = items.filter(x => !x.done).length;
           return `<section class="per ${p === monthOf(TODAY) ? "now" : ""}"><h4>${i + 1}월 <span class="hint">${items.length ? `${items.length - left}/${items.length} 완료` : ""}</span></h4>${taskList(items) || `<p class="empty s">없음</p>`}</section>`;
         }).join("")}</div>
@@ -423,7 +442,7 @@
       body = `<div class="row" style="margin-bottom:8px">${yearSel}<span class="hint">분기마다 해야 할 일과 그 분기의 매월 업무 진행 상황을 함께 봅니다.</span></div>
         <div class="periods q">${[1, 2, 3, 4].map(q => {
           const p = `${taskYear}-Q${q}`, ms = [q * 3 - 2, q * 3 - 1, q * 3].map(m => `${taskYear}-${pad(m)}`);
-          const items = [...once.filter(x => x.due_date && quarterOf(x.due_date) === p), ...quarterly.filter(t => applies(t, p)).map(t => instance(t, p, checks))].sort(byPriority);
+          const items = [...once.filter(x => x.due_date && quarterOf(x.due_date) === p), ...quarterly.filter(t => applies(t, p)).map(t => instance(t, p, checks)), ...yIn([q * 3 - 2, q * 3 - 1, q * 3], taskYear)].sort(byPriority);
           return `<section class="per ${p === quarterOf(TODAY) ? "now" : ""}"><h4>${q}분기 <span class="hint">${+ms[0].slice(5)}~${+ms[2].slice(5)}월</span></h4>
             ${taskList(items) || `<p class="empty s">분기 업무 없음</p>`}
             ${monthly.length ? `<table class="mini"><tr><th>매월 업무</th>${ms.map(m => `<th>${+m.slice(5)}월</th>`).join("")}</tr>
@@ -432,13 +451,21 @@
         }).join("")}</div>`;
     } else if (taskView === "routine") {
       const ms = Array.from({ length: 12 }, (_, i) => `${taskYear}-${pad(i + 1)}`), qs = [1, 2, 3, 4].map(q => `${taskYear}-Q${q}`);
-      const grid = (list, ps, label) => list.length ? `<div class="tbl-wrap"><table class="matrix"><tr><th>${label}</th>${ps.map(p => `<th class="${p === monthOf(TODAY) || p === quarterOf(TODAY) ? "nowc" : ""}">${p.includes("Q") ? p.slice(5) : +p.slice(5) + "월"}</th>`).join("")}<th></th></tr>
+      const grid = (list, ps, label) => list.length ? `<div class="tbl-wrap"><table class="matrix"><tr><th>${label}</th>${ps.map(p => `<th class="${p === monthOf(TODAY) || p === quarterOf(TODAY) || p === TODAY.slice(0, 4) ? "nowc" : ""}">${p.length === 4 ? p + "년" : p.includes("Q") ? p.slice(5) : +p.slice(5) + "월"}</th>`).join("")}<th></th></tr>
         ${list.map(t => `<tr><td>${flag(t.marker)}<b>${h(t.title)}</b><br><span class="hint">${repeatLabel(t)}${t.assignee ? " · 담당 " + h(who(t.assignee)) : ""}</span></td>
           ${ps.map(p => { if (!applies(t, p)) return `<td class="na" title="등록 전">–</td>`; const d = checks.has(`${t.id}|${p}`), late = !d && periodDue(t, p) < TODAY; return `<td class="${late ? "late" : ""}"><input type="checkbox" data-chk="${t.id}|${p}" ${d ? "checked" : ""} aria-label="${h(t.title)} ${p}"></td>`; }).join("")}
           <td style="white-space:nowrap"><button class="btn s w" data-edittask="${t.id}">수정</button> <button class="btn s danger" data-deltask="${t.id}">삭제</button></td></tr>`).join("")}</table></div>` : "";
-      body = `<div class="row" style="margin-bottom:8px">${yearSel}<span class="hint">빨간 칸은 마감이 지났는데 체크하지 않은 달·분기입니다.</span></div>
-        <h4 class="sec">매월 하는 일</h4>${grid(monthly, ms, "업무") || `<p class="empty">매월 업무가 없습니다.</p>`}
-        <h4 class="sec">분기마다 하는 일</h4>${grid(quarterly, qs, "업무") || `<p class="empty">분기 업무가 없습니다.</p>`}`;
+      const ys = [taskYear - 1, taskYear, taskYear + 1].map(String);
+      const sorted = list => list.slice().sort((a, b) => ((a.repeat_month || 12) - (b.repeat_month || 12)) || ((a.repeat_day || 31) - (b.repeat_day || 31)));
+      const done = (list, p) => list.filter(t => applies(t, p) && checks.has(`${t.id}|${p}`)).length + "/" + list.filter(t => applies(t, p)).length;
+      body = `<div class="row" style="margin-bottom:8px">${yearSel}<span class="hint">매번 하는 일을 놓치지 않도록 한곳에 모았습니다. 빨간 칸은 마감이 지났는데 체크하지 않은 칸, '–'는 등록 전입니다.</span></div>
+        <div class="kpis rt">
+          <div class="kpi"><p>${periodName(monthOf(TODAY))} 매월 업무</p><b>${done(monthly, monthOf(TODAY))}</b></div>
+          <div class="kpi"><p>${quarterOf(TODAY).slice(6)}분기 업무</p><b>${done(quarterly, quarterOf(TODAY))}</b></div>
+          <div class="kpi"><p>${TODAY.slice(0, 4)}년 연간 업무</p><b>${done(yearly, TODAY.slice(0, 4))}</b></div></div>
+        <h4 class="sec">📅 매월 하는 일 <span class="hint">${monthly.length}개</span></h4>${grid(monthly, ms, "업무") || `<p class="empty">매월 업무가 없습니다. 위에서 할 일을 추가할 때 반복을 '매월'로 고르세요.</p>`}
+        <h4 class="sec">🗂 분기마다 하는 일 <span class="hint">${quarterly.length}개</span></h4>${grid(quarterly, qs, "업무") || `<p class="empty">분기 업무가 없습니다.</p>`}
+        <h4 class="sec">📌 매년 하는 일 <span class="hint">${yearly.length}개 · 마감 달 순서</span></h4>${grid(sorted(yearly), ys, "업무") || `<p class="empty">매년 업무가 없습니다. 반복을 '매년'으로 고르고 달을 정하세요.</p>`}`;
     } else {
       const list = taskView === "done" ? once.filter(x => x.done) : [...once, ...rec];
       body = taskList(list.sort(byPriority)) || `<p class="empty">항목이 없습니다.</p>`;
@@ -448,9 +475,10 @@
         <form class="form" data-f>
           <div class="f2"><label>할 일<input name="title" required maxlength="200"></label>
             <label>분류<select name="category">${TASK_CATS.map(x => `<option>${x}</option>`).join("")}</select></label>
-            <label>반복<select name="repeat"><option value="none">한 번</option><option value="monthly">매월</option><option value="quarterly">매 분기</option></select></label>
+            <label>반복<select name="repeat"><option value="none">한 번</option><option value="monthly">매월</option><option value="quarterly">매 분기</option><option value="yearly">매년</option></select></label>
             <label data-once>마감일<input type="date" name="due_date"></label>
-            <label data-rep hidden>마감일 (매월·분기 마지막 달 며칠) <input type="number" name="repeat_day" min="1" max="31" placeholder="비우면 말일"></label></div>
+            <label data-repm hidden>몇 월에<select name="repeat_month">${Array.from({ length: 12 }, (_, i) => `<option value="${i + 1}">${i + 1}월</option>`).join("")}</select></label>
+            <label data-rep hidden><span data-replbl>마감일 (며칠)</span><input type="number" name="repeat_day" min="1" max="31" placeholder="비우면 말일"></label></div>
           <div class="f2"><label>담당<select name="assignee"><option value="">없음</option>${OFFICERS.map(o => `<option value="${o.id}">${h(o.display_name)}</option>`).join("")}</select></label>
             <label>표식 (책갈피)${markerSel("")}</label></div>
           <label>메모<input name="memo" maxlength="500"></label>
@@ -460,10 +488,15 @@
         ${TASK_VIEWS.map(([k, l]) => `<button class="btn s ${k === taskView ? "" : "w"}" data-flt="${k}">${l}${counts[k] != null ? ` ${counts[k]}` : ""}</button>`).join("")}</div>
         ${body}</div>`;
     const f = el.querySelector("[data-f]");
-    const syncRepeat = () => { const r = f.repeat.value !== "none"; el.querySelector("[data-once]").hidden = r; el.querySelector("[data-rep]").hidden = !r; };
+    const syncRepeat = () => {
+      const v = f.repeat.value, r = v !== "none";
+      el.querySelector("[data-once]").hidden = r; el.querySelector("[data-rep]").hidden = !r; el.querySelector("[data-repm]").hidden = v !== "yearly";
+      el.querySelector("[data-replbl]").textContent = v === "monthly" ? "매월 며칠까지" : v === "quarterly" ? "분기 마지막 달 며칠까지" : "그 달 며칠까지";
+    };
     f.repeat.onchange = syncRepeat;
     if (ed) {
       ["title", "category", "repeat", "due_date", "repeat_day", "assignee", "marker", "memo"].forEach(k => { f[k].value = ed[k] ?? ""; });
+      f.repeat_month.value = ed.repeat_month || 12;
       el.querySelector("[data-tcancel]").onclick = () => { taskEditId = null; tasks(el); };
       el.querySelector("[data-taskpanel]").scrollIntoView({ block: "start" });
     }
@@ -473,6 +506,7 @@
       const repeat = f.repeat.value;
       const row = { title: f.title.value.trim(), category: f.category.value, repeat, due_date: repeat === "none" ? f.due_date.value || null : null,
         repeat_day: repeat === "none" || f.repeat_day.value === "" ? null : Math.min(31, Math.max(1, +f.repeat_day.value)),
+        repeat_month: repeat === "yearly" ? +f.repeat_month.value : null,
         assignee: f.assignee.value || null, marker: f.marker.value || null, memo: f.memo.value.trim() || null };
       const { error } = ed ? await c.from("tasks").update(row).eq("id", ed.id) : await c.from("tasks").insert(row);
       if (error) return msg(el.querySelector("[data-m]"), SB.errText(error));
@@ -527,9 +561,9 @@
     const evs = ev.data || [];
     /* 달력 범위(6주) 안의 할 일: 일회성 마감 + 정기 업무의 달·분기별 마감 */
     const periods = new Set();
-    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) { const k = ymd(d); periods.add(monthOf(k)); periods.add(quarterOf(k)); }
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) { const k = ymd(d); periods.add(monthOf(k)); periods.add(quarterOf(k)); periods.add(k.slice(0, 4)); }
     const tks = [...td.all.filter(t => t.repeat === "none" && t.due_date),
-      ...td.all.filter(t => t.repeat !== "none").flatMap(t => [...periods].filter(p => (t.repeat === "monthly") === !p.includes("Q") && applies(t, p)).map(p => instance(t, p, td.checks)))];
+      ...td.all.filter(t => t.repeat !== "none").flatMap(t => [...periods].filter(p => kindOf(p) === t.repeat && applies(t, p)).map(p => instance(t, p, td.checks)))];
     const on = d => evs.filter(e => e.start_date <= d && (e.end_date || e.start_date) >= d).sort((a, b) => (MARK_ORDER[a.marker] ?? 9) - (MARK_ORDER[b.marker] ?? 9));
     const due = d => tks.filter(t => t.due_date === d).sort(byPriority);
     const chip = (kind, x) => kind === "ev"
