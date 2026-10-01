@@ -428,6 +428,30 @@ create table if not exists public.tasks (
   created_at  timestamptz not null default now()
 );
 alter table public.tasks enable row level security;
+-- 정기 업무(매월·매 분기)와 표식(책갈피 색)
+alter table public.tasks add column if not exists repeat text not null default 'none';
+alter table public.tasks drop constraint if exists tasks_repeat_check;
+alter table public.tasks add constraint tasks_repeat_check check (repeat in ('none','monthly','quarterly'));
+alter table public.tasks add column if not exists repeat_day smallint;      -- 정기 업무 마감일(1~31, 비우면 말일)
+alter table public.tasks drop constraint if exists tasks_repeat_day_check;
+alter table public.tasks add constraint tasks_repeat_day_check check (repeat_day between 1 and 31);
+alter table public.tasks add column if not exists marker text;
+alter table public.tasks drop constraint if exists tasks_marker_check;
+alter table public.tasks add constraint tasks_marker_check check (marker in ('red','orange','green','blue'));
+alter table public.events add column if not exists marker text;
+alter table public.events drop constraint if exists events_marker_check;
+alter table public.events add constraint events_marker_check check (marker in ('red','orange','green','blue'));
+-- 정기 업무의 달·분기별 완료 기록 (예: period = '2026-10' 또는 '2026-Q4')
+create table if not exists public.task_checks (
+  task_id  bigint not null references public.tasks(id) on delete cascade,
+  period   text not null check (period ~ '^[0-9]{4}-(0[1-9]|1[0-2]|Q[1-4])$'),
+  done_by  uuid references auth.users(id) default auth.uid(),
+  done_at  timestamptz not null default now(),
+  primary key (task_id, period)
+);
+alter table public.task_checks enable row level security;
+drop policy if exists "task_checks: 임원" on public.task_checks;
+create policy "task_checks: 임원" on public.task_checks for all using (public.is_officer()) with check (public.is_officer());
 drop policy if exists "events: 임원" on public.events;
 create policy "events: 임원" on public.events for all using (public.is_officer()) with check (public.is_officer());
 drop policy if exists "tasks: 임원" on public.tasks;
@@ -470,7 +494,7 @@ grant usage on schema public to anon, authenticated;
 grant select on public.posts, public.comments to anon;
 grant select, insert, update, delete on
   public.profiles, public.applications, public.posts, public.comments, public.reports,
-  public.activities, public.events, public.tasks, public.ledger, public.site_settings to authenticated;
+  public.activities, public.events, public.tasks, public.task_checks, public.ledger, public.site_settings to authenticated;
 revoke insert, delete on public.profiles from authenticated;  -- 프로필은 가입 트리거로만 생성
 
 -- 설치가 끝나면 Supabase API가 새 테이블을 바로 알아보도록 목록 새로고침
